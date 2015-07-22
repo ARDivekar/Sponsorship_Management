@@ -8,8 +8,7 @@
 	<?php
 	require('DBconnect.php');
 	
-	$FestName = "Technovanza";
-	echo "<h1>Sponsorship Department, $FestName, VJTI</h1>"
+	echo "<h1>Sponsorship Department, VJTI</h1>"
 	?>
 </header>
 	

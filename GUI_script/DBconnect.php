@@ -8,8 +8,8 @@ in each of the other php files, basically imports this.
 //$person_name = "Divekar";
 
 $servername = 'localhost';
-$username = 'sponsorship'; //you might need to change this based on your WAMP/XAMP/LAMP username
-$password='1234'; //you might need to change this based on your WAMP/XAMP/LAMP username
+$username = 'root'; //you might need to change this based on your WAMP/XAMP/LAMP username
+$password=''; //you might need to change this based on your WAMP/XAMP/LAMP username
 $db_name='sponsorshipmanagement';
 $sql='CREATE DATABASE IF NOT EXISTS '.$db_name; //I realized that nowhere in this code is this being __used___. Still, don't delete it.
 
