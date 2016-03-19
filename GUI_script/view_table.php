@@ -286,7 +286,7 @@
 	$main_query="";
 	$table_message="";
 
-
+		echo "<h3 class=\"query_status\">";
 		if($table_name=="Meeting Log"){ 
 			if($SponsAccessLevel!="CSO"){
 
@@ -460,8 +460,8 @@
 						$query = "INSERT INTO `Company` (`CMPName`, `CMPStatus`, `Sector`, `CMPAddress`) VALUES
 									('$CMPName', 'Not called', '$SponsSector', '$CMPAddress');";
 						if(mysql_query($query ))
-							echo "Successfully Inserted";
-						else echo"Insertion Unsuccessful";
+							echo "Successfully Inserted into Company table";
+						else echo"Insertion Unsuccessful into Company table";
 					}
 
 
@@ -529,8 +529,8 @@
 						$query = "INSERT INTO `Company` (`CMPName`, `CMPStatus`, `Sector`, `CMPAddress`) VALUES
 									('$CMPName', 'Not called', '$SponsSector', '$CMPAddress');";
 						if(mysql_query($query ))
-							echo "Successfully Inserted";
-						else echo"Insertion Unsuccessful";
+							echo "Successfully Inserted into Company table";
+						else echo"Insertion Unsuccessful into Company table";
 					}
 
 
@@ -948,105 +948,123 @@
 
 			else if($SponsAccessLevel=="CSO"){
 					
-						if(isset($_POST['submit'])){
+				if(isset($_POST['submit'])){
 
+					if($query_type=="Insert"){
+					
+						$required = array('SponsIDForm', 'SponsName', 'SponsPasswordForm', 'SponsSectorForm');
 
-							if($query_type=="Insert"){
-							
-								$required = array('SponsIDForm', 'SponsName', 'SponsPasswordForm', 'SponsSectorForm');
+						foreach($required as $field)
+						{
+						  if (empty($_POST[$field]))
+						  {
+							exit($FieldEmptyMessage);	  	
+						  }
+						}
 
-								foreach($required as $field)
-								{
-								  if (empty($_POST[$field]))
-								  {
-									exit($FieldEmptyMessage);	  	
-								  }
+						$SponsIDForm=$_POST['SponsIDForm'];
+						$SponsName=$_POST['SponsName'];
+						$SponsPasswordForm = md5($_POST['SponsPasswordForm']);
+						$SponsSectorForm=$_POST['SponsSectorForm'];
+						$SponsEmail="";
+						$SponsMobile="";
+						$SponsYear="";
+						$SponsBranch="";
+						if(!empty($_POST['Email']))
+							$SponsEmail=$_POST['Email'];
+						if(!empty($_POST['Mobile']))
+							$SponsMobile=$_POST['Mobile'];
+						if(!empty($_POST['Year']))
+							$SponsYear=$_POST['Year'];
+						if(!empty($_POST['Branch']))
+							$SponsBranch=$_POST['Branch'];
+						
+						mysql_query("START TRANSACTION");
+						
+						$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Department`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES
+											($SponsIDForm, '$SponsName', 'Sponsorship', 'SponsRep', '$SponsMobile', '$SponsEmail', '$SponsYear', '$SponsBranch');";
+							// echo $query;
+						if(mysql_query($query)){
+							$query = "INSERT INTO `SponsRep` (`SponsID`,`Sector`, `DateAssigned`) VALUES
+											($SponsIDForm, '$SponsSectorForm', CURDATE());";
+							// echo $query;
+							if(mysql_query($query)){
+								$query = "INSERT INTO `SponsLogin` (`SponsID`,`Password`, `AccessLevel`) VALUES
+											($SponsIDForm, '$SponsPasswordForm', 'SponsRep');";
+							// echo $query;
+								if(mysql_query($query)){
+									echo "Successfully added Sponsorship Representative";
 								}
-
-								$SponsIDForm=$_POST['SponsIDForm'];
-								$SponsName=$_POST['SponsName'];
-								$SponsPasswordForm =$_POST['SponsPasswordForm'];
-								$SponsSectorForm=$_POST['SponsSectorForm'];
-									$SponsEmail="";
-									$SponsMobile="";
-									$SponsYear="";
-									$SponsBranch="";
-									if(!empty($_POST['Email']))
-										$SponsEmail=$_POST['Email'];
-									if(!empty($_POST['Mobile']))
-										$SponsMobile=$_POST['Mobile'];
-									if(!empty($_POST['Year']))
-										$SponsYear=$_POST['Year'];
-									if(!empty($_POST['Branch']))
-										$SponsBranch=$_POST['Branch'];
-									
-									$query = "INSERT INTO `SponsRep` (`SponsID`,`Sector`, `DateAssigned`) VALUES
-													($SponsIDForm, '$SponsSectorForm', CURDATE());";
-										if(mysql_query($query ));
-										// {echo "Successfully added SponsRep";}
-										// else echo"Insertion of SponsRep Unsuccessful";
-									$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Dept`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES
-													($SponsIDForm, '$SponsName', 'Sponsorship', 'SponsRep', $SponsMobile, '$SponsEmail', '$SponsYear', '$SponsBranch');";
-										if(mysql_query($query ));
-									$query = "INSERT INTO `SponsLogin` (`SponsID`,`Password`, `AccessLevel`) VALUES
-													($SponsIDForm, '$SponsPasswordForm', 'SponsRep');";
-										if(mysql_query($query));
-
-
+								else {
+									echo "Could not add Sponsorship Representative";
+									mysql_query("ROLLBACK");
+								}
 							}
-
-
-							else if($query_type=="Update"){
-								$required = array('SponsIDForm');
-
-								foreach($required as $field) {
-								  if (empty($_POST[$field])){
-									exit($FieldEmptyMessage);	  	
-								  }
-								}
-								$SponsIDForm=$_POST['SponsIDForm']; 
-								$SponsSectorForm="";
-								$SponsPasswordForm="";
-								if(!empty($_POST['SponsSectorForm'])){
-									$SponsSectorForm=$_POST['SponsSectorForm'];
-								if(mysql_query("UPDATE SponsRep SET Sector='$SponsSectorForm', DateAssigned=CURDATE() where SponsID='$SponsIDForm' "));
-									
-								}
-								if(!empty($_POST['SponsPasswordForm'])){
-									$SponsPasswordForm=$_POST['SponsPasswordForm'];
-									if(mysql_query("UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' "));
-									
-								}
-								
-								 	//echo "SponsRep update successful";
-									//echo $UnauthorizedMessage;
-								
-								
-							}
-							
-
-							else if($query_type="Delete")
-							{
-								$required = array('SponsIDForm');
-
-								foreach($required as $field) {
-								  if (empty($_POST[$field])){
-									exit($FieldEmptyMessage);	  	
-								  }
-								}
-								$SponsIDForm=$_POST['SponsIDForm']; 
-								if(mysql_query("DELETE FROM SponsRep WHERE SponsID = '$SponsIDForm'"));
-								//{echo "Successfully Deleted SponsRep";}
-									//echo $UnauthorizedMessage;
-
+							else {
+								echo "Could not add Sponsorship Representative";
+								mysql_query("ROLLBACK");
 							}
 						}
-										
-						$table_message= "<h2>Details of all  Spons Reps:</h2>";
-						echo $table_message;
-						$result = mysql_query($CSOSponsRep_view_query);
+						else {
+							echo "Could not add Sponsorship Representative";
+							mysql_query("ROLLBACK");
+						}
+						mysql_query("COMMIT");
+
+					}
+
+
+					else if($query_type=="Update"){
+						$required = array('SponsIDForm');
+
+						foreach($required as $field) {
+						  if (empty($_POST[$field])){
+							exit($FieldEmptyMessage);	  	
+						  }
+						}
+						$SponsIDForm=$_POST['SponsIDForm']; 
+						$SponsSectorForm="";
+						$SponsPasswordForm="";
+						if(!empty($_POST['SponsSectorForm'])){
+							$SponsSectorForm=$_POST['SponsSectorForm'];
+						if(mysql_query("UPDATE SponsRep SET Sector='$SponsSectorForm', DateAssigned=CURDATE() where SponsID='$SponsIDForm' "));
+							
+						}
+						if(!empty($_POST['SponsPasswordForm'])){
+							$SponsPasswordForm=md5($_POST['SponsPasswordForm']);
+							if(mysql_query("UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' "));
+							
+						}
 						
-						$main_query=$CSOSponsRep_view_query;
+						 	//echo "SponsRep update successful";
+							//echo $UnauthorizedMessage;
+						
+						
+					}
+					
+
+					else if($query_type="Delete")
+					{
+						$required = array('SponsIDForm');
+
+						foreach($required as $field) {
+						  if (empty($_POST[$field])){
+							exit($FieldEmptyMessage);	  	
+						  }
+						}
+						$SponsIDForm=$_POST['SponsIDForm']; 
+						if(mysql_query("DELETE FROM SponsRep WHERE SponsID = '$SponsIDForm'"));
+						//{echo "Successfully Deleted SponsRep";}
+							//echo $UnauthorizedMessage;
+
+					}
+				}
+								
+				$table_message= "<h2>Details of all  Spons Reps:</h2>";
+				echo $table_message;
+				$result = mysql_query($CSOSponsRep_view_query);
+				
+				$main_query=$CSOSponsRep_view_query;
 							
 						
 			}	
@@ -1056,112 +1074,136 @@
 		else if($table_name=="Sector Head"){
 			if($SponsAccessLevel=="CSO"){
 					
-						if(isset($_POST['submit'])){
+				if(isset($_POST['submit'])){
 
 
-							if($query_type=="Insert"){
-							
-								$required = array('SponsIDForm', 'SponsName', 'SponsPasswordForm', 'SponsSectorForm');
+					if($query_type=="Insert"){
+					
+						$required = array('SponsIDForm', 'SponsName', 'SponsPasswordForm', 'SponsSectorForm');
 
-								foreach($required as $field)
-								{
-								  if (empty($_POST[$field]))
-								  {
-									exit($FieldEmptyMessage);	  	
-								  }
+						foreach($required as $field)
+						{
+						  if (empty($_POST[$field]))
+						  {
+							exit($FieldEmptyMessage);	  	
+						  }
+						}
+
+						$SponsIDForm=$_POST['SponsIDForm'];
+						$SponsName=$_POST['SponsName'];
+						$SponsPasswordForm =md5($_POST['SponsPasswordForm']);
+						$SponsSectorForm=$_POST['SponsSectorForm'];
+						$SponsEmail="";
+						$SponsMobile="";
+						$SponsYear="";
+						$SponsBranch="";
+						if(!empty($_POST['Email']))
+							$SponsEmail=$_POST['Email'];
+						if(!empty($_POST['Mobile']))
+							$SponsMobile=$_POST['Mobile'];
+						if(!empty($_POST['Year']))
+							$SponsYear=$_POST['Year'];
+						if(!empty($_POST['Branch']))
+							$SponsBranch=$_POST['Branch'];
+						
+
+
+						mysql_query("START TRANSACTION");
+						
+						$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Department`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SectorHead', '$SponsMobile', '$SponsEmail', '$SponsYear', '$SponsBranch');";
+							// echo $query;
+						if(mysql_query($query)){
+
+							$query = "INSERT INTO `SectorHead` (`SponsID`,`Sector`, `DateAssigned`) VALUES
+										($SponsIDForm, '$SponsSectorForm', CURDATE());";
+							// echo $query;
+							if(mysql_query($query)){
+
+
+								$query = "INSERT INTO `SponsLogin` (`SponsID`,`Password`, `AccessLevel`) VALUES 
+										($SponsIDForm, '$SponsPasswordForm', 'SectorHead');";			
+								// echo $query;
+								if(mysql_query($query)){
+									echo "Successfully added SectorHead";
 								}
-
-								$SponsIDForm=$_POST['SponsIDForm'];
-								$SponsName=$_POST['SponsName'];
-								$SponsPasswordForm =$_POST['SponsPasswordForm'];
-								$SponsSectorForm=$_POST['SponsSectorForm'];
-									$SponsEmail="";
-									$SponsMobile="";
-									$SponsYear="";
-									$SponsBranch="";
-									if(!empty($_POST['Email']))
-										$SponsEmail=$_POST['Email'];
-									if(!empty($_POST['Mobile']))
-										$SponsMobile=$_POST['Mobile'];
-									if(!empty($_POST['Year']))
-										$SponsYear=$_POST['Year'];
-									if(!empty($_POST['Branch']))
-										$SponsBranch=$_POST['Branch'];
-									
-									$query = "INSERT INTO `SectorHead` (`SponsID`,`Sector`, `DateAssigned`) VALUES
-													($SponsIDForm, '$SponsSectorForm', CURDATE());";
-										if(mysql_query($query ));
-										// {echo "Successfully added SectorHead";}
-										// else echo"Insertion of SectorHead Unsuccessful";
-									$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Dept`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SectorHead', $SponsMobile, '$SponsEmail', '$SponsYear', '$SponsBranch');";
-										if(mysql_query($query));
-
-									$query = "INSERT INTO `SponsLogin` (`SponsID`,`Password`, `AccessLevel`) VALUES
-												($SponsIDForm, '$SponsPasswordForm', 'SectorHead');";
-										if(mysql_query($query ));
-
-
+								else {
+									echo "Could not add Sector Head";
+									mysql_query("ROLLBACK");
+								}
 							}
-
-
-							else if($query_type=="Update"){
-								$required = array('SponsIDForm');
-
-								foreach($required as $field) {
-								  if (empty($_POST[$field])){
-									exit($FieldEmptyMessage);	  	
-								  }
-								}
-								$SponsIDForm=$_POST['SponsIDForm']; 
-								$SponsSectorForm="";
-								$SponsPasswordForm="";
-								if(!empty($_POST['SponsSectorForm'])){
-									$SponsSectorForm=$_POST['SponsSectorForm'];
-								if(mysql_query("UPDATE SectorHead SET Sector='$SponsSectorForm' where SponsID='$SponsIDForm' "));
-									
-								}
-								if(!empty($_POST['SponsPasswordForm'])){
-									$SponsPasswordForm=$_POST['SponsPasswordForm'];
-									if(mysql_query("UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' "));
-									
-								}
-								
-								 	//echo "SectorHead update successful";
-									//echo $UnauthorizedMessage;
-								
-								
-							}
-							
-
-							else if($query_type="Delete")
-							{
-								$required = array('SponsIDForm');
-
-								foreach($required as $field) {
-								  if (empty($_POST[$field])){
-									exit($FieldEmptyMessage);	  	
-								  }
-								}
-								$SponsIDForm=$_POST['SponsIDForm']; 
-								if(mysql_query("DELETE FROM SectorHead WHERE SponsID = '$SponsIDForm'"));
-								//{echo "Successfully Deleted SectorHead";}
-									//echo $UnauthorizedMessage;
-
+							else {
+								echo "Could not add Sector Head";
+								mysql_query("ROLLBACK");
 							}
 						}
-										
-						$table_message= "<h2>Details of all Sector Heads:</h2>";
-						echo $table_message;
-						$result = mysql_query($CSOSectorHead_view_query);
-						
-						$main_query=$CSOSectorHead_view_query;
+						else {
+							echo "Could not add Sector Head";
+							mysql_query("ROLLBACK");
+						}
+						mysql_query("COMMIT");
+
+					}
+
+
+					else if($query_type=="Update"){
+						$required = array('SponsIDForm');
+
+						foreach($required as $field) {
+						  if (empty($_POST[$field])){
+							exit($FieldEmptyMessage);	  	
+						  }
+						}
+						$SponsIDForm=$_POST['SponsIDForm']; 
+						$SponsSectorForm="";
+						$SponsPasswordForm="";
+						if(!empty($_POST['SponsSectorForm'])){
+							$SponsSectorForm=$_POST['SponsSectorForm'];
+						if(mysql_query("UPDATE SectorHead SET Sector='$SponsSectorForm' where SponsID='$SponsIDForm' "));
 							
+						}
+						if(!empty($_POST['SponsPasswordForm'])){
+							$SponsPasswordForm=md5($_POST['SponsPasswordForm']);
+							if(mysql_query("UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' "));
+							
+						}
+						
+						 	//echo "SectorHead update successful";
+							//echo $UnauthorizedMessage;
+						
+						
+					}
+					
+
+					else if($query_type="Delete")
+					{
+						$required = array('SponsIDForm');
+
+						foreach($required as $field) {
+						  if (empty($_POST[$field])){
+							exit($FieldEmptyMessage);	  	
+						  }
+						}
+						$SponsIDForm=$_POST['SponsIDForm']; 
+						if(mysql_query("DELETE FROM SectorHead WHERE SponsID = '$SponsIDForm'"));
+						//{echo "Successfully Deleted SectorHead";}
+							//echo $UnauthorizedMessage;
+
+					}
+				}
+								
+				$table_message= "<h2>Details of all Sector Heads:</h2>";
+				echo $table_message;
+				$result = mysql_query($CSOSectorHead_view_query);
+				
+				$main_query=$CSOSectorHead_view_query;
+					
 						
 			}	
 
 
 
 		}
+		echo "</h3>";
 
 
 		echo '
@@ -1172,12 +1214,18 @@
 
 	function printpage() {
 		document.getElementById("printButton").style.visibility="hidden";
+
 		sort = document.getElementsByClassName("sort_form")[0];
 		sort.hidden=true;
+
 		search = document.getElementsByClassName("search_form")[0];
 		search.hidden=true;
+
 		header=document.getElementsByTagName("header")[0];
 		header.hidden=true;
+
+		query_status=document.getElementsByClassName("query_status")[0];
+		query_status.hidden=true;
 
 		SponsID=document.getElementsByClassName("SponsID")[0];
 		SponsID.hidden=false;
@@ -1188,6 +1236,7 @@
 		sort.hidden=false;
 		search.hidden=false;
 		header.hidden=false;
+		query_status.hidden=false;
 		SponsID.hidden=true;
 	}
 </script>';

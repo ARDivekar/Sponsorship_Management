@@ -52,7 +52,8 @@ if(isset($_POST['submit'])){ //Check if the form has been submitted. The form is
 			exit('<h3 class="invalid_message">Improper Form submission<br>Please enter ID and Password.</h3>');
 		}
 		else{
-			$login_query = "SELECT AccessLevel FROM `SponsLogin` WHERE SponsID=$SponsID and Password=\"$SponsPassword\"";
+			$login_query = "SELECT AccessLevel FROM `SponsLogin` WHERE SponsID=$SponsID and (Password=\"$SponsPassword\" or Password='".md5($SponsPassword)."');";
+			// echo $login_query;
 			$SponsLogin=mysql_query($login_query );
 
 			if(mysql_num_rows($SponsLogin) > 0){

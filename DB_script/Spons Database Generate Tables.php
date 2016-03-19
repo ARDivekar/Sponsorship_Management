@@ -56,8 +56,9 @@ $SponsRep_args=" (
 	);";
 
 $SectorHead_args=" (
-	SponsID 	INT(9) UNSIGNED PRIMARY KEY,
-	Sector 		VARCHAR(15) NOT NULL,
+	SponsID 		INT(9) UNSIGNED PRIMARY KEY,
+	Sector 			VARCHAR(15) NOT NULL,
+	DateAssigned 	DATE,
 	foreign key (SponsID) References CommitteeMember(ID)
 		On Update Cascade
 		On Delete Cascade
@@ -65,7 +66,7 @@ $SectorHead_args=" (
 
 $SponsLogin_args=" (
 	SponsID 		INT(9) UNSIGNED PRIMARY KEY NOT NULL,
-	Password 		VARCHAR (20) NOT NULL,
+	Password 		VARCHAR (50) NOT NULL,
 	AccessLevel 	ENUM ('SponsRep', 'SectorHead', 'CSO') NOT NULL,
 	foreign key (SponsID) References CommitteeMember(ID)
 		On Update Cascade

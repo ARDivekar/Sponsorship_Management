@@ -165,7 +165,7 @@
 		else if (isset($_POST['search_by']) and isset($_POST['search_field']) and !empty($_POST['search_field'])){
 			$search_by=$_POST['search_by'];
 			$search_field=$_POST['search_field'];
-			$main_query=$main_query." and $search_by='$search_field'";
+			$main_query=$main_query." and $search_by LIKE '%$search_field%'";
 		}
 		else echo $FieldEmptyMessage;
 		
