@@ -14,7 +14,7 @@ require('DBconnect.php'); //does the same as the commented code below:
 
 
 $Event_insert_all="
-	INSERT INTO `Event` (`SponsorshipOrganization`, `EventName`, `StartDate`, `EndDate`) VALUES
+	INSERT INTO `Event` (`Organization`, `EventName`, `StartDate`, `EndDate`) VALUES
 	('Technovanza', 'Technovanza', '2016-12-28', '2017-01-10');
 ";
 

@@ -26,7 +26,7 @@
 	
 	function get_person_name($SponsID){
 			require('DBconnect.php'); //this is needed in every function that uses mySQL
-			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE StudID = $SponsID" );
+			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE ID = $SponsID" );
 			$rep_name=mysql_fetch_assoc($rep_name);
 			$rep_name = $rep_name["Name"];
 			return $rep_name;
@@ -135,6 +135,24 @@
 
 	echo '</header>';
 
+	echo '<h3 class="SponsID">';
+	echo 'SponsID: '.$SponsID;
+	echo '<br>Name: '.get_person_name($SponsID);
+
+	$role = get_access_level($SponsID);
+	$printing_role =$role;
+	if($role == 'SponsRep')
+		$printing_role = "Sponsorship Representative";
+	if($role == 'SectorHead')
+		$printing_role = "Sector Head";
+	if($role == 'CSO')
+		$printing_role = "Chief Sponsorship Officer";
+	echo '<br>Role: '.$printing_role;
+
+	if(get_access_level($SponsID)=="SponsRep" || get_access_level($SponsID)=="SectorHead"){
+		echo '<br>Sector: '.get_person_sector($SponsID);
+	}
+	echo '</h3>';
 	echo '<div align="center">';
 
 	if(isset($_POST['submit'])){
@@ -154,12 +172,32 @@
 		echo $table_message;
 		$result=mysql_query($main_query);
 
-		echo '<script type="text/javascript">
-function printpage() {
-document.getElementById("printButton").style.visibility="hidden";
-window.print();
-document.getElementById("printButton").style.visibility="visible";  
-}
+		echo '
+<script type="text/javascript">
+
+	SponsID=document.getElementsByClassName("SponsID")[0];
+	SponsID.hidden=true;
+
+	function printpage() {
+		document.getElementById("printButton").style.visibility="hidden";
+		sort = document.getElementsByClassName("sort_form")[0];
+		sort.hidden=true;
+		search = document.getElementsByClassName("search_form")[0];
+		search.hidden=true;
+		header=document.getElementsByTagName("header")[0];
+		header.hidden=true;
+
+		SponsID=document.getElementsByClassName("SponsID")[0];
+		SponsID.hidden=false;
+
+		window.print();
+
+		document.getElementById("printButton").style.visibility="visible";  
+		sort.hidden=false;
+		search.hidden=false;
+		header.hidden=false;
+		SponsID.hidden=true;
+	}
 </script>';
 echo '<button name="print" type="button" value="Print" id="printButton" onClick="printpage()">Print</button> ';
 		print_sort($result);

@@ -7,11 +7,11 @@ require('DBconnect.php');
 // 'Technovanza' is an event, if funding is done at the level of Technovanza. The SponsorshipOrganization could be 'Technovanza'
 //'RoboWars' is an event, if funding is done for RoboWars. The SponsorshipOrganization could be 'Technovanza'
 $Event_args = " (
-	EventID						INT(7) UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
-	SponsorshipOrganization		VARCHAR(50),
-	EventName 					VARCHAR(80),
-	StartDate 					DATE,
-	EndDate 					DATE
+	EventID				INT(7) UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
+	Organization		VARCHAR(50),
+	EventName 			VARCHAR(80),
+	StartDate 			DATE,
+	EndDate 			DATE
 );";
 
 // A CommitteeMember is assigned to only one event at once.
@@ -41,7 +41,7 @@ $AccountLog_args = " (
 	foreign key (SponsID) References CommitteeMember(ID)
 		On Update Cascade
 		On Delete Cascade,
-	foreign key (SponsID) References CommitteeMember(ID)
+	foreign key (EventID) References Event(EventID)
 		On Update Cascade
 		On Delete Cascade
 );";

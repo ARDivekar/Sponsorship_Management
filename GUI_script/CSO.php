@@ -23,7 +23,7 @@
 
 		function get_person_name($SponsID){
 			require('DBconnect.php'); //this is needed in every function that uses mySQL
-			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE StudID = $SponsID" );
+			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE ID = $SponsID" );
 			$rep_name=mysql_fetch_assoc($rep_name);
 			$rep_name = $rep_name["Name"];
 			return $rep_name;
@@ -169,7 +169,7 @@
 
 			
 			echo "<table class=\"SponsRepnav\" style=\"width:100%\" >";
-			echo"<caption><h2>Festival Overview:</h2></caption>";
+			echo"<caption><h2>Event Overview:</h2></caption>";
 			echo "<tr align=left>
 				<th>Number of companies in database:</th>
 			<td>";
@@ -244,7 +244,7 @@
 			<select name="table_name">
 				<option>Sponsorship Representative</option>
 				<option>Sector Head</option>
-				<option>Festival Account</option>
+				<option>Event Account</option>
 				<option>Company</option>
 				<option>Company Executive</option>
 				<option>Meeting Log</option>

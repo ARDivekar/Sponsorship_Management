@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="style.css">
+	
 </head>
 
 <body>
@@ -28,7 +29,7 @@
 	
 	function get_person_name($SponsID){
 			require('DBconnect.php'); //this is needed in every function that uses mySQL
-			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE StudID = $SponsID" );
+			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE ID = $SponsID" );
 			$rep_name=mysql_fetch_assoc($rep_name);
 			$rep_name = $rep_name["Name"];
 			return $rep_name;
@@ -127,6 +128,7 @@
 
 	echo '<header align="center">
 			<h1>Sponsorship Department</h1>';
+	
 
 		
 	if($SponsAccessLevel=="SectorHead")
@@ -142,6 +144,27 @@
 
 	echo '</header>';
 
+	echo '<h3 class="SponsID">';
+	echo 'SponsID: '.$SponsID;
+	echo '<br>Name: '.get_person_name($SponsID);
+
+	$role = get_access_level($SponsID);
+	$printing_role =$role;
+	if($role == 'SponsRep')
+		$printing_role = "Sponsorship Representative";
+	if($role == 'SectorHead')
+		$printing_role = "Sector Head";
+	if($role == 'CSO')
+		$printing_role = "Chief Sponsorship Officer";
+	echo '<br>Role: '.$printing_role;
+
+	if(get_access_level($SponsID)=="SponsRep" || get_access_level($SponsID)=="SectorHead"){
+		echo '<br>Sector: '.get_person_sector($SponsID);
+	}
+	echo '</h3>';
+	
+
+
 	echo '<div align="center">';
 
 
@@ -150,9 +173,7 @@
 
 		FROM ((Select SponsID, Sector from SponsRep) UNION (Select SponsID, Sector from SectorHead)) as SponsOfficer
 		natural join Meeting 
-		natural join CommitteeMember 
-
-		where SponsOfficer.SponsID = StudID 
+		inner join CommitteeMember on CommitteeMember.ID = SponsOfficer.SponsID
 		and Sector='$SponsSector'
 		";	//meeting_view_query is common for both SponsRep and SectorHead
 
@@ -160,8 +181,8 @@
 
 				FROM ((Select SponsID, Sector from SponsRep) UNION (Select SponsID, Sector from SectorHead)) as SponsOfficer
 				natural join Meeting 
-				natural join CommitteeMember 
-                where Meeting.SponsID=StudID and SponsOfficer.SponsID=StudID
+				inner join CommitteeMember on SponsOfficer.SponsID=CommitteeMember.ID
+                where Meeting.SponsID=CommitteeMember.ID and SponsOfficer.SponsID=CommitteeMember.ID
 				";
 
 
@@ -185,28 +206,80 @@
 
 			
 
-	$FestivalAccount_SponsRep_view_query="SELECT SponsID, Name, Title as 'Company Name', Date, Amount as 'Amount (Rs.)' from AccountLog natural join CommitteeMember natural join SponsRep where sector='$SponsSector' and Studid=SponsId and StudID=$SponsID ";
+	$EventAccount_SponsRep_view_query=
+	"SELECT 
+		AccountLog.ID as 'Deposit ID',
+		Event.Organization as 'Organization',
+		Event.EventName as 'Event Name', 
+		SponsRep.SponsID as 'SponsID of reciever', 
+		CommitteeMember.Name as 'Name of reciever', 
+		SponsRep.Sector as 'Sector of reciever',
+		AccountLog.Title as 'Sponsor Name', 
+		AccountLog.Amount as 'Amount (Rs.)',
+		AccountLog.Date as 'Date' 
+
+	FROM
+		AccountLog inner join CommitteeMember on AccountLog.SponsId = CommitteeMember.ID
+		inner join Event on Event.EventID = AccountLog.EventID
+		inner join SponsRep on AccountLog.SponsID = SponsRep.SponsID
+
+	WHERE 
+		CommitteeMember.ID=$SponsID;";
 
 
 
-	$FestivalAccount_SectorHead_view_query="SELECT SponsID, Name, Title as 'Company Name', Date, Amount as 'Amount (Rs.)' from AccountLog natural join CommitteeMember natural join SponsRep where sector='$SponsSector' and Studid=SponsID";
+	$EventAccount_SectorHead_view_query=
+	"SELECT 
+		AccountLog.ID as 'Deposit ID',
+		Event.Organization as 'Organization',
+		Event.EventName as 'Event Name', 
+		SponsRep.SponsID as 'SponsID of reciever', 
+		CommitteeMember.Name as 'Name of reciever', 
+		SponsRep.Sector as 'Sector of reciever',
+		AccountLog.Title as 'Sponsor Name', 
+		AccountLog.Amount as 'Amount (Rs.)',
+		AccountLog.Date as 'Date' 
+
+	FROM
+		AccountLog inner join CommitteeMember on AccountLog.SponsId = CommitteeMember.ID
+		inner join Event on Event.EventID = AccountLog.EventID
+		inner join SponsRep on AccountLog.SponsID = SponsRep.SponsID
+
+	WHERE 
+		SponsRep.Sector='$SponsSector';";
 
 
-	$FestivalAccount_CSO_view_query="SELECT SponsID, Name, Sector, Title as 'Company Name',Date, Amount as 'Amount (Rs.)' from AccountLog natural join CommitteeMember natural join SponsRep where Studid=SponsID";
+	$EventAccount_CSO_view_query=
+	"SELECT 
+		AccountLog.ID as 'Deposit ID',
+		Event.Organization as 'Organization',
+		Event.EventName as 'Event Name', 
+		SponsRep.SponsID as 'SponsID of reciever', 
+		CommitteeMember.Name as 'Name of reciever', 
+		SponsRep.Sector as 'Sector of reciever',
+		AccountLog.Title as 'Sponsor Name', 
+		AccountLog.Amount as 'Amount (Rs.)',
+		AccountLog.Date as 'Date' 
+
+	FROM
+		AccountLog inner join CommitteeMember on AccountLog.SponsId = CommitteeMember.ID
+		inner join Event on Event.EventID = AccountLog.EventID
+		inner join SponsRep on AccountLog.SponsID = SponsRep.SponsID
+	;";
 
 
 	$SponsRep_view_query="SELECT SponsID, Name, DateAssigned, Mobile, Email 
 	from SponsRep, CommitteeMember 
-	where StudID=SponsID and Sector = '$SponsSector'";
+	where CommitteeMember.ID=SponsRep.SponsID and Sector = '$SponsSector'";
 
 
 	$CSOSponsRep_view_query="SELECT SponsID, Name, Sector, DateAssigned, Mobile, Email 
 					from SponsRep, CommitteeMember 
-					where StudID=SponsID ";
+					where CommitteeMember.ID=SponsID ";
 
 	$CSOSectorHead_view_query="SELECT SponsID, Name, Sector as `Head of:`, Mobile, Email 
 					from SectorHead, CommitteeMember 
-					where StudID=SponsID ";
+					where CommitteeMember.ID=SponsID ";
 			
 
 	$result="";
@@ -665,7 +738,7 @@
 
 
 
-		else if ($table_name=="Festival Account"){
+		else if ($table_name=="Event Account"){
 			if($SponsAccessLevel!="CSO"){
 			if($SponsAccessLevel == "SponsRep"){
 				if(isset($_POST['submit'])){
@@ -694,11 +767,11 @@
 
 				}
 				
-				$table_message= "<h2>Account of ".$SponsName." from ".$SponsSector." sector:</h2>";
+				$table_message= "<h2>Account of ".$SponsName.":</h2>";
 				echo $table_message;
-				$result = mysql_query($FestivalAccount_SponsRep_view_query );
+				$result = mysql_query($EventAccount_SponsRep_view_query );
 				
-				$main_query=$FestivalAccount_SponsRep_view_query;
+				$main_query=$EventAccount_SponsRep_view_query;
 			}
 
 
@@ -748,9 +821,9 @@
 
 				$table_message= "<h2>Account of ".$SponsSector." sector:</h2>";
 				echo $table_message;
-				$result = mysql_query($FestivalAccount_SectorHead_view_query );
+				$result = mysql_query($EventAccount_SectorHead_view_query );
 				
-				$main_query=$FestivalAccount_SectorHead_view_query;
+				$main_query=$EventAccount_SectorHead_view_query;
 				
 			}
 			}
@@ -801,9 +874,9 @@
 
 				$table_message= "<h2>Account Log:</h2>";
 				echo $table_message;
-				$result = mysql_query($FestivalAccount_CSO_view_query );
+				$result = mysql_query($EventAccount_CSO_view_query );
 				
-				$main_query=$FestivalAccount_CSO_view_query;
+				$main_query=$EventAccount_CSO_view_query;
 			}
 
 		}
@@ -912,7 +985,7 @@
 										if(mysql_query($query ));
 										// {echo "Successfully added SponsRep";}
 										// else echo"Insertion of SponsRep Unsuccessful";
-									$query = "INSERT INTO `CommitteeMember` (`StudID`,`Name`,`Dept`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES
+									$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Dept`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES
 													($SponsIDForm, '$SponsName', 'Sponsorship', 'SponsRep', $SponsMobile, '$SponsEmail', '$SponsYear', '$SponsBranch');";
 										if(mysql_query($query ));
 									$query = "INSERT INTO `SponsLogin` (`SponsID`,`Password`, `AccessLevel`) VALUES
@@ -1020,7 +1093,7 @@
 										if(mysql_query($query ));
 										// {echo "Successfully added SectorHead";}
 										// else echo"Insertion of SectorHead Unsuccessful";
-									$query = "INSERT INTO `CommitteeMember` (`StudID`,`Name`,`Dept`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SectorHead', $SponsMobile, '$SponsEmail', '$SponsYear', '$SponsBranch');";
+									$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Dept`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SectorHead', $SponsMobile, '$SponsEmail', '$SponsYear', '$SponsBranch');";
 										if(mysql_query($query));
 
 									$query = "INSERT INTO `SponsLogin` (`SponsID`,`Password`, `AccessLevel`) VALUES
@@ -1091,12 +1164,32 @@
 		}
 
 
-		echo '<script type="text/javascript">
-function printpage() {
-document.getElementById("printButton").style.visibility="hidden";
-window.print();
-document.getElementById("printButton").style.visibility="visible";  
-}
+		echo '
+<script type="text/javascript">
+
+	SponsID=document.getElementsByClassName("SponsID")[0];
+	SponsID.hidden=true;
+
+	function printpage() {
+		document.getElementById("printButton").style.visibility="hidden";
+		sort = document.getElementsByClassName("sort_form")[0];
+		sort.hidden=true;
+		search = document.getElementsByClassName("search_form")[0];
+		search.hidden=true;
+		header=document.getElementsByTagName("header")[0];
+		header.hidden=true;
+
+		SponsID=document.getElementsByClassName("SponsID")[0];
+		SponsID.hidden=false;
+
+		window.print();
+
+		document.getElementById("printButton").style.visibility="visible";  
+		sort.hidden=false;
+		search.hidden=false;
+		header.hidden=false;
+		SponsID.hidden=true;
+	}
 </script>';
 echo '<button name="print" type="button" value="Print" id="printButton" onClick="printpage()">Print</button>';
 		print_sort($result);

@@ -22,7 +22,7 @@
 		
 		function get_person_name($SponsID){
 			require('DBconnect.php'); //this is needed in every function that uses mySQL
-			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE StudID = $SponsID" );
+			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE ID = $SponsID" );
 			$rep_name=mysql_fetch_assoc($rep_name);
 			$rep_name = $rep_name["Name"];
 			return $rep_name;
@@ -136,7 +136,7 @@
 
 
 			$AccountLogUpdate='
-			<h2 align="center">Update Festival Account:</h2>
+			<h2 align="center">Update Event Account:</h2>
 
 			<div>
 					<form action="view_table.php" method="post"  class="Update">
@@ -164,7 +164,7 @@
 
 			$AccountLogDelete='
 			
-				<h2 align="center">Delete entry from Festival Account:</h2>
+				<h2 align="center">Delete entry from Event Account:</h2>
 
 			<div>
 					<form action="view_table.php" method="post"  class="Insert">
@@ -505,7 +505,7 @@
 
 
 
-				$CSOAccountLogUpdate='<h2 align="center">Update Festival Account:</h2>
+				$CSOAccountLogUpdate='<h2 align="center">Update Event Account:</h2>
 
 					<div>
 							<form action="view_table.php" method="post"  class="Update">
@@ -534,7 +534,7 @@
 
 
 			$CSOAccountLogDelete='
-					<h2 align="center">Delete entry from Festival Account:</h2>
+					<h2 align="center">Delete entry from Event Account:</h2>
 
 					<div>
 							<form action="view_table.php" method="post"  class="Insert">
@@ -932,7 +932,7 @@
 				}
 			}
 
-			else if ($table_name=="Festival Account"){
+			else if ($table_name=="Event Account"){
 				if($query_type == "View"){
 					header("Location: view_table.php");
 				}
@@ -973,7 +973,7 @@
 				
 			}
 
-			else if ($table_name=="Festival Account"){
+			else if ($table_name=="Event Account"){
 				if($query_type == "View"){
 					header("Location: view_table.php");
 				}
@@ -1090,7 +1090,7 @@
 
 
 
-			else if ($table_name=="Festival Account"){
+			else if ($table_name=="Event Account"){
 				if($query_type == "View"){
 					header("Location: view_table.php");
 				}
