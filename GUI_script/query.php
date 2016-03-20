@@ -439,11 +439,20 @@
 					<label>SponsID:</label><input type="text" name="SponsID">
 					<br>
 					<br>
+ 
+					<label>Sector:</label><input type="text" name="Sector">
+					<br>
+					<br>
 
-					<!--<input type="checkbox" name="SectorCheckbox">--> <label>Sector:</label><input type="text" name="Sector">
+					<label>Organization:</label>          <input type="text" name="Organization" value="">
 					<br>
 					<br>
-					<!--<input type="checkbox" name="DateAssignedCheckbox"> <label>Date Assigned:</label> <input type="date" name="DateAssigned">
+					
+					<label>Event Name:</label>          <input type="text" name="EventName" value="">
+					<br>
+					<br>
+					
+					<label>Date Assigned:</label> <input type="date" name="DateAssigned">
 					<br>
 					<br>-->
 					<button class="query_forms" type="submit" name="submit">Update SponsRep Details</button>
@@ -734,10 +743,17 @@
 				<label>SponsID:</label>       <input type="text" name="SponsIDForm" value="">
 				<br>
 				<br>
-				<label>Spons Name:</label>          <input type="text" name="SponsName" value="">
+				<label>Name:</label>          <input type="text" name="SponsName" value="">
 				<br>
 				<br>
 				<label>Password:</label>          <input type="password" name="SponsPasswordForm" value="">
+				<br>
+				<br>
+				<label>Organization:</label>          <input type="text" name="Organization" value="">
+				<br>
+				<br>
+				
+				<label>Event Name:</label>          <input type="text" name="EventName" value="">
 				<br>
 				<br>
 				<label>Department:</label>          <input type="text" name="Dept" disabled="disabled" value="Sponsorship">
@@ -761,7 +777,7 @@
 			</form>
 		</div>
 			';
-			$CSOSectorHeadUpdate='<h2 align="center">Reassign a Sector Head from any sector, to any sector:</h2>
+			$CSOSectorHeadUpdate='<h2 align="center">Edit Sector Head details:</h2>
 
 			<div>
 					<form action="view_table.php" method="post"  class ="Update">
@@ -769,9 +785,18 @@
 					<br>
 					<br>
 
-					<!--<input type="checkbox" name="SectorCheckbox">--> <label>Sector:</label><input type="text" name="SponsSectorForm">
+					<label>Sector:</label><input type="text" name="SponsSectorForm">
 					<br>
 					<br>
+
+					<label>Organization:</label>          <input type="text" name="Organization" value="">
+					<br>
+					<br>
+					
+					<label>Event Name:</label>          <input type="text" name="EventName" value="">
+					<br>
+					<br>
+					
 					<label>Password:</label>          <input type="password" name="SponsPasswordForm" value="">
 					<br>
 					<br>
@@ -801,10 +826,16 @@
 				<label>SponsID:</label>       <input type="text" name="SponsIDForm" value="">
 				<br>
 				<br>
-				<label>Spons Name:</label>          <input type="text" name="SponsName" value="">
+				<label>Name:</label>          <input type="text" name="SponsName" value="">
 				<br>
 				<br>
 				<label>Password:</label>          <input type="password" name="SponsPasswordForm" value="">
+				<br>
+				<br>
+				<label>Organization:</label>          <input type="text" name="Organization" value="">
+				<br>
+				<br>
+				<label>Event Name:</label>          <input type="text" name="EventName" value="">
 				<br>
 				<br>
 				<label>Department:</label>          <input type="text" name="Dept" disabled="disabled" value="Sponsorship">
@@ -829,23 +860,31 @@
 		</div>';
 
 
-				$CSOSponsRepUpdate ='<h2 align="center">Reassign a Sponsorship Representative from any sector, to any sector:</h2>
+				$CSOSponsRepUpdate ='<h2 align="center">Edit Sponsorship Representative details:</h2>
 
 			<div>
 					<form action="view_table.php" method="post"  class ="Update">
 					<label>SponsID:</label><input type="text" name="SponsIDForm">
 					<br>
 					<br>
-
-					<!--<input type="checkbox" name="SectorCheckbox">--> <label>Sector:</label><input type="text" name="SponsSectorForm">
+					
+					<label>Organization:</label>          <input type="text" name="Organization" value="">
 					<br>
 					<br>
+					
+					<label>Event Name:</label>          <input type="text" name="EventName" value="">
+					<br>
+					<br>
+					
+					<label>Sector:</label><input type="text" name="SponsSectorForm">
+					<br>
+					<br>
+					
 					<label>Password:</label>          <input type="password" name="SponsPasswordForm" value="">
 					<br>
 					<br>
-					<!--<input type="checkbox" name="DateAssignedCheckbox"> <label>Date Assigned:</label> <input type="date" name="DateAssigned">
-					<br>
-					<br>-->
+					
+					
 					<button class="query_forms" type="submit" name="submit">Update SponsRep Details</button>
 					
 				</form>
@@ -859,7 +898,7 @@
 						<label>SponsID:</label><input type="text" name="SponsIDForm">
 						<br>
 						<br>
-						<button class="query_forms" type="submit" name="submit">Delete SponsRep</button>
+						<button class="query_forms" type="submit" name="submit" style="width:150px;">Delete SponsRep</button>
 						
 					</form>
 				</div>';

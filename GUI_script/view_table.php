@@ -169,12 +169,21 @@
 
 
 
-	$meeting_view_query = "SELECT Name as 'SponsRep Name',CMPName as 'Company Name', CEName as 'Company Executive Name', MeetingType as 'Meeting Type', Date, Time, Address, Outcome 
+	$meeting_view_query = "SELECT 
+		SponsOfficer.SponsID as 'SponsID',
+		Name as 'SponsRep Name',
+		CMPName as 'Company Name', 
+		CEName as 'Company Executive Name', 
+		MeetingType as 'Meeting Type', 
+		Date, 
+		Time, 
+		Address, 
+		Outcome 
 
 		FROM ((Select SponsID, Sector from SponsRep) UNION (Select SponsID, Sector from SectorHead)) as SponsOfficer
 		natural join Meeting 
 		inner join CommitteeMember on CommitteeMember.ID = SponsOfficer.SponsID
-		and Sector='$SponsSector'
+		and Sector='$SponsSector';
 		";	//meeting_view_query is common for both SponsRep and SectorHead
 
 	$CSOmeeting_view_query = "SELECT Name as 'SponsRep Name',Sector, CMPName as 'Company Name', CEName as 'Company Executive Name', MeetingType as 'Meeting Type', Date, Time, Address, Outcome 
@@ -220,7 +229,7 @@
 
 	FROM
 		AccountLog inner join CommitteeMember on AccountLog.SponsId = CommitteeMember.ID
-		inner join Event on Event.EventID = AccountLog.EventID
+		inner join Event on (Event.EventName = AccountLog.EventName and Event.Organization = AccountLog.Organization)
 		inner join SponsRep on AccountLog.SponsID = SponsRep.SponsID
 
 	WHERE 
@@ -242,7 +251,7 @@
 
 	FROM
 		AccountLog inner join CommitteeMember on AccountLog.SponsId = CommitteeMember.ID
-		inner join Event on Event.EventID = AccountLog.EventID
+		inner join Event on (Event.EventName = AccountLog.EventName and Event.Organization = AccountLog.Organization)
 		inner join SponsRep on AccountLog.SponsID = SponsRep.SponsID
 
 	WHERE 
@@ -263,7 +272,7 @@
 
 	FROM
 		AccountLog inner join CommitteeMember on AccountLog.SponsId = CommitteeMember.ID
-		inner join Event on Event.EventID = AccountLog.EventID
+		inner join Event on (Event.EventName = AccountLog.EventName and Event.Organization = AccountLog.Organization)
 		inner join SponsRep on AccountLog.SponsID = SponsRep.SponsID
 	;";
 
@@ -273,11 +282,11 @@
 	where CommitteeMember.ID=SponsRep.SponsID and Sector = '$SponsSector'";
 
 
-	$CSOSponsRep_view_query="SELECT SponsID, Name, Sector, DateAssigned, Mobile, Email 
+	$CSOSponsRep_view_query="SELECT SponsID, Organization, EventName, Name, Sector, DateAssigned, Mobile, Email 
 					from SponsRep, CommitteeMember 
 					where CommitteeMember.ID=SponsID ";
 
-	$CSOSectorHead_view_query="SELECT SponsID, Name, Sector as `Head of:`, Mobile, Email 
+	$CSOSectorHead_view_query="SELECT SponsID, Organization, EventName, Name, Sector as `Head of:`, Mobile, Email 
 					from SectorHead, CommitteeMember 
 					where CommitteeMember.ID=SponsID ";
 			
@@ -423,7 +432,7 @@
 
 
 				}
-				$table_message= "<h2>Meetings Log:</h2>";
+				$table_message= "<h2>Meetings Log of all meetings:</h2>";
 				echo $table_message;
 				$result = mysql_query($CSOmeeting_view_query );
 				
@@ -565,7 +574,7 @@
 				}
 				
 
-				$table_message= "<h2>Companies of".$SponsSector.":</h2>";
+				$table_message= "<h2>All companies in database:</h2>";
 				echo $table_message;
 				$result = mysql_query($CSOCompany_view_query );
 				
@@ -726,7 +735,7 @@
 					
 				}
 
-				$table_message= "<h2>Company Executives:</h2>";
+				$table_message= "<h2>List of all Company Executives:</h2>";
 				echo $table_message;
 				$result = mysql_query($CSOCompanyExec_view_query);
 				
@@ -872,7 +881,7 @@
 						}
 				}
 
-				$table_message= "<h2>Account Log:</h2>";
+				$table_message= "<h2>List of all entries in Account Log:</h2>";
 				echo $table_message;
 				$result = mysql_query($EventAccount_CSO_view_query );
 				
@@ -970,6 +979,9 @@
 						$SponsMobile="";
 						$SponsYear="";
 						$SponsBranch="";
+						$SponsOrganization=NULL;
+						$SponsEventName=NULL;
+
 						if(!empty($_POST['Email']))
 							$SponsEmail=$_POST['Email'];
 						if(!empty($_POST['Mobile']))
@@ -978,12 +990,27 @@
 							$SponsYear=$_POST['Year'];
 						if(!empty($_POST['Branch']))
 							$SponsBranch=$_POST['Branch'];
+						if(!empty($_POST['Organization']))
+							$SponsOrganization=$_POST['Organization'];
+						if(!empty($_POST['EventName']))
+							$SponsEventName=$_POST['EventName'];
 						
 						mysql_query("START TRANSACTION");
 						
-						$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Department`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES
-											($SponsIDForm, '$SponsName', 'Sponsorship', 'SponsRep', '$SponsMobile', '$SponsEmail', '$SponsYear', '$SponsBranch');";
-							// echo $query;
+						$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Department`,`Role`,`Mobile`,`Email`,`Year`,`Branch`, `Organization`, `EventName`) 
+						VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SponsRep', '$SponsMobile', '$SponsEmail', '$SponsYear', '$SponsBranch',";
+						
+						if($SponsOrganization==NULL)
+							$query.="NULL,";
+						else $query.="'$SponsOrganization',";
+						
+						if($SponsEventName==NULL)
+							$query.="NULL";
+						else $query.="'$SponsEventName'";
+						$query.=");";
+						
+						// echo $query;
+
 						if(mysql_query($query)){
 							$query = "INSERT INTO `SponsRep` (`SponsID`,`Sector`, `DateAssigned`) VALUES
 											($SponsIDForm, '$SponsSectorForm', CURDATE());";
@@ -1025,17 +1052,69 @@
 						$SponsIDForm=$_POST['SponsIDForm']; 
 						$SponsSectorForm="";
 						$SponsPasswordForm="";
+						$SponsOrganization="";
+						$SponsEventName="";
+
+						mysql_query("START TRANSACTION");
+						$valid = true;
+
 						if(!empty($_POST['SponsSectorForm'])){
 							$SponsSectorForm=$_POST['SponsSectorForm'];
-						if(mysql_query("UPDATE SponsRep SET Sector='$SponsSectorForm', DateAssigned=CURDATE() where SponsID='$SponsIDForm' "));
-							
+							$query = "UPDATE SponsRep SET Sector='$SponsSectorForm' where SponsID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								$valid = false;
+								mysql_query("ROLLBACK");
+							}
 						}
+
 						if(!empty($_POST['SponsPasswordForm'])){
 							$SponsPasswordForm=md5($_POST['SponsPasswordForm']);
-							if(mysql_query("UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' "));
+							$query = "UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								$valid = false;
+								mysql_query("ROLLBACK");
+							}
 							
 						}
-						
+
+						if(!empty($_POST['Organization'])){
+							$SponsOrganization=$_POST['Organization'];
+							$query="UPDATE CommitteeMember SET Organization='$SponsOrganization' where ID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								$valid = false;
+								mysql_query("ROLLBACK");
+							}
+						}
+
+						if(!empty($_POST['EventName'])){
+							$SponsEventName=$_POST['EventName'];
+							$query="UPDATE CommitteeMember SET EventName='$SponsEventName' where ID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								$valid = false;
+								mysql_query("ROLLBACK");
+							}
+						}
+
+						if($valid == false)
+							echo "Could not update Sponsorship Representative details";
+						else{
+							$query = "UPDATE SponsRep SET DateAssigned=CURDATE() where SponsID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								echo "Could not update Sponsorship Representative details";
+
+								mysql_query("ROLLBACK");
+							}
+							else{
+								echo "Sponsorship Representative details updated successfully";
+								mysql_query("COMMIT");
+							}
+						}
+
 						 	//echo "SponsRep update successful";
 							//echo $UnauthorizedMessage;
 						
@@ -1060,7 +1139,7 @@
 					}
 				}
 								
-				$table_message= "<h2>Details of all  Spons Reps:</h2>";
+				$table_message= "<h2>Details of all Sponsorship Representatives:</h2>";
 				echo $table_message;
 				$result = mysql_query($CSOSponsRep_view_query);
 				
@@ -1097,6 +1176,9 @@
 						$SponsMobile="";
 						$SponsYear="";
 						$SponsBranch="";
+						$SponsOrganization=NULL;
+						$SponsEventName=NULL;
+
 						if(!empty($_POST['Email']))
 							$SponsEmail=$_POST['Email'];
 						if(!empty($_POST['Mobile']))
@@ -1105,13 +1187,24 @@
 							$SponsYear=$_POST['Year'];
 						if(!empty($_POST['Branch']))
 							$SponsBranch=$_POST['Branch'];
+						if(!empty($_POST['Organization']))
+							$SponsOrganization=$_POST['Organization'];
+						if(!empty($_POST['EventName']))
+							$SponsEventName=$_POST['EventName'];
 						
-
 
 						mysql_query("START TRANSACTION");
 						
-						$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Department`,`Role`,`Mobile`,`Email`,`Year`,`Branch`) VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SectorHead', '$SponsMobile', '$SponsEmail', '$SponsYear', '$SponsBranch');";
-							// echo $query;
+						$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Department`,`Role`,`Mobile`,`Email`,`Year`,`Branch`, `Organization`, `EventName`) VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SectorHead', '$SponsMobile', '$SponsEmail', '$SponsYear', '$SponsBranch',";
+						if($SponsOrganization==NULL)
+							$query.="NULL,";
+						else $query.="'$SponsOrganization',";
+						if($SponsEventName==NULL)
+							$query.="NULL";
+						else $query.="'$SponsEventName'";
+						$query.=");";
+						
+						// echo $query;
 						if(mysql_query($query)){
 
 							$query = "INSERT INTO `SectorHead` (`SponsID`,`Sector`, `DateAssigned`) VALUES
@@ -1156,17 +1249,67 @@
 						$SponsIDForm=$_POST['SponsIDForm']; 
 						$SponsSectorForm="";
 						$SponsPasswordForm="";
+						$SponsOrganization="";
+						$SponsEventName="";
+
+						mysql_query("START TRANSACTION");
+						$valid = true;
+
 						if(!empty($_POST['SponsSectorForm'])){
 							$SponsSectorForm=$_POST['SponsSectorForm'];
-						if(mysql_query("UPDATE SectorHead SET Sector='$SponsSectorForm' where SponsID='$SponsIDForm' "));
-							
+							$query = "UPDATE SectorHead SET Sector='$SponsSectorForm' where SponsID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								$valid = false;
+								mysql_query("ROLLBACK");
+							}
 						}
+
 						if(!empty($_POST['SponsPasswordForm'])){
 							$SponsPasswordForm=md5($_POST['SponsPasswordForm']);
-							if(mysql_query("UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' "));
+							$query="UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								$valid = false;
+								mysql_query("ROLLBACK");
+							}
 							
 						}
-						
+
+						if(!empty($_POST['Organization'])){
+							$SponsOrganization=$_POST['Organization'];
+							$query="UPDATE CommitteeMember SET Organization='$SponsOrganization' where ID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								$valid = false;
+								mysql_query("ROLLBACK");
+							}
+						}
+
+						if(!empty($_POST['EventName'])){
+							$SponsEventName=$_POST['EventName'];
+							$query="UPDATE CommitteeMember SET EventName='$SponsEventName' where ID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								$valid = false;
+								mysql_query("ROLLBACK");
+							}
+						}
+
+						if($valid == false)
+							echo "Could not update Sector Head details";
+						else{
+							$query = "UPDATE SectorHead SET DateAssigned=CURDATE() where SponsID='$SponsIDForm' ";
+							// echo $query;
+							if(!mysql_query($query)){
+								echo "Could not update Sector Head details";
+								mysql_query("ROLLBACK");
+							}
+							else{
+								echo "Sector Head details updated successfully";
+								mysql_query("COMMIT");
+							}
+						}
 						 	//echo "SectorHead update successful";
 							//echo $UnauthorizedMessage;
 						

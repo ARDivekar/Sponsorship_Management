@@ -8,16 +8,18 @@ require('DBconnect.php');
 //'RoboWars' is an event, if funding is done for RoboWars. The SponsorshipOrganization could be 'Technovanza'
 $Event_args = " (
 	EventID				INT(7) UNSIGNED PRIMARY KEY AUTO_INCREMENT, 
-	Organization		VARCHAR(50),
-	EventName 			VARCHAR(80),
+	Organization		VARCHAR(50) NOT NULL,
+	EventName 			VARCHAR(80) NOT NULL,
 	StartDate 			DATE,
-	EndDate 			DATE
+	EndDate 			DATE,
+	UNIQUE KEY(Organization, EventName)
 );";
 
 // A CommitteeMember is assigned to only one event at once.
 $CommitteeMember_args =" (
 	ID 				INT(9) UNSIGNED PRIMARY KEY,
-	EventID			INT(7) UNSIGNED,
+	Organization	VARCHAR(50),
+	EventName 		VARCHAR(80),
 	Name 			VARCHAR(80) NOT NULL,
 	Department		VARCHAR(15) NOT NULL,
 	Role 			VARCHAR(40) NOT NULL,
@@ -25,26 +27,27 @@ $CommitteeMember_args =" (
 	Email 			VARCHAR(50),
 	Year 			INT (1),
 	Branch 			VARCHAR(25),
-	foreign key (EventID) References Event(EventID)
+	foreign key (Organization, EventName) References Event(Organization, EventName)
 		On Update Cascade
 		On Delete Cascade
-);";
+	);";
 
 $AccountLog_args = " (
-	ID 			INT(9) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-	EventID		INT(7) UNSIGNED NOT NULL,
-	Title 		VARCHAR(100) NOT NULL,
-	SponsID 	INT(9) UNSIGNED NOT NULL,
-	Amount 		INT(8) UNSIGNED NOT NULL,
-	TransType 	ENUM ('Deposit','Withdraw') NOT NULL,
-	Date 		DATE,
+	ID 				INT(9) UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	Organization	VARCHAR(50) NOT NULL,
+	EventName 		VARCHAR(80) NOT NULL,
+	Title 			VARCHAR(100) NOT NULL,
+	SponsID 		INT(9) UNSIGNED NOT NULL,
+	Amount 			INT(8) UNSIGNED NOT NULL,
+	TransType 		ENUM ('Deposit','Withdraw') NOT NULL,
+	Date 			DATE,
 	foreign key (SponsID) References CommitteeMember(ID)
 		On Update Cascade
 		On Delete Cascade,
-	foreign key (EventID) References Event(EventID)
+	foreign key (Organization, EventName) References Event(Organization, EventName)
 		On Update Cascade
 		On Delete Cascade
-);";
+	);";
 
 $SponsRep_args=" (
 	SponsID 		INT(9) UNSIGNED  PRIMARY KEY,
@@ -99,6 +102,8 @@ $Meeting_args=" (
 	Date 			DATE,
 	Time 			TIME,
 	SponsID 		INT(9) UNSIGNED,
+	Organization	VARCHAR(50),
+	EventName 		VARCHAR(80),
 	MeetingType 	ENUM ('Email', 'Call', 'Meet') NOT NULL,
 	CEName 			VARCHAR(50),
 	CMPName 		VARCHAR(100),
@@ -112,9 +117,11 @@ $Meeting_args=" (
 		On Delete Set Null,
 	foreign key (CEName, CMPName) References CompanyExec(CEName, CMPName)
 		On Update Cascade
-		On Delete Set Null
-
-);";
+		On Delete Set Null,
+	foreign key (Organization, EventName) References Event(Organization, EventName)
+		On Update Cascade
+		On Delete Cascade
+	);";
 
 
 $all_tables=array(
@@ -141,6 +148,7 @@ echo    "<td width=\"55%\"><font face=\"Verdana, Arial, Helvetica, sans-serif\" 
 echo  "</tr>";
 
 
+mysql_query('SET foreign_key_checks = 0');
 
 $i=0;
 while ($i < count($all_tables)){
@@ -186,7 +194,7 @@ while ($i < count($all_tables)){
 }
 
 
-
+mysql_query('SET foreign_key_checks = 1');
 
 ?>
 
