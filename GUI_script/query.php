@@ -18,35 +18,9 @@
 			header("Location: login.php");
 
 		require('DBconnect.php');
+		require('library_functions.php');
 		$SponsID=$_SESSION['loginID']; //get SponsID from previos session
 		
-		function get_person_name($SponsID){
-			require('DBconnect.php'); //this is needed in every function that uses mySQL
-			$rep_name=mysql_query("SELECT Name FROM CommitteeMember WHERE ID = $SponsID" );
-			$rep_name=mysql_fetch_assoc($rep_name);
-			$rep_name = $rep_name["Name"];
-			return $rep_name;
-		}
-
-
-		function get_access_level($SponsID){
-			require('DBconnect.php'); //this is needed in every function that uses mySQL
-			$rep_access_level=mysql_query("SELECT AccessLevel FROM SponsLogin WHERE SponsID = $SponsID" );
-			$rep_access_level=mysql_fetch_assoc($rep_access_level);
-			$rep_access_level = $rep_access_level["AccessLevel"];
-			return $rep_access_level;	
-		}
-
-		function get_person_sector($SponsID){
-			require('DBconnect.php'); //this is needed in every function that uses mySQL
-			$rep_sector=mysql_query("SELECT Sector FROM SponsRep WHERE SponsID = $SponsID" );
-			if(mysql_num_rows($rep_sector) == 0)//i.e. you don't find the person with that SponsID in the SponsRep table.
-				$rep_sector=mysql_query("SELECT Sector FROM SectorHead WHERE SponsID = $SponsID" ); //look in the SectorHead table.
-
-			$rep_sector=mysql_fetch_assoc($rep_sector);
-			$rep_sector = $rep_sector["Sector"];
-			return $rep_sector;	
-		}
 
 		
 		$SponsRepBackButton="<h2><a href='sponsrep.php' class='back_button'>Go back</a></h2><br>";
