@@ -25,7 +25,7 @@
 	<header>
 		<h1>Sponsorship Department</h1>
 	</header>
-	
+	<button name="reports" type="button" id="reportButton" onClick="window.location='./reports.php';" style="width:10em;">Reports</button>
 	<section id="overview">
 		<!-- I have put this stuff in the nav tag cause i wanted it to appear on the left without disturbing the page layout-->
 		<!-- You have to write a php code which displays the deals done in that sector-->
