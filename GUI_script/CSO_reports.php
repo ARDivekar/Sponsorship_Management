@@ -1,3 +1,14 @@
+<?php 
+    session_start();
+    require('./DBconnect.php');
+    require('./library_functions.php');
+    $SponsID=$_SESSION['loginID']; //get SponsID from previos session
+    $SponsAccessLevel = get_access_level($SponsID);
+    if($SponsAccessLevel!="CSO")    
+        header('Location: ./home.php');
+?>
+
+
 <html><head>
 <title>CSO Reports Page</title>
 <link id="reportico_css" rel="stylesheet" type="text/css" href="./reportico/.//css/reportico_bootstrap.css">
@@ -17,7 +28,7 @@
     margin-left: 0px !important;
 }
 </style></head>
-<body class="swMenuBody">
+<body class="swMenuBody" style="margin: 0 auto; width:70%;">
 
 <link id="reportico_css" rel="stylesheet" type="text/css" href="./reportico/./js/ui/jquery-ui.css">
 <link id="PRP_StyleSheet" rel="stylesheet" type="text/css" href="./reportico/.//css/jquery.dataTables.css">
