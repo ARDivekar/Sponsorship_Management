@@ -83,8 +83,16 @@
 <h1 class="swTitle">CSO Reports</h1>
 
 	<table class="swMenu">
-		<tbody><tr> <td>&nbsp;</td> </tr>
-<tr><td class="swMenuItem"><a class="swMenuItemLink" href="./reportico/run.php?project=CSO%20Reports&xmlin=Amount%20By%20Sector.xml&target_format=PDF&target_style=TABLE&user_criteria_entered=1&target_show_group_headers=1&target_show_detail=1&target_show_group_trailers=1&target_show_column_headers=1&execute_mode=EXECUTE&submitPrepare=1">Total earned by each sector</a></td></tr>
+		<tbody>
+            <tr> <td>&nbsp;</td> </tr>
+<tr><td class="swMenuItem"><a class="swMenuItemLink" href="./reportico/run.php?project=CSO%20Reports&xmlin=Amount%20By%20Sector.xml&target_format=PDF&target_style=TABLE&user_criteria_entered=1&target_show_group_headers=1&target_show_detail=1&target_show_group_trailers=1&target_show_column_headers=1&execute_mode=EXECUTE&submitPrepare=1">Total earned by each sector</a></td>
+            </tr>
+
+            <tr> <td>&nbsp;</td> </tr>
+<tr><td class="swMenuItem"><a class="swMenuItemLink" href="./reportico/run.php?project=CSO%20Reports&xmlin=Top Earners Across All Sectors.xml&target_format=PDF&target_style=TABLE&user_criteria_entered=1&target_show_group_headers=1&target_show_detail=1&target_show_group_trailers=1&target_show_column_headers=1&execute_mode=EXECUTE&submitPrepare=1">Top Earners Across All Sectors</a></td>
+            </tr>
+
+
 		
 		<tr> <td>&nbsp;</td> </tr>
 	</tbody></table>

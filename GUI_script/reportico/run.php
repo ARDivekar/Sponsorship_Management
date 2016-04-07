@@ -6,8 +6,8 @@
     require('../library_functions.php');
     $SponsID=$_SESSION['loginID']; //get SponsID from previos session
     $SponsAccessLevel = get_access_level($SponsID);
-    echo "$SponsID = ".$SponsID;
-    echo "$SponsAccessLevel = ".$SponsAccessLevel;
+    // echo "$SponsID = ".$SponsID;
+    // echo "$SponsAccessLevel = ".$SponsAccessLevel;
     if($SponsAccessLevel!="CSO")    
         header('Location: ../home.php');
 /*
