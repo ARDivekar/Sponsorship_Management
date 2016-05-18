@@ -1,44 +1,45 @@
 <?php
 
-
     session_start();
-    require('../DBconnect.php');
+    if (empty($_SESSION['loginID']))
+        header("Location: login.php");
+
     require('../library_functions.php');
-    $SponsID=$_SESSION['loginID']; //get SponsID from previos session
+    $SponsID=$_SESSION['loginID']; //get SponsID from previous session
     $SponsAccessLevel = get_access_level($SponsID);
+    if($SponsAccessLevel!="CSO")
+        header('Location: ../home.php');
     // echo "$SponsID = ".$SponsID;
     // echo "$SponsAccessLevel = ".$SponsAccessLevel;
-    if($SponsAccessLevel!="CSO")    
-        header('Location: ../home.php');
-/*
- Reportico - PHP Reporting Tool
- Copyright (C) 2010-2014 Peter Deed
+    /*
+	 Reportico - PHP Reporting Tool
+	 Copyright (C) 2010-2014 Peter Deed
 
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 2
- of the License, or (at your option) any later version.
- 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+	 This program is free software; you can redistribute it and/or
+	 modify it under the terms of the GNU General Public License
+	 as published by the Free Software Foundation; either version 2
+	 of the License, or (at your option) any later version.
 
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+	 This program is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 GNU General Public License for more details.
 
- * File:        run.php
- *
- * Reportico runner script
- *
- * @link http://www.reportico.org/
- * @copyright 2010-2014 Peter Deed
- * @author Peter Deed <info@reportico.org>
- * @package Reportico
- * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- * @version $Id: run.php,v 1.25 2014/05/17 15:12:31 peter Exp $
- */
+	 You should have received a copy of the GNU General Public License
+	 along with this program; if not, write to the Free Software
+	 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+	 * File:        run.php
+	 *
+	 * Reportico runner script
+	 *
+	 * @link http://www.reportico.org/
+	 * @copyright 2010-2014 Peter Deed
+	 * @author Peter Deed <info@reportico.org>
+	 * @package Reportico
+	 * @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+	 * @version $Id: run.php,v 1.25 2014/05/17 15:12:31 peter Exp $
+	 */
 
     // set error reporting level
 	error_reporting(E_ALL);

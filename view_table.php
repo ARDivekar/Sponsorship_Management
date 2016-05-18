@@ -9,17 +9,22 @@
 <body>
 <?php
 
-	if (empty($_POST['submit'])) {
+	/*Resume old session:*/
+	session_start();
+	if (!isset($_SESSION['table_name'])){
 		header("Location: home.php");
 	}
 
-
-	/*Resume old session:*/
-	session_start();
+	/*
+	echo "<br><br>In view_table.php<br>";
+	foreach ($_SESSION as $key => $value){
+		echo $key . " " . $value . "<br>";
+	}
+	*/
 
 	require('DBconnect.php');
 	require('library_functions.php');
-	$SponsID = $_SESSION['loginID']; //get SponsID from previos session
+	$SponsID = $_SESSION['loginID']; //get SponsID from previous session
 
 	$UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;"  class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
 	$FieldEmptyMessage = '<div align=center><h3 align=center style="padding: 40px; font-size:28px; line-height:50px;"  class="invalid_message">Error<br>You have not filled all the required fields.</h3> </div>';
@@ -64,7 +69,7 @@
 	if ($role == 'CSO') $printing_role = "Chief Sponsorship Officer";
 	echo '<br>Role: ' . $printing_role;
 
-	if (get_access_level($SponsID) == "SponsRep" || get_access_level($SponsID) == "SectorHead") {
+	if (get_access_level($SponsID) == "SponsRep" || get_access_level($SponsID) == "SectorHead"){
 		echo '<br>Sector: ' . get_person_sector($SponsID);
 	}
 	echo '</h3>';
@@ -76,26 +81,26 @@
 	$meeting_view_query = "SELECT
 		SponsOfficer.SponsID as 'SponsID',
 		Name as 'SponsRep Name',
-		CMPName as 'Company Name', 
-		CEName as 'Company Executive Name', 
-		MeetingType as 'Meeting Type', 
-		Date, 
-		Time, 
-		Address, 
-		Outcome 
+		CMPName as 'Company Name',
+		CEName as 'Company Executive Name',
+		MeetingType as 'Meeting Type',
+		Date,
+		Time,
+		Address,
+		Outcome
 
 		FROM ((Select SponsID, Sector from SponsRep) UNION (Select SponsID, Sector from SectorHead)) as SponsOfficer
-		natural join Meeting 
+		natural join Meeting
 		inner join CommitteeMember on CommitteeMember.ID = SponsOfficer.SponsID
 		and Sector='$SponsSector';
 		";    //meeting_view_query is common for both SponsRep and SectorHead
 
-	$CSOmeeting_view_query = "SELECT Name as 'SponsRep Name',Sector, CMPName as 'Company Name', CEName as 'Company Executive Name', MeetingType as 'Meeting Type', Date, Time, Address, Outcome
+	$CSOmeeting_view_query = "SELECT Name AS 'SponsRep Name',Sector, CMPName AS 'Company Name', CEName AS 'Company Executive Name', MeetingType AS 'Meeting Type', Date, Time, Address, Outcome
 
-				FROM ((Select SponsID, Sector from SponsRep) UNION (Select SponsID, Sector from SectorHead)) as SponsOfficer
-				natural join Meeting 
-				inner join CommitteeMember on SponsOfficer.SponsID=CommitteeMember.ID
-                where Meeting.SponsID=CommitteeMember.ID and SponsOfficer.SponsID=CommitteeMember.ID
+				FROM ((SELECT SponsID, Sector FROM SponsRep) UNION (SELECT SponsID, Sector FROM SectorHead)) AS SponsOfficer
+				NATURAL JOIN Meeting
+				INNER JOIN CommitteeMember ON SponsOfficer.SponsID=CommitteeMember.ID
+                WHERE Meeting.SponsID=CommitteeMember.ID AND SponsOfficer.SponsID=CommitteeMember.ID
 				";
 
 
@@ -103,11 +108,11 @@
 		FROM Company 
 		WHERE Sector = '$SponsSector'"; //Company_view_query is common for both SponsRep and SectorHead
 
-	$CSOCompany_view_query = "SELECT CMPName as 'Company Name', Sector, CMPStatus as 'Status', CMPAddress as 'Company Address'
+	$CSOCompany_view_query = "SELECT CMPName AS 'Company Name', Sector, CMPStatus AS 'Status', CMPAddress AS 'Company Address'
 				FROM Company";
 
-	$CSOCompanyExec_view_query = "SELECT  CMPName as 'Company Name', Sector, CEName as 'Executive Name', CEMobile as 'Mobile', CEEmail as 'Email', CEPosition as 'Position in Company'
-				from Company natural join CompanyExec";
+	$CSOCompanyExec_view_query = "SELECT  CMPName AS 'Company Name', Sector, CEName AS 'Executive Name', CEMobile AS 'Mobile', CEEmail AS 'Email', CEPosition AS 'Position in Company'
+				FROM Company NATURAL JOIN CompanyExec";
 
 
 	$CompanyExec_view_query = "SELECT  CMPName as 'Company Name', CEName as 'Executive Name', CEMobile as 'Mobile', CEEmail as 'Email', CEPosition as 'Position in Company'
@@ -158,20 +163,20 @@
 
 
 	$EventAccount_CSO_view_query = "SELECT
-		AccountLog.ID as 'Deposit ID',
-		Event.Organization as 'Organization',
-		Event.EventName as 'Event Name', 
-		SponsRep.SponsID as 'SponsID of reciever', 
-		CommitteeMember.Name as 'Name of reciever', 
-		SponsRep.Sector as 'Sector of reciever',
-		AccountLog.Title as 'Sponsor Name', 
-		AccountLog.Amount as 'Amount (Rs.)',
-		AccountLog.Date as 'Date' 
+		AccountLog.ID AS 'Deposit ID',
+		Event.Organization AS 'Organization',
+		Event.EventName AS 'Event Name',
+		SponsRep.SponsID AS 'SponsID of reciever',
+		CommitteeMember.Name AS 'Name of reciever',
+		SponsRep.Sector AS 'Sector of reciever',
+		AccountLog.Title AS 'Sponsor Name',
+		AccountLog.Amount AS 'Amount (Rs.)',
+		AccountLog.Date AS 'Date'
 
 	FROM
-		AccountLog inner join CommitteeMember on AccountLog.SponsId = CommitteeMember.ID
-		inner join Event on (Event.EventName = AccountLog.EventName and Event.Organization = AccountLog.Organization)
-		inner join SponsRep on AccountLog.SponsID = SponsRep.SponsID
+		AccountLog INNER JOIN CommitteeMember ON AccountLog.SponsId = CommitteeMember.ID
+		INNER JOIN Event ON (Event.EventName = AccountLog.EventName AND Event.Organization = AccountLog.Organization)
+		INNER JOIN SponsRep ON AccountLog.SponsID = SponsRep.SponsID
 	;";
 
 
@@ -181,12 +186,12 @@
 
 
 	$CSOSponsRep_view_query = "SELECT SponsID, Organization, EventName, Name, Sector, DateAssigned, Mobile, Email
-					from SponsRep, CommitteeMember 
-					where CommitteeMember.ID=SponsID ";
+					FROM SponsRep, CommitteeMember
+					WHERE CommitteeMember.ID=SponsID ";
 
-	$CSOSectorHead_view_query = "SELECT SponsID, Organization, EventName, Name, Sector as `Head of:`, Mobile, Email
-					from SectorHead, CommitteeMember 
-					where CommitteeMember.ID=SponsID ";
+	$CSOSectorHead_view_query = "SELECT SponsID, Organization, EventName, Name, Sector AS `Head of:`, Mobile, Email
+					FROM SectorHead, CommitteeMember
+					WHERE CommitteeMember.ID=SponsID ";
 
 
 	$result = "";
@@ -194,15 +199,15 @@
 	$table_message = "";
 
 	echo "<h3 class=\"query_status\">";
-	if ($table_name == "Meeting Log") {
-		if ($SponsAccessLevel != "CSO") {
+	if ($table_name == "Meeting Log"){
+		if ($SponsAccessLevel != "CSO"){
 
 
-			if (isset($_POST['submit'])) {
+			if (isset($_POST['submit'])){
 				$required = array('Date', 'Time', 'CMPName', 'CEName'); //also require SponsID, but we get that from php
 
-				foreach ($required as $field) {
-					if (empty($_POST[$field])) {
+				foreach ($required as $field){
+					if (empty($_POST[$field])){
 						exit($FieldEmptyMessage);
 					}
 				}
@@ -215,33 +220,38 @@
 				$MeetOutcome = "";
 
 
-				if ($query_type == "Insert") {//outcome is by default (Update after Meeting)
+				if ($query_type == "Insert"){//outcome is by default (Update after Meeting)
 
-					$MeetType = Null;
-					$MeetAddress = Null;
+					$MeetType = NULL;
+					$MeetAddress = NULL;
 					if (!empty($_POST['MeetingType'])) $MeetType = $_POST['MeetingType'];
 					if (!empty($_POST['Address'])) $MeetAddress = $_POST['Address'];
 
 					$query = "INSERT INTO `Meeting` (`Date`, `Time`, `SponsID`, `MeetingType`, `CEName`, `CMPName`, `Outcome`, `Address`)
 							VALUES ('$MeetDate', '$MeetTime', $SponsID, '$MeetType', '$MeetCEName', '$MeetCMPName', 
 								'(Update after meeting)', '$MeetAddress');";
-					if (mysql_query($query)) echo "Insertion successful";
+					if (mysql_query($query)){
+						echo "Insertion successful";
+					}
 					else echo "Insertion not successful";
 				}
-				else {
-					if ($query_type == "Update") {
-						if (!empty($_POST['Outcome'])) $MeetOutcome = $_POST['Outcome'];
+				else{
+					if ($query_type == "Update"){
+						if (!empty($_POST['Outcome'])){
+							$MeetOutcome = $_POST['Outcome'];
+						}
 						else exit($FieldEmptyMessage);
 						$meeting_update_query = "UPDATE Meeting
 						SET Outcome='$MeetOutcome'
 						WHERE Date='$MeetDate' and Time='$MeetTime' and CMPName='$MeetCMPName' and CEName='$MeetCEName';";
-						if (mysql_query($meeting_update_query)) echo "Meeting Update successful";
+						if (mysql_query($meeting_update_query)){
+							echo "Meeting Update successful";
+						}
 						else echo "Meeting Update not successful";
 
-
 					}
-					else {
-						if ($query_type = "Delete") {
+					else{
+						if ($query_type = "Delete"){
 
 
 							$query = "DELETE FROM Meeting WHERE CMPName = '$MeetCMPName' and SponsID='$SponsID' and CEname = '$MeetCEName' and Date = '$MeetDate' and Time='$MeetTime'";
@@ -254,7 +264,6 @@
 					}
 				}
 
-
 			}
 			$table_message = "<h2>Meetings in " . $SponsSector . " sector:</h2>";
 			echo $table_message;
@@ -262,12 +271,12 @@
 
 			$main_query = $meeting_view_query;
 		}
-		else {
-			if (isset($_POST['submit'])) {
+		else{
+			if (isset($_POST['submit'])){
 				$required = array('Date', 'Time', 'CMPName', 'CEName'); //also require SponsID, but we get that from php
 
-				foreach ($required as $field) {
-					if (empty($_POST[$field])) {
+				foreach ($required as $field){
+					if (empty($_POST[$field])){
 						exit($FieldEmptyMessage);
 					}
 				}
@@ -280,33 +289,38 @@
 				$MeetOutcome = "";
 				$SponsIDForm = $_POST['SponsID'];
 
-				if ($query_type == "Insert") {//outcome is by default (Update after Meeting)
+				if ($query_type == "Insert"){//outcome is by default (Update after Meeting)
 
-					$MeetType = Null;
-					$MeetAddress = Null;
+					$MeetType = NULL;
+					$MeetAddress = NULL;
 					if (!empty($_POST['MeetingType'])) $MeetType = $_POST['MeetingType'];
 					if (!empty($_POST['Address'])) $MeetAddress = $_POST['Address'];
 
 					$query = "INSERT INTO `Meeting` (`Date`, `Time`, `SponsID`, `MeetingType`, `CEName`, `CMPName`, `Outcome`, `Address`)
 								VALUES ('$MeetDate', '$MeetTime', $SponsIDForm, '$MeetType', '$MeetCEName', '$MeetCMPName', 
 									'(Update after meeting)', '$MeetAddress');";
-					if (mysql_query($query)) echo "Insertion successful";
+					if (mysql_query($query)){
+						echo "Insertion successful";
+					}
 					else echo "Insertion not successful";
 				}
-				else {
-					if ($query_type == "Update") {
-						if (!empty($_POST['Outcome'])) $MeetOutcome = $_POST['Outcome'];
+				else{
+					if ($query_type == "Update"){
+						if (!empty($_POST['Outcome'])){
+							$MeetOutcome = $_POST['Outcome'];
+						}
 						else exit($FieldEmptyMessage);
 						$meeting_update_query = "UPDATE Meeting
 							SET Outcome='$MeetOutcome'
 							WHERE Date='$MeetDate' and Time='$MeetTime' and CMPName='$MeetCMPName' and CEName='$MeetCEName';";
-						if (mysql_query($meeting_update_query)) echo "Meeting Update successful";
+						if (mysql_query($meeting_update_query)){
+							echo "Meeting Update successful";
+						}
 						else echo "Meeting Update not successful";
 
-
 					}
-					else {
-						if ($query_type = "Delete") {
+					else{
+						if ($query_type = "Delete"){
 
 							$query = "DELETE FROM Meeting WHERE CMPName = '$MeetCMPName' and SponsID='$SponsIDForm' and CEname = '$MeetCEName' and Date = '$MeetDate' and Time='$MeetTime'";
 							if (mysql_query($query)) ;
@@ -318,7 +332,6 @@
 					}
 				}
 
-
 			}
 			$table_message = "<h2>Meetings Log of all meetings:</h2>";
 			echo $table_message;
@@ -328,15 +341,15 @@
 		}
 
 	}
-	else {
-		if ($table_name == "Company") {
-			if ($SponsAccessLevel != "CSO") {
-				if (isset($_POST['submit'])) {
+	else{
+		if ($table_name == "Company"){
+			if ($SponsAccessLevel != "CSO"){
+				if (isset($_POST['submit'])){
 
 					$required = array('CMPName');
 
-					foreach ($required as $field) {
-						if (empty($_POST[$field])) {
+					foreach ($required as $field){
+						if (empty($_POST[$field])){
 							echo $field;
 							exit($FieldEmptyMessage);
 						}
@@ -346,38 +359,45 @@
 					$CMPName = $_POST['CMPName'];
 					$CMPAddress = "null";
 
-					if ($query_type == "Insert") {
+					if ($query_type == "Insert"){
 
 						if (!empty($_POST['CMPAddress'])) $CMPAddress = $_POST['CMPAddress'];
 
 
 						$query = "INSERT INTO `Company` (`CMPName`, `CMPStatus`, `Sector`, `CMPAddress`) VALUES
 									('$CMPName', 'Not called', '$SponsSector', '$CMPAddress');";
-						if (mysql_query($query)) echo "Successfully Inserted into Company table";
+						if (mysql_query($query)){
+							echo "Successfully Inserted into Company table";
+						}
 						else echo "Insertion Unsuccessful into Company table";
 					}
-					else {
-						if ($query_type == "Update") {
+					else{
+						if ($query_type == "Update"){
 							$CMPAddress = "";
 							$CMPStatus = "";
-							if (!empty($_POST['CMPAddress'])) {
+							if (!empty($_POST['CMPAddress'])){
 								$CMPAddress = $_POST['CMPAddress'];
-								if (mysql_query("UPDATE Company SET CMPAddress='$CMPAddress' WHERE CMPName='$CMPName'"
-								)) echo "Company address update successful";
+								if (mysql_query(
+									"UPDATE Company SET CMPAddress='$CMPAddress' WHERE CMPName='$CMPName'"
+								)){
+									echo "Company address update successful";
+								}
 								else echo "Company address update not successful";
 							}
 
-							if (!empty($_POST['CMPStatus'])) {
+							if (!empty($_POST['CMPStatus'])){
 								$CMPStatus = $_POST['CMPStatus'];
-								if (mysql_query("UPDATE Company SET CMPStatus='$CMPStatus' WHERE CMPName='$CMPName'"
-								)) echo "Company status update successful";
+								if (mysql_query(
+									"UPDATE Company SET CMPStatus='$CMPStatus' WHERE CMPName='$CMPName'"
+								)){
+									echo "Company status update successful";
+								}
 								else echo "Company status update not successful";
 							}
 
-
 						}
-						else {
-							if ($query_type = "Delete") {
+						else{
+							if ($query_type = "Delete"){
 								$CMPName = $_POST['CMPName'];
 
 								$query = "DELETE FROM Company WHERE CMPName = '$CMPName' and Sector = '$SponsSector'";
@@ -395,14 +415,14 @@
 
 				$main_query = $Company_view_query;
 			}
-			else {
+			else{
 
-				if (isset($_POST['submit'])) {
+				if (isset($_POST['submit'])){
 
 					$required = array('CMPName');
 
-					foreach ($required as $field) {
-						if (empty($_POST[$field])) {
+					foreach ($required as $field){
+						if (empty($_POST[$field])){
 							echo $field;
 							exit($FieldEmptyMessage);
 						}
@@ -411,38 +431,45 @@
 
 					$CMPName = $_POST['CMPName'];
 					$CMPAddress = "null";
-					if ($query_type == "Insert") {
+					if ($query_type == "Insert"){
 
 						if (!empty($_POST['CMPAddress'])) $CMPAddress = $_POST['CMPAddress'];
 
 
 						$query = "INSERT INTO `Company` (`CMPName`, `CMPStatus`, `Sector`, `CMPAddress`) VALUES
 									('$CMPName', 'Not called', '$SponsSector', '$CMPAddress');";
-						if (mysql_query($query)) echo "Successfully Inserted into Company table";
+						if (mysql_query($query)){
+							echo "Successfully Inserted into Company table";
+						}
 						else echo "Insertion Unsuccessful into Company table";
 					}
-					else {
-						if ($query_type == "Update") {
+					else{
+						if ($query_type == "Update"){
 							$CMPAddress = "";
 							$CMPStatus = "";
-							if (!empty($_POST['CMPAddress'])) {
+							if (!empty($_POST['CMPAddress'])){
 								$CMPAddress = $_POST['CMPAddress'];
-								if (mysql_query("UPDATE Company SET CMPAddress='$CMPAddress' WHERE CMPName='$CMPName'"
-								)) echo "Company address update successful";
+								if (mysql_query(
+									"UPDATE Company SET CMPAddress='$CMPAddress' WHERE CMPName='$CMPName'"
+								)){
+									echo "Company address update successful";
+								}
 								else echo "Company address update not successful";
 							}
 
-							if (!empty($_POST['CMPStatus'])) {
+							if (!empty($_POST['CMPStatus'])){
 								$CMPStatus = $_POST['CMPStatus'];
-								if (mysql_query("UPDATE Company SET CMPStatus='$CMPStatus' WHERE CMPName='$CMPName'"
-								)) echo "Company status update successful";
+								if (mysql_query(
+									"UPDATE Company SET CMPStatus='$CMPStatus' WHERE CMPName='$CMPName'"
+								)){
+									echo "Company status update successful";
+								}
 								else echo "Company status update not successful";
 							}
 
-
 						}
-						else {
-							if ($query_type = "Delete") {
+						else{
+							if ($query_type = "Delete"){
 								$CMPName = $_POST['CMPName'];
 
 								$query = "DELETE FROM Company WHERE CMPName = '$CMPName' and Sector = '$SponsSector'";
@@ -463,15 +490,15 @@
 
 			}
 		}
-		else {
-			if ($table_name == "Company Executive") {
-				if ($SponsAccessLevel != "CSO") {
-					if (isset($_POST['submit'])) {
+		else{
+			if ($table_name == "Company Executive"){
+				if ($SponsAccessLevel != "CSO"){
+					if (isset($_POST['submit'])){
 
 						$required = array('CEName', 'CMPName');
 
-						foreach ($required as $field) {
-							if (empty($_POST[$field])) {
+						foreach ($required as $field){
+							if (empty($_POST[$field])){
 								exit($FieldEmptyMessage);
 							}
 						}
@@ -484,44 +511,54 @@
 						$CEPosition = "";
 
 
-						if ($query_type == "Insert") {
+						if ($query_type == "Insert"){
 							if (!empty($_POST['CEMobile'])) $CEMobile = $_POST['CEMobile'];
 							if (!empty($_POST['CEEmail'])) $CEEmail = $_POST['CEEmail'];
 							if (!empty($_POST['CEPosition'])) $CEPosition = $_POST['CEPosition'];
 							$CE_insert_query = "INSERT INTO `CompanyExec` (`CEName`,`CMPName`, `CEMobile`, `CEEmail`, `CEPosition`) VALUES
 										('$CEName', '$CMPName', '$CEMobile', '$CEEmail','$CEPosition');";
-							if (mysql_query($CE_insert_query)) echo "Successfully Inserted into CompanyExec";
+							if (mysql_query($CE_insert_query)){
+								echo "Successfully Inserted into CompanyExec";
+							}
 							else echo "Insertion Unsuccessful into Company Exec";
 
-
 						}
-						else {
-							if ($query_type == "Update") {
-								if (!empty($_POST['CEEmail'])) {
+						else{
+							if ($query_type == "Update"){
+								if (!empty($_POST['CEEmail'])){
 									$CEEmail = $_POST['CEEmail'];
-									if (mysql_query("UPDATE CompanyExec SET CEEmail='$CEEmail' where  CMPName='$CMPName' and CEName='$CEName'"
-									)) echo "Company EXEC Email update successful";
+									if (mysql_query(
+										"UPDATE CompanyExec SET CEEmail='$CEEmail' where  CMPName='$CMPName' and CEName='$CEName'"
+									)){
+										echo "Company EXEC Email update successful";
+									}
 									else echo "Company EXEC Email update not successful";
 								}
 
-								if (!empty($_POST['CEMobile'])) {
+								if (!empty($_POST['CEMobile'])){
 									$CEMobile = $_POST['CEMobile'];
-									if (mysql_query("UPDATE CompanyExec SET CEMobile='$CEMobile' where  CMPName='$CMPName' and CEName='$CEName'"
-									)) echo "Company EXEC Mobile update successful";
+									if (mysql_query(
+										"UPDATE CompanyExec SET CEMobile='$CEMobile' where  CMPName='$CMPName' and CEName='$CEName'"
+									)){
+										echo "Company EXEC Mobile update successful";
+									}
 									else echo "Company EXEC Mobile update not successful";
 								}
 
 
-								if (!empty($_POST['CEPosition'])) {
+								if (!empty($_POST['CEPosition'])){
 									$CEPosition = $_POST['CEPosition'];
-									if (mysql_query("UPDATE CompanyExec SET CEPosition='$CEPosition' where  CMPName='$CMPName' and CEName='$CEName'"
-									)) echo "Company EXEC Position update successful";
+									if (mysql_query(
+										"UPDATE CompanyExec SET CEPosition='$CEPosition' where  CMPName='$CMPName' and CEName='$CEName'"
+									)){
+										echo "Company EXEC Position update successful";
+									}
 									else echo "Company EXEC Position update not successful";
 								}
 
 							}
-							else {
-								if ($query_type = "Delete") {
+							else{
+								if ($query_type = "Delete"){
 
 									$query = "DELETE FROM CompanyExec WHERE CMPName = '$CMPName' and CEName = '$CEName' ";
 									if (mysql_query($query)) ;
@@ -539,13 +576,13 @@
 
 					$main_query = $CompanyExec_view_query;
 				}
-				else {
-					if (isset($_POST['submit'])) {
+				else{
+					if (isset($_POST['submit'])){
 
 						$required = array('CEName', 'CMPName');
 
-						foreach ($required as $field) {
-							if (empty($_POST[$field])) {
+						foreach ($required as $field){
+							if (empty($_POST[$field])){
 								exit($FieldEmptyMessage);
 							}
 						}
@@ -558,44 +595,54 @@
 						$CEPosition = "";
 
 
-						if ($query_type == "Insert") {
+						if ($query_type == "Insert"){
 							if (!empty($_POST['CEMobile'])) $CEMobile = $_POST['CEMobile'];
 							if (!empty($_POST['CEEmail'])) $CEEmail = $_POST['CEEmail'];
 							if (!empty($_POST['CEPosition'])) $CEPosition = $_POST['CEPosition'];
 							$CE_insert_query = "INSERT INTO `CompanyExec` (`CEName`,`CMPName`, `CEMobile`, `CEEmail`, `CEPosition`) VALUES
 										('$CEName', '$CMPName', '$CEMobile', '$CEEmail','$CEPosition');";
-							if (mysql_query($CE_insert_query)) echo "Successfully Inserted into CompanyExec";
+							if (mysql_query($CE_insert_query)){
+								echo "Successfully Inserted into CompanyExec";
+							}
 							else echo "Insertion Unsuccessful into Company Exec";
 
-
 						}
-						else {
-							if ($query_type == "Update") {
-								if (!empty($_POST['CEEmail'])) {
+						else{
+							if ($query_type == "Update"){
+								if (!empty($_POST['CEEmail'])){
 									$CEEmail = $_POST['CEEmail'];
-									if (mysql_query("UPDATE CompanyExec SET CEEmail='$CEEmail' where  CMPName='$CMPName' and CEName='$CEName'"
-									)) echo "Company EXEC Email update successful";
+									if (mysql_query(
+										"UPDATE CompanyExec SET CEEmail='$CEEmail' where  CMPName='$CMPName' and CEName='$CEName'"
+									)){
+										echo "Company EXEC Email update successful";
+									}
 									else echo "Company EXEC Email update not successful";
 								}
 
-								if (!empty($_POST['CEMobile'])) {
+								if (!empty($_POST['CEMobile'])){
 									$CEMobile = $_POST['CEMobile'];
-									if (mysql_query("UPDATE CompanyExec SET CEMobile='$CEMobile' where  CMPName='$CMPName' and CEName='$CEName'"
-									)) echo "Company EXEC Mobile update successful";
+									if (mysql_query(
+										"UPDATE CompanyExec SET CEMobile='$CEMobile' where  CMPName='$CMPName' and CEName='$CEName'"
+									)){
+										echo "Company EXEC Mobile update successful";
+									}
 									else echo "Company EXEC Mobile update not successful";
 								}
 
 
-								if (!empty($_POST['CEPosition'])) {
+								if (!empty($_POST['CEPosition'])){
 									$CEPosition = $_POST['CEPosition'];
-									if (mysql_query("UPDATE CompanyExec SET CEPosition='$CEPosition' where  CMPName='$CMPName' and CEName='$CEName'"
-									)) echo "Company EXEC Position update successful";
+									if (mysql_query(
+										"UPDATE CompanyExec SET CEPosition='$CEPosition' where  CMPName='$CMPName' and CEName='$CEName'"
+									)){
+										echo "Company EXEC Position update successful";
+									}
 									else echo "Company EXEC Position update not successful";
 								}
 
 							}
-							else {
-								if ($query_type = "Delete") {
+							else{
+								if ($query_type = "Delete"){
 
 									$query = "DELETE FROM CompanyExec WHERE CMPName = '$CMPName' and CEName = '$CEName' ";
 									if (mysql_query($query)) ;
@@ -616,16 +663,16 @@
 				}
 
 			}
-			else {
-				if ($table_name == "Event Account") {
-					if ($SponsAccessLevel != "CSO") {
-						if ($SponsAccessLevel == "SponsRep") {
-							if (isset($_POST['submit'])) {
+			else{
+				if ($table_name == "Event Account"){
+					if ($SponsAccessLevel != "CSO"){
+						if ($SponsAccessLevel == "SponsRep"){
+							if (isset($_POST['submit'])){
 
 								$required = array('Title', 'Amount', 'Date');
 
-								foreach ($required as $field) {
-									if (empty($_POST[$field])) {
+								foreach ($required as $field){
+									if (empty($_POST[$field])){
 										exit($FieldEmptyMessage);
 									}
 								}
@@ -635,10 +682,12 @@
 								$AccountDate = $_POST['Date'];
 								$AccountAmount = $_POST['Amount'];
 
-								if ($query_type == "Insert") {
+								if ($query_type == "Insert"){
 									$query = "INSERT INTO `AccountLog` (`Title`,`SponsID`, `Amount`, `TransType`, `Date`) VALUES
 										('$AccountTitle', '$SponsID', '$AccountAmount', 'Deposit','$AccountDate');";
-									if (mysql_query($query)) echo "Successfully inserted account entry";
+									if (mysql_query($query)){
+										echo "Successfully inserted account entry";
+									}
 									else echo "Unsuccessful account entry insertion";
 
 								}
@@ -651,16 +700,16 @@
 
 							$main_query = $EventAccount_SponsRep_view_query;
 						}
-						else {
-							if ($SponsAccessLevel == "SectorHead") {
-								if (isset($_POST['submit'])) {
+						else{
+							if ($SponsAccessLevel == "SectorHead"){
+								if (isset($_POST['submit'])){
 
-									if ($query_type == "Insert") {
+									if ($query_type == "Insert"){
 
 										$required = array('Title', 'Amount', 'Date');
 
-										foreach ($required as $field) {
-											if (empty($_POST[$field])) {
+										foreach ($required as $field){
+											if (empty($_POST[$field])){
 												exit($FieldEmptyMessage);
 											}
 										}
@@ -672,16 +721,18 @@
 
 										$query = "INSERT INTO `AccountLog` (`Title`,`SponsID`, `Amount`, `TransType`, `Date`) VALUES
 										('$AccountTitle', '$SponsID', '$AccountAmount', 'Deposit','$AccountDate');";
-										if (mysql_query($query)) echo "Successfully inserted account entry";
+										if (mysql_query($query)){
+											echo "Successfully inserted account entry";
+										}
 										else echo "Unsuccessful account entry insertion";
 
 									}
-									else {
-										if ($query_type == "Delete") {
+									else{
+										if ($query_type == "Delete"){
 											$required = array('Title', 'SponsID');
 
-											foreach ($required as $field) {
-												if (empty($_POST[$field])) {
+											foreach ($required as $field){
+												if (empty($_POST[$field])){
 													exit($FieldEmptyMessage);
 												}
 											}
@@ -706,15 +757,15 @@
 							}
 						}
 					}
-					else {
-						if (isset($_POST['submit'])) {
+					else{
+						if (isset($_POST['submit'])){
 
-							if ($query_type == "Insert") {
+							if ($query_type == "Insert"){
 
 								$required = array('Title', 'Amount', 'Date');
 
-								foreach ($required as $field) {
-									if (empty($_POST[$field])) {
+								foreach ($required as $field){
+									if (empty($_POST[$field])){
 										exit($FieldEmptyMessage);
 									}
 								}
@@ -726,16 +777,18 @@
 
 								$query = "INSERT INTO `AccountLog` (`Title`,`SponsID`, `Amount`, `TransType`, `Date`) VALUES
 											('$AccountTitle', '$SponsID', '$AccountAmount', 'Deposit','$AccountDate');";
-								if (mysql_query($query)) echo "Successfully inserted account entry";
+								if (mysql_query($query)){
+									echo "Successfully inserted account entry";
+								}
 								else echo "Unsuccessful account entry insertion";
 
 							}
-							else {
-								if ($query_type == "Delete") {
+							else{
+								if ($query_type == "Delete"){
 									$required = array('Title', 'SponsID');
 
-									foreach ($required as $field) {
-										if (empty($_POST[$field])) {
+									foreach ($required as $field){
+										if (empty($_POST[$field])){
 											exit($FieldEmptyMessage);
 										}
 									}
@@ -759,16 +812,16 @@
 					}
 
 				}
-				else {
-					if ($table_name == "Sponsorship Representative") {
-						if ($SponsAccessLevel == "SectorHead") {
+				else{
+					if ($table_name == "Sponsorship Representative"){
+						if ($SponsAccessLevel == "SectorHead"){
 
-							if (isset($_POST['submit'])) {
+							if (isset($_POST['submit'])){
 
 								$required = array('SponsID');
 
-								foreach ($required as $field) {
-									if (empty($_POST[$field])) {
+								foreach ($required as $field){
+									if (empty($_POST[$field])){
 										exit($FieldEmptyMessage);
 									}
 								}
@@ -788,29 +841,30 @@
 								}*/
 
 
-								if ($query_type == "Update") {
+								if ($query_type == "Update"){
 									$required = array('Sector');
 
-									foreach ($required as $field) {
-										if (empty($_POST[$field])) {
+									foreach ($required as $field){
+										if (empty($_POST[$field])){
 											exit($FieldEmptyMessage);
 										}
 									}
 									$SponsSectorForm = $_POST['Sector'];
 
 
-									if (!mysql_query("UPDATE SponsRep SET Sector='$SponsSectorForm', DateAssigned=CURDATE() where SponsID='$SponsIDForm' and Sector='$SponsSector'"
+									if (!mysql_query(
+										"UPDATE SponsRep SET Sector='$SponsSectorForm', DateAssigned=CURDATE() where SponsID='$SponsIDForm' and Sector='$SponsSector'"
 									)
 									) // 	echo "SponsRep update successful";
 									{
 										echo $UnauthorizedMessage;
 									}
 
-
 								}
-								else {
-									if ($query_type = "Delete") {
-										if (!mysql_query("DELETE FROM SponsRep WHERE SponsID = '$SponsIDForm' and Sector = '$SponsSector'"
+								else{
+									if ($query_type = "Delete"){
+										if (!mysql_query(
+											"DELETE FROM SponsRep WHERE SponsID = '$SponsIDForm' and Sector = '$SponsSector'"
 										)
 										) // 	echo "Successfully Deleted SponsRep";
 										{
@@ -829,17 +883,17 @@
 
 							$main_query = $SponsRep_view_query;
 						}
-						else {
-							if ($SponsAccessLevel == "CSO") {
+						else{
+							if ($SponsAccessLevel == "CSO"){
 
-								if (isset($_POST['submit'])) {
+								if (isset($_POST['submit'])){
 
-									if ($query_type == "Insert") {
+									if ($query_type == "Insert"){
 
 										$required = array('SponsIDForm', 'SponsName', 'SponsPasswordForm', 'SponsSectorForm');
 
-										foreach ($required as $field) {
-											if (empty($_POST[$field])) {
+										foreach ($required as $field){
+											if (empty($_POST[$field])){
 												exit($FieldEmptyMessage);
 											}
 										}
@@ -867,49 +921,53 @@
 										$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Department`,`Role`,`Mobile`,`Email`,`Year`,`Branch`, `Organization`, `EventName`)
 						VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SponsRep', '$SponsMobile', '$SponsEmail', '$SponsYear', '$SponsBranch',";
 
-										if ($SponsOrganization == NULL) $query .= "NULL,";
+										if ($SponsOrganization == NULL){
+											$query .= "NULL,";
+										}
 										else $query .= "'$SponsOrganization',";
 
-										if ($SponsEventName == NULL) $query .= "NULL";
+										if ($SponsEventName == NULL){
+											$query .= "NULL";
+										}
 										else $query .= "'$SponsEventName'";
 										$query .= ");";
 
 										// echo $query;
 
-										if (mysql_query($query)) {
+										if (mysql_query($query)){
 											$query = "INSERT INTO `SponsRep` (`SponsID`,`Sector`, `DateAssigned`) VALUES
 											($SponsIDForm, '$SponsSectorForm', CURDATE());";
 											// echo $query;
-											if (mysql_query($query)) {
+											if (mysql_query($query)){
 												$query = "INSERT INTO `SponsLogin` (`SponsID`,`Password`, `AccessLevel`) VALUES
 											($SponsIDForm, '$SponsPasswordForm', 'SponsRep');";
 												// echo $query;
-												if (mysql_query($query)) {
+												if (mysql_query($query)){
 													echo "Successfully added Sponsorship Representative";
 												}
-												else {
+												else{
 													echo "Could not add Sponsorship Representative";
 													mysql_query("ROLLBACK");
 												}
 											}
-											else {
+											else{
 												echo "Could not add Sponsorship Representative";
 												mysql_query("ROLLBACK");
 											}
 										}
-										else {
+										else{
 											echo "Could not add Sponsorship Representative";
 											mysql_query("ROLLBACK");
 										}
 										mysql_query("COMMIT");
 
 									}
-									else {
-										if ($query_type == "Update") {
+									else{
+										if ($query_type == "Update"){
 											$required = array('SponsIDForm');
 
-											foreach ($required as $field) {
-												if (empty($_POST[$field])) {
+											foreach ($required as $field){
+												if (empty($_POST[$field])){
 													exit($FieldEmptyMessage);
 												}
 											}
@@ -922,59 +980,59 @@
 											mysql_query("START TRANSACTION");
 											$valid = true;
 
-											if (!empty($_POST['SponsSectorForm'])) {
+											if (!empty($_POST['SponsSectorForm'])){
 												$SponsSectorForm = $_POST['SponsSectorForm'];
 												$query = "UPDATE SponsRep SET Sector='$SponsSectorForm' where SponsID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													$valid = false;
 													mysql_query("ROLLBACK");
 												}
 											}
 
-											if (!empty($_POST['SponsPasswordForm'])) {
+											if (!empty($_POST['SponsPasswordForm'])){
 												$SponsPasswordForm = md5($_POST['SponsPasswordForm']);
 												$query = "UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													$valid = false;
 													mysql_query("ROLLBACK");
 												}
 
 											}
 
-											if (!empty($_POST['Organization'])) {
+											if (!empty($_POST['Organization'])){
 												$SponsOrganization = $_POST['Organization'];
 												$query = "UPDATE CommitteeMember SET Organization='$SponsOrganization' where ID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													$valid = false;
 													mysql_query("ROLLBACK");
 												}
 											}
 
-											if (!empty($_POST['EventName'])) {
+											if (!empty($_POST['EventName'])){
 												$SponsEventName = $_POST['EventName'];
 												$query = "UPDATE CommitteeMember SET EventName='$SponsEventName' where ID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													$valid = false;
 													mysql_query("ROLLBACK");
 												}
 											}
 
-											if ($valid == false) {
+											if ($valid == false){
 												echo "Could not update Sponsorship Representative details";
 											}
-											else {
+											else{
 												$query = "UPDATE SponsRep SET DateAssigned=CURDATE() where SponsID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													echo "Could not update Sponsorship Representative details";
 
 													mysql_query("ROLLBACK");
 												}
-												else {
+												else{
 													echo "Sponsorship Representative details updated successfully";
 													mysql_query("COMMIT");
 												}
@@ -985,18 +1043,21 @@
 
 
 										}
-										else {
-											if ($query_type = "Delete") {
+										else{
+											if ($query_type = "Delete"){
 												$required = array('SponsIDForm');
 
-												foreach ($required as $field) {
-													if (empty($_POST[$field])) {
+												foreach ($required as $field){
+													if (empty($_POST[$field])){
 														exit($FieldEmptyMessage);
 													}
 												}
 												$SponsIDForm = $_POST['SponsIDForm'];
-												if (mysql_query("DELETE FROM SponsRep WHERE SponsID = '$SponsIDForm'"
-												)) ;
+												if (mysql_query(
+													"DELETE FROM SponsRep WHERE SponsID = '$SponsIDForm'"
+												)){
+													;
+												}
 												//{echo "Successfully Deleted SponsRep";}
 												//echo $UnauthorizedMessage;
 
@@ -1011,24 +1072,23 @@
 
 								$main_query = $CSOSponsRep_view_query;
 
-
 							}
 						}
 
 					}
-					else {
-						if ($table_name == "Sector Head") {
-							if ($SponsAccessLevel == "CSO") {
+					else{
+						if ($table_name == "Sector Head"){
+							if ($SponsAccessLevel == "CSO"){
 
-								if (isset($_POST['submit'])) {
+								if (isset($_POST['submit'])){
 
 
-									if ($query_type == "Insert") {
+									if ($query_type == "Insert"){
 
 										$required = array('SponsIDForm', 'SponsName', 'SponsPasswordForm', 'SponsSectorForm');
 
-										foreach ($required as $field) {
-											if (empty($_POST[$field])) {
+										foreach ($required as $field){
+											if (empty($_POST[$field])){
 												exit($FieldEmptyMessage);
 											}
 										}
@@ -1055,50 +1115,54 @@
 										mysql_query("START TRANSACTION");
 
 										$query = "INSERT INTO `CommitteeMember` (`ID`,`Name`,`Department`,`Role`,`Mobile`,`Email`,`Year`,`Branch`, `Organization`, `EventName`) VALUES ($SponsIDForm, '$SponsName', 'Sponsorship', 'SectorHead', '$SponsMobile', '$SponsEmail', '$SponsYear', '$SponsBranch',";
-										if ($SponsOrganization == NULL) $query .= "NULL,";
+										if ($SponsOrganization == NULL){
+											$query .= "NULL,";
+										}
 										else $query .= "'$SponsOrganization',";
-										if ($SponsEventName == NULL) $query .= "NULL";
+										if ($SponsEventName == NULL){
+											$query .= "NULL";
+										}
 										else $query .= "'$SponsEventName'";
 										$query .= ");";
 
 										// echo $query;
-										if (mysql_query($query)) {
+										if (mysql_query($query)){
 
 											$query = "INSERT INTO `SectorHead` (`SponsID`,`Sector`, `DateAssigned`) VALUES
 										($SponsIDForm, '$SponsSectorForm', CURDATE());";
 											// echo $query;
-											if (mysql_query($query)) {
+											if (mysql_query($query)){
 
 
 												$query = "INSERT INTO `SponsLogin` (`SponsID`,`Password`, `AccessLevel`) VALUES
 										($SponsIDForm, '$SponsPasswordForm', 'SectorHead');";
 												// echo $query;
-												if (mysql_query($query)) {
+												if (mysql_query($query)){
 													echo "Successfully added SectorHead";
 												}
-												else {
+												else{
 													echo "Could not add Sector Head";
 													mysql_query("ROLLBACK");
 												}
 											}
-											else {
+											else{
 												echo "Could not add Sector Head";
 												mysql_query("ROLLBACK");
 											}
 										}
-										else {
+										else{
 											echo "Could not add Sector Head";
 											mysql_query("ROLLBACK");
 										}
 										mysql_query("COMMIT");
 
 									}
-									else {
-										if ($query_type == "Update") {
+									else{
+										if ($query_type == "Update"){
 											$required = array('SponsIDForm');
 
-											foreach ($required as $field) {
-												if (empty($_POST[$field])) {
+											foreach ($required as $field){
+												if (empty($_POST[$field])){
 													exit($FieldEmptyMessage);
 												}
 											}
@@ -1111,58 +1175,58 @@
 											mysql_query("START TRANSACTION");
 											$valid = true;
 
-											if (!empty($_POST['SponsSectorForm'])) {
+											if (!empty($_POST['SponsSectorForm'])){
 												$SponsSectorForm = $_POST['SponsSectorForm'];
 												$query = "UPDATE SectorHead SET Sector='$SponsSectorForm' where SponsID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													$valid = false;
 													mysql_query("ROLLBACK");
 												}
 											}
 
-											if (!empty($_POST['SponsPasswordForm'])) {
+											if (!empty($_POST['SponsPasswordForm'])){
 												$SponsPasswordForm = md5($_POST['SponsPasswordForm']);
 												$query = "UPDATE SponsLogin SET Password='$SponsPasswordForm' where SponsID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													$valid = false;
 													mysql_query("ROLLBACK");
 												}
 
 											}
 
-											if (!empty($_POST['Organization'])) {
+											if (!empty($_POST['Organization'])){
 												$SponsOrganization = $_POST['Organization'];
 												$query = "UPDATE CommitteeMember SET Organization='$SponsOrganization' where ID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													$valid = false;
 													mysql_query("ROLLBACK");
 												}
 											}
 
-											if (!empty($_POST['EventName'])) {
+											if (!empty($_POST['EventName'])){
 												$SponsEventName = $_POST['EventName'];
 												$query = "UPDATE CommitteeMember SET EventName='$SponsEventName' where ID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													$valid = false;
 													mysql_query("ROLLBACK");
 												}
 											}
 
-											if ($valid == false) {
+											if ($valid == false){
 												echo "Could not update Sector Head details";
 											}
-											else {
+											else{
 												$query = "UPDATE SectorHead SET DateAssigned=CURDATE() where SponsID='$SponsIDForm' ";
 												// echo $query;
-												if (!mysql_query($query)) {
+												if (!mysql_query($query)){
 													echo "Could not update Sector Head details";
 													mysql_query("ROLLBACK");
 												}
-												else {
+												else{
 													echo "Sector Head details updated successfully";
 													mysql_query("COMMIT");
 												}
@@ -1172,18 +1236,21 @@
 
 
 										}
-										else {
-											if ($query_type = "Delete") {
+										else{
+											if ($query_type = "Delete"){
 												$required = array('SponsIDForm');
 
-												foreach ($required as $field) {
-													if (empty($_POST[$field])) {
+												foreach ($required as $field){
+													if (empty($_POST[$field])){
 														exit($FieldEmptyMessage);
 													}
 												}
 												$SponsIDForm = $_POST['SponsIDForm'];
-												if (mysql_query("DELETE FROM SectorHead WHERE SponsID = '$SponsIDForm'"
-												)) ;
+												if (mysql_query(
+													"DELETE FROM SectorHead WHERE SponsID = '$SponsIDForm'"
+												)){
+													;
+												}
 												//{echo "Successfully Deleted SectorHead";}
 												//echo $UnauthorizedMessage;
 
@@ -1198,9 +1265,7 @@
 
 								$main_query = $CSOSectorHead_view_query;
 
-
 							}
-
 
 						}
 					}

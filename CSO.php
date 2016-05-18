@@ -111,7 +111,7 @@
 	<div id="query" align="center">
 		
 		<!-- SectorHead form -->
-		<form action="query.php" method ="post"> 
+		<form action="query.php" method ="POST">
 			<h2>Options:</h2>
 			<select name="query_type">
 				<option>Insert</option>
