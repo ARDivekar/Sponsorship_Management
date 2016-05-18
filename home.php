@@ -12,10 +12,10 @@
         header('Location: CSO.php');
 
     else if ($SponsAccessLevel == "SectorHead")
-        header('Location: sectorhead.php');
+        header('Location: Sector Head.php');
 
     else if ($SponsAccessLevel == "SponsRep")
-        header('Location: sponsrep.php');
+        header('Location: Sponsorship Representative.php');
 
     else header('Location: logout.php');
 ?>

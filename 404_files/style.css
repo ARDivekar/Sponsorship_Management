@@ -6,14 +6,13 @@
 
 /* === GENERAL === */
 
-@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300);
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300);
 
 body {
 	background-color: #335B67;
 	background: -ms-radial-gradient(ellipse at center,  #335B67 0%, #2C3E50 100%) fixed no-repeat;
 	background: -moz-radial-gradient(ellipse at center,  #335B67 0%, #2C3E50 100%) fixed no-repeat;
 	background: -o-radial-gradient(ellipse at center, #335B67 0%, #2C3E50 100%) fixed no-repeat;
-	background: -webkit-gradient(radial, center center, 0, center center, 497, color-stop(0, #335B67), color-stop(1, #2C3E50));
 	background: -webkit-radial-gradient(ellipse at center,  #335B67 0%, #2C3E50 100%) fixed no-repeat;
 	background: radial-gradient(ellipse at center, #335B67 0%, #2C3E50 100%) fixed no-repeat;
 	font-family: 'Source Sans Pro', sans-serif;
@@ -34,10 +33,10 @@ a {
 	color: white;
 	text-decoration: none;
 	border-bottom: 1px solid rgba(255,255,255,0.5);
-	transition: all 0.5s ease;
-	-moz-transition: all 0.5s ease;
-	-o-transition: all 0.5s ease;
-	-webkit-transition: all 0.5s ease;
+	transition: all 0.25s ease;
+	-moz-transition: all 0.25s ease;
+	-o-transition: all 0.25s ease;
+	-webkit-transition: all 0.25s ease;
 	margin-right: 10px;
 }
 
@@ -48,17 +47,12 @@ a:hover {
 	border-bottom: 1px solid rgba(255,255,255,1);
 }
 
-#noscript-warning {
-	width: 100%;
-	text-align: center;
-	background-color: rgba(0,0,0,0.2);
-	font-weight: 300;
+h1.page-heading{
+	margin-top: 4%;
+	font-size: 42px;
 	color: white;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	margin-bottom: 4%;
 }
-
-
 
 /* === WRAP === */
 
@@ -68,7 +62,7 @@ a:hover {
 	margin:0 auto;
 	height: auto;
 	position: relative;
-	margin-top: 8%;
+	/*margin-bottom: 8%;*/
 }
 
 
@@ -88,7 +82,7 @@ a:hover {
 #main-content h1 {
 	margin: 0px;
 	font-weight: 400;
-	font-size: 42px;
+	font-size: 32px;
 	margin-bottom: 40px;
 	line-height: normal;
 }
@@ -110,10 +104,10 @@ a:hover {
 	line-height: 41px;
 	text-decoration: none;
 	font-size: 16px;
-	transition: all 0.5s ease;
-	-moz-transition: all 0.5s ease;
-	-o-transition: all 0.5s ease;
-	-webkit-transition: all 0.5s ease;
+	transition: all 0.25s ease;
+	-moz-transition: all 0.25s ease;
+	-o-transition: all 0.25s ease;
+	-webkit-transition: all 0.25s ease;
 	margin-right: 2%;
 	margin-bottom: 2%;
 	border-bottom: none;
@@ -178,7 +172,7 @@ a:hover {
 	width: 88%;
 	height: 41px;
 	padding-left: 15px;
-	padding-rigt: 15px;
+	padding-right: 15px;
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	background-color: rgba(0,0,0,0.2);
@@ -229,7 +223,7 @@ a:hover {
 }
 
 @media all and (max-width: 799px) {
-	#wrap { width: 90%; height: auto; margin-top: 40px; top: 0%; }
+	#wrap { width: 90%; height: auto; margin-top: 20px; top: 0%; }
 	#wordsearch { width: 90%; float: none; margin:0 auto; }
 	#wordsearch ul li { font-size: 4vw; }
 	#main-content { float: none; width: 90%; max-width: 90%; margin:0 auto; margin-top: 30px; text-align: justify; }
