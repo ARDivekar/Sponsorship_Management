@@ -1,0 +1,309 @@
+html{
+	font-size: 20px;
+	font-family: Calibri;
+}
+
+form {
+    /* Just to center the form on the page */
+    margin: 0 auto;
+    width: 400px;
+    /* To see the outline of the form */
+    padding: 1em;
+    border: 1px solid #CCC;
+    border-radius: 1em;
+}
+
+.output_table, .output_table th, .output_table td {
+	font-size: 16px;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.output_table th, .output_table  td {
+	padding: 8px;
+}
+
+.output_table th{
+	font-size: 18px;
+
+}
+
+body {
+	/*background-image: url("415.jpg");*/
+}
+
+header {
+	background-color:#305496;
+	color:white;
+	text-align:center;
+	padding:5px;
+}
+
+section#overview {
+	line-height:30px;
+	background-color:#cccccc;
+	
+	width:30%;
+	float:left;
+	padding:5px;	      
+}
+
+
+
+footer {
+	background-color:black;
+	color:white;
+	clear:both;
+	text-align:center;
+	padding:5px;	 	 
+}
+
+
+.sponsrepnav {
+	font-size: 17px;
+}
+.sponsrepnav th{
+	padding-top: 5px;	
+}
+.sponsrepnav td{
+	padding-top: 3px;	
+	/*padding-left: 20px;*/
+	/*border: 1px solid black;*/
+}
+
+
+
+.valid_message, .invalid_message{
+	width: 400px; 
+	font-family:Consolas; 
+	border: 1px solid #CCC; 
+	border-radius: 1em;
+}
+
+a:hover{
+	text-decoration: underline;
+}
+
+section.options {
+	width:600px;
+	float:left;
+	padding:10px;	 	 
+	font-family: Arial;
+
+	/*margin-left: 30px;*/
+	
+}
+
+.invalid_message{
+	color:red;
+}
+
+
+caption h2{
+	padding-top: 20px;
+	/*padding-bottom: 20px*/
+}
+a{
+	float:left;
+	text-decoration: none;
+	color: #3999CC;
+}
+
+div{
+	padding-top: 15px;
+}
+
+input{
+	padding-top:3px;
+	padding-bottom:3px;
+}
+
+
+
+
+label {
+    /* To make sure that all label have the same size and are properly align */
+    display: inline-block;
+    width: 90px;
+    text-align: right;
+}
+
+
+
+
+#welcome{
+	float:right;
+	margin-right: 30px;
+}
+
+select  {
+	margin-left: 7px;
+	height:35px;
+	padding-left: 5px;
+	font-size: 16px;
+	min-width: 80px;
+}
+
+
+button.query_forms, button{
+	
+
+	
+    height: 40px;
+    width: 300px;
+	
+	margin-top: 30px;
+	padding: 5px;
+	margin-left: 120px;
+	font-size: 14px;
+	font-family: 'Lucida Grande', Lucida Sans Unicode, Arial;
+}
+.login_button {
+	width:100px;
+	margin-left: auto;
+}
+
+button.optionsButton{
+	margin-left: auto;
+	
+	width: 90px;
+}
+
+
+#all_in_sector{
+	display: inline-block;
+	font-size: 17px;
+}
+
+.Insert, .Update{
+	margin-top: 30px;
+	min-width: 500px;
+	padding: 30px;
+
+}
+
+
+.Insert label, .Update label{
+	
+	width: 200px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+.Insert input[type="Submit"], .Update input[type="Submit"]{
+	width: 300px;
+	
+	margin-top: 20px;
+	padding: 10px;
+	margin-left: 120px;
+	font-size: 16px;
+	font-family: 'Lucida Grande', Lucida Sans Unicode, Arial;
+
+}
+
+
+.options #query form{
+	padding-top:0px;
+}
+
+input[type="text"], input[type="password"], input[type="date"], input[type="time"], form.Update select, form.Insert select{
+	text-align: center;
+	  margin-top: -5px;
+	  min-height: 20px;
+	  
+	float:right;
+	margin-left: auto;
+	margin-right: 80px;
+	width: 160px;
+	font-size: 14px;
+	padding-left: 3px;
+	
+}
+
+input[type="time"]{
+	text-align: center;
+
+}
+
+.sort_form{
+	margin-top: -10px;
+	border:none;
+	padding: 5px;
+	/*margin-top: 50px;*/
+	/*margin-left: 50px;*/
+	width: 100%;
+	/*float:left;*/
+}
+.search_form {
+	margin-top: 0px;
+	border:none;
+	width: 100%;
+	padding: 5px;
+	/*float:right;*/
+}
+.search_form button{
+	margin-top: 0px;
+}
+
+.sort_form select, .search_form select{
+	/*margin-left: 140px;*/
+}
+.sort_form option, .search_form option {
+	width: 80px;
+}
+
+.sort_form button, .search_form button{
+	margin-left: 40px;
+	width: 60px;
+}
+
+.search_form input[type="text"]{
+
+	float:none;
+	margin-right: 0px;
+	margin-left: 15px;
+}
+
+.back_button{
+	color: white;
+	margin-left: 20px;
+	margin-top: -20px;
+	border: solid white 10 px;
+}
+
+h1{
+	font-size: 46px;
+	font-family: Candara;	
+}
+
+
+
+#printButton{
+	margin-top: 0px;
+	width:100px;
+	margin-left: -50px;
+	margin-bottom: -30px;
+}
+
+ul.pagination {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+ul.pagination li {display: inline;}
+
+ul.pagination li a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+}
+
+ul.pagination li a.active {
+    background-color: #305496;
+    color: white;
+}
+
+ul.pagination li a:hover:not(.active) {background-color: #ddd;}
