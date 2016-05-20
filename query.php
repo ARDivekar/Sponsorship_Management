@@ -28,8 +28,8 @@
 	$SponsID = $_SESSION['loginID']; //get SponsID from previos session
 
 
-	$SponsRepBackButton = "<h2><a href='sponsrep.php' class='back_button'>Go back</a></h2><br>";
-	$SectorHeadBackButton = "<h2><a href='sectorhead.php' class='back_button'>Go back</a></h2><br>";
+	$SponsRepBackButton = "<h2><a href='Sponsorship Representative.php' class='back_button'>Go back</a></h2><br>";
+	$SectorHeadBackButton = "<h2><a href='Sector Head.php' class='back_button'>Go back</a></h2><br>";
 	$CSOBackButton = "<h2><a href='CSO.php' class='back_button'>Go back</a></h2><br>";
 
 

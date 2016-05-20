@@ -72,10 +72,10 @@ if(isset($_POST['submit'])){ //Check if the form has been submitted. The form is
 
 				/*redirecting to appropriate page:*/
 				if($SponsLoginAccessLevel == "SponsRep"){
-					header("Location: sponsrep.php");
+					header("Location: Sponsorship Representative.php");
 				}
 				else if($SponsLoginAccessLevel == "SectorHead"){
-					header("Location: sectorhead.php");
+					header("Location: Sector Head.php");
 				}
 				else if($SponsLoginAccessLevel == "CSO"){
 					header("Location: CSO.php");

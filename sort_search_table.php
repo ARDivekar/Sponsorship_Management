@@ -22,8 +22,8 @@ $SponsID = $_SESSION['loginID']; //get SponsID from previos session
 
 $FieldEmptyMessage = '<div align=center><h3 align=center style="padding: 40px; font-size:28px; line-height:50px;"  class="invalid_message">Error<br>You have not filled all the required fields.</h3> </div>';
 
-$SponsRepBackButton = "<h2><a href='sponsrep.php' class='back_button'>Go back</a></h2><br>";
-$SectorHeadBackButton = "<h2><a href='sectorhead.php' class='back_button'>Go back</a></h2><br>";
+$SponsRepBackButton = "<h2><a href='Sponsorship Representative.php' class='back_button'>Go back</a></h2><br>";
+$SectorHeadBackButton = "<h2><a href='Sector Head.php' class='back_button'>Go back</a></h2><br>";
 $CSOBackButton = "<h2><a href='CSO.php' class='back_button'>Go back</a></h2><br>";
 
 

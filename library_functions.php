@@ -44,10 +44,9 @@
 
 	abstract class UserTypes extends BasicEnum{
 		const CSO = "CSO";
-		const SponsorshipRepresentative = "SponsorshipRepresentative";
-		const Sponsorship_Representative = "Sponsorship Representative"; //to be used in user-facing code like GUIs etc.
-		const SectorHead = "SectorHead";
-		const Sector_Head = "Sector Head";    //to be used in user-facing code like GUIs etc.
+		const SponsRep = "Sponsorship Representative";
+		const SponsorshipRepresentative = "Sponsorship Representative";
+		const SectorHead = "Sector Head";
 	}
 
 
@@ -414,7 +413,7 @@
 
 
 
-//	/*##------------------------------------------------TESTS------------------------------------------------##
+	/*##------------------------------------------------TESTS------------------------------------------------##
 	echo new HTMLForm(
 		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST, array(new InputField(
 		$inputType = InputTypes::text, $inputName = "TransType", $value = TransType::Deposit, $disabled = true, $inputCSSClass = NULL,
