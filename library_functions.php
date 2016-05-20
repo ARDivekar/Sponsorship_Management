@@ -278,7 +278,6 @@
 		const date = "date";
 		const time = "time";
 		const submit = "submit";
-
 	}
 
 
@@ -293,6 +292,32 @@
 	abstract class TransType extends BasicEnum{
 		const Deposit = "Deposit";
 		const Withdraw = "Withdraw";
+	}
+
+
+
+	abstract class SQLTables extends BasicEnum{
+		const Event = "Event";
+		const CommitteeMember = "CommitteeMember";
+		const SponsLogin = "SponsLogin";
+
+		const SponsRep = "SponsRep";
+		const SectorHead = "SectorHead";
+
+		const AccountLog = "AccountLog";
+
+		const Company = "Company";
+		const CompanyExec = "CompanyExec";
+		const Meeting = "Meeting";
+	}
+
+
+
+	abstract class QueryTypes extends BasicEnum{
+		const Insert = "Insert";
+		const Modify = "Modify";
+		const Delete = "Delete";
+		const View = "View";
 	}
 
 
@@ -345,6 +370,7 @@
 			return $out;
 		}
 	}
+
 
 
 
@@ -410,6 +436,104 @@
 	}
 
 
+
+	class QueryForm{ // this has all the settings and restrictions we require for the various users.
+		var $userType = NULL;
+		var $tableName = NULL;
+		var $queryType = NULL;
+		var $isValidForm = NULL;
+		var $HTMLQueryForm = NULL;
+		var $UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;" class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
+
+		var $CSOAuth = [
+				SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
+				SQLTables::CommitteeMember => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				SQLTables::SponsLogin => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
+		];
+
+		var $SectorHeadAuth = [
+				SQLTables::Event => [],
+				SQLTables::CommitteeMember => [],
+				SQLTables::SponsLogin => [],
+				SQLTables::SponsRep => [],
+				SQLTables::SectorHead => [],
+				SQLTables::AccountLog => [],
+				SQLTables::Company => [],
+				SQLTables::CompanyExec => [],
+				SQLTables::Meeting => []
+		];
+
+		var $SponsRepAuth = [
+				SQLTables::Event => [],
+				SQLTables::CommitteeMember => [],
+				SQLTables::SponsLogin => [],
+				SQLTables::SponsRep => [],
+				SQLTables::SectorHead => [],
+				SQLTables::AccountLog => [],
+				SQLTables::Company => [],
+				SQLTables::CompanyExec => [],
+				SQLTables::Meeting => []
+		];
+
+
+
+		function QueryForm($userType, $tableName, $queryType, $UnauthorizedMessage = NULL){
+			$this->isValidForm = true;
+			if (!UserTypes::isValidValue($userType)){
+				$this->isValidForm = false;
+			}
+			else $this->userType = $userType;
+
+			if (!SQLTables::isValidValue($tableName)){
+				$this->isValidForm = false;
+			}
+			else $this->tableName = $tableName;
+
+			if (!QueryTypes::isValidValue($queryType)){
+				$this->isValidForm = false;
+			}
+			else $this->queryType = $queryType;
+
+			if($UnauthorizedMessage != NULL)
+				$this->UnauthorizedMessage = $UnauthorizedMessage;
+
+		}
+
+		function parseQuery(){
+			if ($this->isValidForm){ //all values must be valid
+				if($this->userType == UserTypes::CSO){
+					if(in_array($this->queryType, $this->CSOAuth[$this->tableName])){
+
+					} else echo $this->UnauthorizedMessage;
+
+				}
+				else if($this->userType == UserTypes::SectorHead){
+					if(in_array($this->queryType, $this->SectorHeadAuth[$this->tableName])){
+
+					} else echo $this->UnauthorizedMessage;
+				}
+				else if($this->userType == UserTypes::SponsorshipRepresentative){
+					if(in_array($this->queryType, $this->SponsRepAuth[$this->tableName])){
+
+					} else echo $this->UnauthorizedMessage;
+				}
+			}
+		}
+
+
+		function generateForm(){
+			if ($this->isValidForm){
+				$r = 1 + 1;
+			}
+
+		}
+	}
 
 
 
