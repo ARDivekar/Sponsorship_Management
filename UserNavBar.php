@@ -19,7 +19,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand	" href="#">Sponsorship Department</a>
+                <a class="navbar-brand	" href="home.php">Sponsorship Department</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -30,7 +30,7 @@
                         <label><?php echo get_person_name($SponsID); ?></label><i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        <li><a href="home.php"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
                         <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
@@ -55,6 +55,18 @@
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="#">Flot Charts</a>
+                                </li>
+                                <li>
+                                    <a href="#">Morris.js Charts</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+						<li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#"></a>
                                 </li>
                                 <li>
                                     <a href="#">Morris.js Charts</a>
