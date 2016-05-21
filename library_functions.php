@@ -514,11 +514,34 @@
 	abstract class SessionEnums extends BasicEnum{
 		const UserLoginID = "UserLoginID";
 		const UserAccessLevel = "UserAccessLevel";
+		const UserOrganization = "UserOrganization";
+		const UserFestival = "UserFestival";
+		const UserDepartment = "UserDepartment";
+		const UserRole = "UserRole";
+		const UserSector = "UserSector";
+		const UserEmail = "UserEmail";
+		const UserMobile = "UserMobile";
+		const UserYear = "UserYear";
+		const UserBranch = "UserBranch";
 	}
 
 	abstract class QueryFormSessionEnums extends BasicEnum{
 		const QueryTypeName = "QueryType";
 		const InputTypeName = "InputType";
+	}
+
+	abstract class QueryFieldNames extends BasicEnum{
+		const SponsFestival = "SponsFestival";
+		const SponsSector = "SponsSector";
+		const SponsRole = "SponsRole";
+		const SponsID = "SponsID";
+		const SponsName = "SponsName";
+		const SponsPassword = "SponsPassword";
+		const SponsRePassword = "SponsRePassword";
+		const SponsEmail = "SponsEmail";
+		const SponsMobile = "SponsMobile";
+		const SponsYear = "SponsYear";
+		const SponsBranch = "SponsBranch";
 	}
 
 
@@ -582,7 +605,12 @@
 			if (!QueryTypes::isValidValue($queryType)){
 				$this->isValidForm = false;
 			}
-			else $this->queryType = $queryType;
+			else {
+				if($queryType == QueryTypes::View){
+					header("Location: view_table.php");
+				}
+				else $this->queryType = $queryType;
+			}
 
 			if($UnauthorizedMessage != NULL)
 				$this->UnauthorizedMessage = $UnauthorizedMessage;
@@ -683,8 +711,6 @@
 					break;
 				case QueryTypes::Delete :
 					break;
-				case QueryTypes::View :
-					break;
 			}
 			return NULL;
 		}
@@ -705,44 +731,50 @@
 						$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
 							new InputField(
-								$inputType = InputTypes::text, $name = "SponsFestival", $value = $UserLoginID, $disabled = true, $inputCSSClass = NULL,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value ="",
+									//$_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = "SponsFestival", $value = "", $disabled = true, $inputCSSClass = NULL,
-								$labelText = "Festival", $labelCSSClass = NULL
-							),
-							new InputField(
-								$inputType = InputTypes::text, $name = "SponsSector", $value = "", $disabled = false, $inputCSSClass = NULL,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $disabled = false, $inputCSSClass = NULL,
 								$labelText = "Sector", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = "SponsID", $value = "", $disabled = false, $inputCSSClass = NULL,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Role", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsID, $value = "", $disabled = false, $inputCSSClass = NULL,
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = "SponsName", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Name",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Name",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::password, $name = "SponsPassword", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Password",
-								$labelCSSClass = NULL
-							),
-
-							new InputField(
-								$inputType = InputTypes::text, $name = "SponsEmail", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Email",
+								$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Password",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = "SponsMobile", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Mobile",
+								$inputType = InputTypes::password, $name = QueryFieldNames::SponsRePassword, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Re-enter Password",
 								$labelCSSClass = NULL
 							),
-							new SelectField(
-								$options = [
-									new OptionField(UserTypes::SponsRep, UserTypes::SponsRep),
-									new OptionField(UserTypes::SectorHead, UserTypes::SectorHead)
-								],
-								$name = "UserType",$selectCSSClass=NULL, $labelText="User Type", $labelCSSClass=NULL
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Email",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Mobile",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Branch",
+								$labelCSSClass = NULL
 							),
 							new InputField(
 								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
@@ -754,19 +786,105 @@
 					);
 					break;
 				case QueryTypes::Modify :
+					return new HTMLForm(
+						$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival], $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Sector", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Role", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsID, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Reg. ID", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Name",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Email",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Mobile",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Branch",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Modify details of a ".UserTypes::SponsRep.":",
+						$fieldSeparator = "<br>"
+					);
 					break;
 				case QueryTypes::Delete :
-					break;
-				case QueryTypes::View :
+					return new HTMLForm(
+						$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival], $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Sector", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Role", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsID, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Reg. ID", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Name",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Completely Remove ".UserTypes::SponsRep.":",
+						$fieldSeparator = "<br>"
+					);
 					break;
 			}
-			return NULL;
+			return "EMPT STRING";
 		}
+
+
 		function parseCSOSectorHeadQuery(){
 			/*For reference:
 				SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
-			return NULL;
+			$CSOSectorHeadHTMLForm = $this->parseCSOSponsRepQuery();
+			$CSOSectorHeadHTMLForm.removeField(QueryFieldNames::SponsRole);
+			$CSOSectorHeadHTMLForm.addField(
+					new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Role", $labelCSSClass = NULL
+					)
+			);
+			return $CSOSectorHeadHTMLForm;
 		}
 		function parseCSOAccountLogQuery(){
 			/*For reference:
@@ -986,6 +1104,8 @@
 
 
 
+
+
 	/*##------------------------------------------------TESTS------------------------------------------------##
 	echo new HTMLForm(
 		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
@@ -1019,6 +1139,9 @@
 	);
 
 
+	$r = new QueryForm(UserTypes::CSO, SQLTables::SponsRep, QueryTypes::Insert);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
