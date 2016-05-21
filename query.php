@@ -25,7 +25,9 @@
 
 	require('DBconnect.php');
 	require('library_functions.php');
-	$SponsID = $_SESSION['loginID']; //get SponsID from previos session
+	$UserLoginID = $_SESSION[SessionEnums::UserLoginID]; 	//get SponsID from previous session
+	$UserLoginID = $_SESSION[SessionEnums::UserLoginID]; 	//get SponsID from previous session
+
 
 
 	$SponsRepBackButton = "<h2><a href='Sponsorship Representative.php' class='back_button'>Go back</a></h2><br>";
@@ -39,6 +41,8 @@
 	if ($SponsAccessLevel != UserTypes::CSO) {
 		$SponsSector = get_person_sector($SponsID);
 	}
+
+
 
 
 	if (isset($_POST['submit'])) {
@@ -107,8 +111,8 @@
 					<label>Amount:</label><input type="text" name="Amount">
 					<br>
 					<br>
-					<input class="query_forms" type="submit" name="submit" >Insert Account Entry Details</input>	
-					
+					<input class="query_forms" type="submit" name="submit" >Insert Account Entry Details</input>
+
 				</form>
 			</div>';
 
@@ -125,7 +129,7 @@
 					<br>
 					<br>
 				    <label>Sponsorship ID:</label> <input type="text" name="SponsID" disabled value="' . $SponsID . '" >
-					<br> 
+					<br>
 					<br>
 					<!--<input type="checkbox" name="DateCheckbox">--> <label>Date:</label> <input type="date" name="Date">
 					<br>
@@ -134,13 +138,13 @@
 					<br>
 				    <br>
 				    <input class="query_forms" type="submit" name="submit">Update Account Entry Details</input>
-					
+
 				</form>
 			</div>';
 
 
 			$AccountLogDelete = '
-			
+
 				<h2 align="center">Delete entry from Event Account:</h2>
 
 			<div>
@@ -152,7 +156,7 @@
 					<br>
 					<br>
 					<input class="query_forms" type="submit" name="submit">Delete Account Entry</input>
-					
+
 				</form>
 			</div>
 			';
@@ -173,7 +177,7 @@
 					<br>
 					<label>Address:</label> <input type="text"  name="CMPAddress">
 					<input class="query_forms" type="submit" name="submit">Insert Company Details</input>
-					
+
 				</form>
 			</div>';
 
@@ -192,9 +196,9 @@
 					<br>
 					<br>
 					<!--<input type="checkbox" name="CMPAdressCheckbox">--><label>Address:</label>         <input type="text" max-length="50" name="CMPAddress">
-					
-					<input class="query_forms" type="submit" name="submit">Update Company Details</input>	
-					
+
+					<input class="query_forms" type="submit" name="submit">Update Company Details</input>
+
 				</form>
 			</div>';
 
@@ -208,8 +212,8 @@
 					<br>
 					<label>Sector:</label> <input type="text" name="Sector" disabled  value="' . $SponsSector . '">
 					<input class="query_forms" type="submit" name="submit">Delete Company</input>
-					
-					
+
+
 				</form>
 			</div>';
 
@@ -236,9 +240,9 @@
 					<br>
 					<label>Company Position:</label>
 					<input type="text" name="CEPosition">
-					
+
 					<input class="query_forms" type="submit" name="submit">Insert Company and Executive Details</input>
-					
+
 				</form>
 			</div>';
 
@@ -262,8 +266,8 @@
 					<!--<input type="checkbox" name="CEPositionCheckbox">--><label>Company Position:</label>     <input type="text" name="CEPosition">
 					<br>
 					<br>
-					<input class="query_forms" type="submit" name="submit">Update Company and Executive Details</input>	
-					
+					<input class="query_forms" type="submit" name="submit">Update Company and Executive Details</input>
+
 				</form>
 			</div>';
 
@@ -278,7 +282,7 @@
 					<br>
 					<br>
 					<input class="query_forms" type="submit" name="submit">Delete Company Executive</input>
-					
+
 				</form>
 			</div>';
 
@@ -290,13 +294,13 @@
 					<label>Sponsorship ID:</label><input type="text" name="SponsID" disabled  value="' . $SponsID . '">
 					<br>
 					<br>
-					<label>Meeting Type:</label> 
+					<label>Meeting Type:</label>
 					<select name="MeetingType">
 						<option>Call</option>
 						<option>Meet</option>
 						<option>Email</option>
 					</select>
-		
+
 					<br>
 					<br>
 					<label>Company Name:</label>           <input type="text" name="CMPName">
@@ -318,7 +322,7 @@
 					<br>
 					<br>
 					<input class="query_forms" type="submit" name="submit">Insert Meeting Details</input>
-					
+
 				</form>
 			</div>';
 
@@ -330,7 +334,7 @@
 					<label>Sponsorship ID:</label><input type="text" name="SponsID"  disabled value="' . $SponsID . '">
 					<!--<br>
 					<br>
-					<label>Meeting Type:</label> 
+					<label>Meeting Type:</label>
 					<select name="MeetingType">
 						<option>Call</option>
 						<option>Meet</option>
@@ -352,16 +356,16 @@
 					<br>
 					<label>Outcome:</label><input type="text" name="Outcome">
 					<br>
-					<br>	
-						
-					<input class="query_forms" type="submit" name="submit">Update Meeting Details</input>	
-					
+					<br>
+
+					<input class="query_forms" type="submit" name="submit">Update Meeting Details</input>
+
 				</form>
 			</div>';
 
 
 			$MeetingLogDelete = '<h2 align="center">Delete a meeting thhat was previously planned:</h2>
-				
+
 
 			<div>
 					<form action="view_table.php" method="post"  class="Insert">
@@ -379,7 +383,7 @@
 					<br>
 					<label>Time:</label><input type="time" name="Time">
 					<input class="query_forms" type="submit" name="submit">Delete Meeting</input>
-					
+
 				</form>
 			</div>';
 
@@ -395,7 +399,7 @@
 					<!--<label>Date Assigned:</label>			  <input type="date" name="DateAssigned">
 					<br><br>-->
 					<input class="query_forms" type="submit" name="submit">Insert SponRep Details</input>
-					
+
 				</form>
 			</div>';
 
@@ -407,7 +411,7 @@
 					<label>SponsID:</label><input type="text" name="SponsID">
 					<br>
 					<br>
- 
+
 					<label>Sector:</label><input type="text" name="Sector">
 					<br>
 					<br>
@@ -415,16 +419,16 @@
 					<label>Organization:</label>          <input type="text" name="Organization" value="">
 					<br>
 					<br>
-					
+
 					<label>Event Name:</label>          <input type="text" name="EventName" value="">
 					<br>
 					<br>
-					
+
 					<label>Date Assigned:</label> <input type="date" name="DateAssigned">
 					<br>
 					<br>-->
 					<input class="query_forms" type="submit" name="submit">Update SponsRep Details</input>
-					
+
 				</form>
 			</div>';
 
@@ -441,7 +445,7 @@
 					<br>
 					<br>
 					<input class="query_forms" type="submit" name="submit">Delete SponsRep</input>
-					
+
 				</form>
 			</div>';
 
@@ -470,8 +474,8 @@
 						<label>Amount:</label><input type="text" name="Amount">
 						<br>
 						<br>
-						<input class="query_forms" type="submit" name="submit" >Insert Account Entry Details</input>	
-						
+						<input class="query_forms" type="submit" name="submit" >Insert Account Entry Details</input>
+
 					</form>
 				</div>';
 
@@ -487,7 +491,7 @@
 							<br>
 							<br>
 							<label>Sponsorship ID:</label> <input type="text" name="SponsID">
-							<br> 
+							<br>
 							<br>
 							<!--<input type="checkbox" name="DateCheckbox">--> <label>Date:</label> <input type="date" name="Date">
 							<br>
@@ -496,7 +500,7 @@
 							<br>
 							<br>
 							<input class="query_forms" type="submit" name="submit">Update Account Entry Details</input>
-							
+
 						</form>
 					</div>';
 
@@ -513,7 +517,7 @@
 							<br>
 							<br>
 							<input class="query_forms" type="submit" name="submit">Delete Account Entry</input>
-							
+
 						</form>
 					</div>
 					';
@@ -534,7 +538,7 @@
 							<br>
 									<label>Address:</label> <input type="text"  name="CMPAddress">
 						<input class="query_forms" type="submit" name="submit">Insert Company Details</input>
-						
+
 					</form>
 				</div>';
 
@@ -553,9 +557,9 @@
 						<br>
 						<br>
 						<!--<input type="checkbox" name="CMPAdressCheckbox">--><label>Address:</label>         <input type="text" max-length="50" name="CMPAddress">
-						
-						<input class="query_forms" type="submit" name="submit">Update Company Details</input>	
-						
+
+						<input class="query_forms" type="submit" name="submit">Update Company Details</input>
+
 					</form>
 				</div>';
 
@@ -567,10 +571,10 @@
 						<label>Company Name:</label> <input type="text" name="CMPName">
 						<br>
 						<br>
-						<label>Sector:</label> <input type="text" name="Sector"> 
+						<label>Sector:</label> <input type="text" name="Sector">
 						<input class="query_forms" type="submit" name="submit">Delete Company</input>
-						
-						
+
+
 					</form>
 				</div>';
 
@@ -582,13 +586,13 @@
 				<label>Sponsorship ID:</label><input type="text" name="SponsID">
 				<br>
 				<br>
-				<label>Meeting Type:</label> 
+				<label>Meeting Type:</label>
 				<select name="MeetingType">
 					<option>Call</option>
 					<option>Meet</option>
 					<option>Email</option>
 				</select>
-	
+
 				<br>
 				<br>
 				<label>Company Name:</label>           <input type="text" name="CMPName">
@@ -610,7 +614,7 @@
 				<br>
 				<br>
 				<input class="query_forms" type="submit" name="submit">Insert Meeting Details</input>
-				
+
 			</form>
 			</div>';
 
@@ -622,7 +626,7 @@
 					<label>Sponsorship ID:</label><input type="text" name="SponsID">
 					<!--<br>
 					<br>
-					<label>Meeting Type:</label> 
+					<label>Meeting Type:</label>
 					<select name="MeetingType">
 						<option>Call</option>
 						<option>Meet</option>
@@ -644,10 +648,10 @@
 					<br>
 					<label>Outcome:</label><input type="text" name="Outcome">
 					<br>
-					<br>	
-						
-					<input class="query_forms" type="submit" name="submit">Update Meeting Details</input>	
-					
+					<br>
+
+					<input class="query_forms" type="submit" name="submit">Update Meeting Details</input>
+
 				</form>
 			</div>';
 
@@ -670,7 +674,7 @@
 					<br>
 					<label>Time:</label><input type="time" name="Time">
 					<input class="query_forms" type="submit" name="submit">Delete Meeting</input>
-					
+
 				</form>
 			</div>';
 
@@ -690,7 +694,7 @@
 				<label>Organization:</label>          <input type="text" name="Organization" value="">
 				<br>
 				<br>
-				
+
 				<label>Event Name:</label>          <input type="text" name="EventName" value="">
 				<br>
 				<br>
@@ -698,7 +702,7 @@
 				<br>
 				<br>
 				<label>Role:</label>          <input type="text" name="Role" disabled="disabled" value="SectorHead">
-				
+
 				<br>
 				<br>
 				<label>Sector:</label>        <input type="text" name="SponsSectorForm" value="">
@@ -710,7 +714,7 @@
 				<label>Year:</label> <input type="text" name="Year" value="">
 				<br><br>
 				<label>Branch:</label>        <input type="text" name="Branch" value="">
-				<br>	
+				<br>
 				<input class="query_forms" type="submit" name="submit">Insert SectorHead Details</input>
 			</form>
 		</div>
@@ -730,18 +734,18 @@
 					<label>Organization:</label>          <input type="text" name="Organization" value="">
 					<br>
 					<br>
-					
+
 					<label>Event Name:</label>          <input type="text" name="EventName" value="">
 					<br>
 					<br>
-					
+
 					<label>Password:</label>          <input type="password" name="SponsPasswordForm" value="">
 					<br>
 					<br>
 
-					
+
 					<input class="query_forms" type="submit" name="submit">Update SectorHead Details</input>
-					
+
 				</form>
 			</div>';
 			$CSOSectorHeadDelete = '<h2 align="center">Delete a Sector Head from any sector:</h2>
@@ -751,9 +755,9 @@
 						<label>SponsID:</label><input type="text" name="SponsIDForm">
 						<br>
 						<br>
-						
+
 						<input class="query_forms" type="submit" name="submit">Delete SectorHead</input>
-						
+
 					</form>
 				</div>';
 
@@ -792,7 +796,7 @@
 				<label>Year:</label> <input type="text" name="Year" value="">
 				<br><br>
 				<label>Branch:</label>        <input type="text" name="Branch" value="">
-				<br>	
+				<br>
 				<input class="query_forms" type="submit" name="submit">Insert SponRep Details</input>
 			</form>
 		</div>';
@@ -805,26 +809,26 @@
 					<label>SponsID:</label><input type="text" name="SponsIDForm">
 					<br>
 					<br>
-					
+
 					<label>Organization:</label>          <input type="text" name="Organization" value="">
 					<br>
 					<br>
-					
+
 					<label>Event Name:</label>          <input type="text" name="EventName" value="">
 					<br>
 					<br>
-					
+
 					<label>Sector:</label><input type="text" name="SponsSectorForm">
 					<br>
 					<br>
-					
+
 					<label>Password:</label>          <input type="password" name="SponsPasswordForm" value="">
 					<br>
 					<br>
-					
-					
+
+
 					<input class="query_forms" type="submit" name="submit">Update SponsRep Details</input>
-					
+
 				</form>
 			</div>';
 

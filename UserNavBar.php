@@ -66,7 +66,7 @@
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#"></a>
+                                    <a href="#">Some other thing</a>
                                 </li>
                                 <li>
                                     <a href="#">Morris.js Charts</a>

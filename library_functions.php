@@ -298,7 +298,6 @@
 
 	abstract class SQLTables extends BasicEnum{
 		const Event = "Event";
-		const CommitteeMember = "CommitteeMember";
 		const SponsLogin = "SponsLogin";
 
 		const SponsRep = "SponsRep";
@@ -322,9 +321,11 @@
 
 
 
+
+
 	class InputField{
 		var $inputType = NULL;
-		var $inputName = NULL;
+		var $name = NULL;
 		var $disabled = NULL;
 		var $value = NULL;
 		var $inputCSSClass = NULL;
@@ -332,7 +333,7 @@
 		var $labelCSSClass = NULL;
 
 
-		function InputField($inputType, $inputName, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL){
+		function InputField($inputType, $name, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL){
 
 			if (!InputTypes::isValidValue($inputType)){
 				echo "Invalid type passed to constructor of class InputField.";
@@ -340,7 +341,7 @@
 				return;
 			}
 			$this->inputType = $inputType;
-			$this->inputName = $inputName;
+			$this->name = $name;
 			$this->disabled = $disabled;
 			$this->value = $value;
 			$this->inputCSSClass = $inputCSSClass;
@@ -353,12 +354,12 @@
 			$out = "";
 			if ($this->labelText){
 				if ($this->labelCSSClass){
-					$out .= '<label for="' . $this->inputName . '" class="' . $this->labelCSSClass . '">' . $this->labelText . ':</label> ';
+					$out .= '<label for="' . $this->name . '" class="' . $this->labelCSSClass . '">' . $this->labelText . ':</label> ';
 				}
-				else $out .= '<label for="' . $this->inputName . '">' . $this->labelText . ':</label> ';
+				else $out .= '<label for="' . $this->name . '">' . $this->labelText . ':</label> ';
 			}
 
-			$out .= '<input type="' . $this->inputType . '" name="' . $this->inputName . '" value="' . $this->value . '" ';
+			$out .= '<input type="' . $this->inputType . '" name="' . $this->name . '" value="' . $this->value . '" ';
 			if ($this->disabled){
 				$out .= " disabled ";
 			}
@@ -373,16 +374,80 @@
 
 
 
+	class OptionField{ //goes inside a selectField
+		var $value = NULL;
+		var $optionText = NULL;
+		var $selected = NULL;
+		var $disabled = NULL;
+		function OptionField($value, $optionText, $selected=false, $disabled=false){
+			if($selected != true && $selected != false)
+				echo "Invalid option selected parameter passed";
+			else $this->selected = $selected;
+			$this->value= $value;
+			$this->optionText= $optionText;
+			$this->disabled = $disabled;
+		}
+
+		function __toString(){
+			$out = "<option value=\"$this->value\" ";
+			if($this->selected)
+				$out.=" selected";
+			if ($this->disabled){
+				$out .= " disabled ";
+			}
+			$out.=">$this->optionText</option>";
+			return $out;
+		}
+
+	}
+
+	class SelectField{
+		var $options = NULL;
+		var $name = NULL;
+		var $selectCSSClass = NULL;
+		var $labelText = NULL;
+		var $labelCSSClass = NULL;
+
+		function SelectField($options, $name, $selectCSSClass=NULL, $labelText=NULL, $labelCSSClass=NULL){
+			$this->options = $options;
+			$this->name = $name;
+			$this->selectCSSClass = $selectCSSClass;
+			$this->labelText = $labelText;
+			$this->labelCSSClass = $labelCSSClass;
+		}
+
+
+		function __toString(){
+			$out = "";
+			if ($this->labelText){
+				if ($this->labelCSSClass){
+					$out .= '<label for="' . $this->name . '" class="' . $this->labelCSSClass . '">' . $this->labelText . ':</label> ';
+				}
+				else $out .= '<label for="' . $this->name . '">' . $this->labelText . ':</label> ';
+			}
+
+			$out .= "<select name=\"$this->name\" class=\"$this->selectCSSClass\">";
+			foreach($this->options as $option){
+				$out.=$option;
+			}
+			$out.="</select>";
+			return $out;
+		}
+
+	}
+
 
 	class HTMLForm{
 		var $formName = NULL;
 		var $formAction = NULL;
 		var $formMethod = NULL;
-		var $inputFields = NULL;    //an array of InputField objects.
+		var $formCSSClass = NULL;
+		var $fields = NULL;    //an array of InputField, SelectField objects.
 		var $title = NULL;
+		var $fieldSeparator = NULL;
 
 
-		function HTMLForm($formName, $formAction, $formMethod, $inputFields, $title = NULL){
+		function HTMLForm($formName, $formAction, $formMethod, $fields, $formCSSClass=NULL, $title = NULL, $fieldSeparator="<br>"){
 			if (!FormMethod::isValidValue($formMethod)){
 				echo "Invalid formMethod passed to constructor of class HTMLForm.";
 
@@ -391,16 +456,18 @@
 			$this->formName = $formName;
 			$this->formAction = $formAction;
 			$this->formMethod = $formMethod;
-			foreach ($inputFields as $inputField){
-				$this->inputFields[$inputField->inputName] = $inputField;
+			foreach ($fields as $field){
+				$this->fields[$field->name] = $field;
 			}
+			$this->formCSSClass = $formCSSClass;
 			$this->title = $title;
+			$this->fieldSeparator = $fieldSeparator;
 		}
 
 
-		function addInputField($inputField){
+		function addField($field){
 			try{
-				$this->inputFields[$inputField->inputName] = $inputField;
+				$this->fields[$field->name] = $field;
 
 				return true;
 			} catch (Exception $e){
@@ -410,9 +477,9 @@
 		}
 
 
-		function removeInputField($inputFieldName){
-			if (in_array($inputFieldName, $this->inputFields)){
-				unset($this->inputFields[array_search($inputFieldName, $this->inputFields)]);
+		function removeField($fieldName){
+			if (in_array($fieldName, $this->fields)){
+				unset($this->fields[array_search($fieldName, $this->fields)]);
 
 				return true;
 			}
@@ -420,14 +487,23 @@
 			return false;
 		}
 
-
+		function echoFieldNames(){
+			foreach ($this->fields as $fieldName => $field){
+				echo $fieldName."<br>";
+			}
+		}
 
 		function __toString(){
+//			$this->echoFieldNames();
 			$out = "";
-			$out .= "<h2 align=\"center\">$this->title:</h2>";
-			$out .= "<form action= \"$this->formAction\"  method= \"$this->formMethod\" name=\"$this->formName\">";
-			foreach ($this->inputFields as $value){
-				$out .= $value . "<br>";
+			if($this->title)
+				$out .= "<h2 align=\"center\">$this->title:</h2>";
+			$out .= "<form action= \"$this->formAction\"  method= \"$this->formMethod\" name=\"$this->formName\" ";
+			if($this->formCSSClass)
+				$out.=" class=\"$this->formCSSClass\"";
+			$out.=">";
+			foreach ($this->fields as $value){
+				$out .= $value . $this->fieldSeparator;
 			}
 			$out .= "</form>";
 
@@ -435,6 +511,15 @@
 		}
 	}
 
+	abstract class SessionEnums extends BasicEnum{
+		const UserLoginID = "UserLoginID";
+		const UserAccessLevel = "UserAccessLevel";
+	}
+
+	abstract class QueryFormSessionEnums extends BasicEnum{
+		const QueryTypeName = "QueryType";
+		const InputTypeName = "InputType";
+	}
 
 
 	class QueryForm{ // this has all the settings and restrictions we require for the various users.
@@ -445,9 +530,10 @@
 		var $HTMLQueryForm = NULL;
 		var $UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;" class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
 
+
+
 		var $CSOAuth = [
 			SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
-			SQLTables::CommitteeMember => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View], //can only add SponsReps and SectorHeads.
 			SQLTables::SponsLogin => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
@@ -459,11 +545,10 @@
 
 		var $SectorHeadAuth = [
 			SQLTables::Event => [],	//empty means no queries allowed
-			SQLTables::CommitteeMember => [QueryTypes::View], //Can only view name etc of SponsReps
 			SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
 			SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
 			SQLTables::SectorHead => [],
-			SQLTables::AccountLog => [],
+			SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//Can only insert, modify, delete, and view for own sector
 			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
@@ -471,15 +556,12 @@
 
 		var $SponsRepAuth = [
 			SQLTables::Event => [QueryTypes::View],		//Can only view own details.
-			SQLTables::CommitteeMember => [QueryTypes::View],	//Can only view own details and name of others in Meeting, etc.
 			SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
 			SQLTables::SponsRep => [QueryTypes::View],
 			SQLTables::SectorHead => [],
 			SQLTables::AccountLog => [QueryTypes::View],	//can only view own sponsorships
-			SQLTables::Company => [QueryTypes::Insert, ],
-			SQLTables::CompanyExec => [],
-			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
-			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 		];
 
@@ -504,36 +586,401 @@
 
 			if($UnauthorizedMessage != NULL)
 				$this->UnauthorizedMessage = $UnauthorizedMessage;
-
 		}
+
 
 		function parseQuery(){
 			if ($this->isValidForm){ //all values must be valid
 				if($this->userType == UserTypes::CSO){
 					if(in_array($this->queryType, $this->CSOAuth[$this->tableName])){
-
+						$this->HTMLQueryForm = $this->parseCSOQuery();
 					} else echo $this->UnauthorizedMessage;
 
 				}
 				else if($this->userType == UserTypes::SectorHead){
 					if(in_array($this->queryType, $this->SectorHeadAuth[$this->tableName])){
-
+						$this->HTMLQueryForm = $this->parseSectorHeadQuery();
 					} else echo $this->UnauthorizedMessage;
 				}
 				else if($this->userType == UserTypes::SponsorshipRepresentative){
 					if(in_array($this->queryType, $this->SponsRepAuth[$this->tableName])){
-
+						$this->HTMLQueryForm = $this->parseSponsRepQuery();
 					} else echo $this->UnauthorizedMessage;
 				}
 			}
 		}
 
+		function parseCSOQuery(){
+			switch($this->tableName){
+				case SQLTables::Event :
+					return $this->parseCSOEventQuery();
+					break;
+				case SQLTables::SponsLogin :
+					return $this->parseCSOSponsLoginQuery();
+					break;
+				case SQLTables::SponsRep :
+					return $this->parseCSOSponsRepQuery();
+					break;
+				case SQLTables::SectorHead :
+					return $this->parseCSOSectorHeadQuery();
+					break;
+				case SQLTables::AccountLog :
+					return $this->parseCSOAccountLogQuery();
+					break;
+				case SQLTables::Company :
+					return $this->parseCSOCompanyQuery();
+					break;
+				case SQLTables::CompanyExec :
+					return $this->parseCSOCompanyExecQuery();
+					break;
+				case SQLTables::Meeting :
+					return $this->parseCSOMeetingQuery();
+					break;
+			}
+			return NULL;
+		}
+
+
+
+		function parseCSOEventQuery(){
+			/*For reference:
+				SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
+			*/
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return new HTMLForm(
+						$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = "TransType", $value = TransType::Deposit, $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Transaction Type", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = "CMPName", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Name",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = "Amount", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Amount",
+								$labelCSSClass = NULL
+							),
+							new SelectField(
+								$options = [
+									new OptionField(UserTypes::SponsRep, UserTypes::SponsRep),
+									new OptionField(UserTypes::SectorHead, UserTypes::SectorHead)
+								],
+								$name = "UserType",$selectCSSClass=NULL, $labelText="User Type", $labelCSSClass=NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Insert details of sponsorship received",
+						$fieldSeparator = "<br>"
+					);
+					break;
+				case QueryTypes::Modify :
+					break;
+				case QueryTypes::Delete :
+					break;
+				case QueryTypes::View :
+					break;
+			}
+			return NULL;
+		}
+
+		function parseCSOSponsLoginQuery(){
+			/*For reference:
+				SQLTables::SponsLogin => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			return NULL;
+		}
+		function parseCSOSponsRepQuery(){
+			/*For reference:
+				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return new HTMLForm(
+						$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = "SponsFestival", $value = $UserLoginID, $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = "SponsFestival", $value = "", $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = "SponsSector", $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Sector", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = "SponsID", $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Reg. ID", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = "SponsName", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Name",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::password, $name = "SponsPassword", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Password",
+								$labelCSSClass = NULL
+							),
+
+							new InputField(
+								$inputType = InputTypes::text, $name = "SponsEmail", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Email",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = "SponsMobile", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Mobile",
+								$labelCSSClass = NULL
+							),
+							new SelectField(
+								$options = [
+									new OptionField(UserTypes::SponsRep, UserTypes::SponsRep),
+									new OptionField(UserTypes::SectorHead, UserTypes::SectorHead)
+								],
+								$name = "UserType",$selectCSSClass=NULL, $labelText="User Type", $labelCSSClass=NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Insert a new ".UserTypes::SponsRep.":",
+						$fieldSeparator = "<br>"
+					);
+					break;
+				case QueryTypes::Modify :
+					break;
+				case QueryTypes::Delete :
+					break;
+				case QueryTypes::View :
+					break;
+			}
+			return NULL;
+		}
+		function parseCSOSectorHeadQuery(){
+			/*For reference:
+				SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			return NULL;
+		}
+		function parseCSOAccountLogQuery(){
+			/*For reference:
+				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			return NULL;
+		}
+		function parseCSOCompanyQuery(){
+			/*For reference:
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			return NULL;
+		}
+		function parseCSOCompanyExecQuery(){
+			/*For reference:
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			return NULL;
+		}
+		function parseCSOMeetingQuery(){
+			/*For reference:
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
+			*/
+			return NULL;
+		}
+
+
+
+
+
+		function parseSectorHeadQuery(){
+			switch($this->tableName){
+				case SQLTables::Event :
+					return $this->parseSectorHeadEventQuery();
+					break;
+				case SQLTables::SponsLogin :
+					return $this->parseSectorHeadSponsLoginQuery();
+					break;
+				case SQLTables::SponsRep :
+					return $this->parseSectorHeadSponsRepQuery();
+					break;
+				case SQLTables::SectorHead :
+					return $this->parseSectorHeadSectorHeadQuery();
+					break;
+				case SQLTables::AccountLog :
+					return $this->parseSectorHeadAccountLogQuery();
+					break;
+				case SQLTables::Company :
+					return $this->parseSectorHeadCompanyQuery();
+					break;
+				case SQLTables::CompanyExec :
+					return $this->parseSectorHeadCompanyExecQuery();
+					break;
+				case SQLTables::Meeting :
+					return $this->parseSectorHeadMeetingQuery();
+					break;
+			}
+			return NULL;
+		}
+
+
+		function parseSectorHeadEventQuery(){
+			/*For reference:
+				SQLTables::Event => [],	//empty means no queries allowed
+			*/
+			return NULL;
+		}
+
+		function parseSectorHeadSponsLoginQuery(){
+			/*For reference:
+				SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
+			*/
+			return NULL;
+		}
+		function parseSectorHeadSponsRepQuery(){
+			/*For reference:
+				SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
+			*/
+			return NULL;
+		}
+		function parseSectorHeadSectorHeadQuery(){
+			/*For reference:
+				SQLTables::SectorHead => [],
+			*/
+			return NULL;
+		}
+		function parseSectorHeadAccountLogQuery(){
+			/*For reference:
+				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//Can only insert, modify, delete, and view for own sector
+			*/
+			return NULL;
+		}
+		function parseSectorHeadCompanyQuery(){
+			/*For reference:
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return NULL;
+		}
+		function parseSectorHeadCompanyExecQuery(){
+			/*For reference:
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return NULL;
+		}
+		function parseSectorHeadMeetingQuery(){
+			/*For reference:
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
+			*/
+			return NULL;
+		}
+
+
+
+
+
+
+		function parseSponsRepQuery(){
+			switch($this->tableName){
+				case SQLTables::Event :
+					return $this->parseSponsRepEventQuery();
+					break;
+				case SQLTables::SponsLogin :
+					return $this->parseSponsRepSponsLoginQuery();
+					break;
+				case SQLTables::SponsRep :
+					return $this->parseSponsRepSponsRepQuery();
+					break;
+				case SQLTables::SectorHead :
+					return $this->parseSponsRepSectorHeadQuery();
+					break;
+				case SQLTables::AccountLog :
+					return $this->parseSponsRepAccountLogQuery();
+					break;
+				case SQLTables::Company :
+					return $this->parseSponsRepCompanyQuery();
+					break;
+				case SQLTables::CompanyExec :
+					return $this->parseSponsRepCompanyExecQuery();
+					break;
+				case SQLTables::Meeting :
+					return $this->parseSponsRepMeetingQuery();
+					break;
+			}
+			return NULL;
+		}
+
+
+
+		function parseSponsRepEventQuery(){
+			/*For reference:
+				SQLTables::Event => [QueryTypes::View],		//Can only view own details.
+			*/
+			return NULL;
+		}
+
+		function parseSponsRepSponsLoginQuery(){
+			/*For reference:
+				SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
+			*/
+			return NULL;
+		}
+		function parseSponsRepSponsRepQuery(){
+			/*For reference:
+				SQLTables::SponsRep => [QueryTypes::View],
+			*/
+			return NULL;
+		}
+		function parseSponsRepSectorHeadQuery(){
+			/*For reference:
+				SQLTables::SectorHead => [],
+			*/
+			return NULL;
+		}
+		function parseSponsRepAccountLogQuery(){
+			/*For reference:
+				SQLTables::AccountLog => [QueryTypes::View],	//can only view own sponsorships
+			*/
+			return NULL;
+		}
+		function parseSponsRepCompanyQuery(){
+			/*For reference:
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return NULL;
+		}
+		function parseSponsRepCompanyExecQuery(){
+			/*For reference:
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return NULL;
+		}
+		function parseSponsRepMeetingQuery(){
+			/*For reference:
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
+			*/
+			return NULL;
+		}
+
+
+
+
+
 
 		function generateForm(){
+			$out = "";
 			if ($this->isValidForm){
-				$r = 1 + 1;
-			}
 
+			}
+			else echo "The Query form is not valid";
+			return $out;
+		}
+
+		function __toString(){
+			return $this->generateForm();
 		}
 	}
 
@@ -541,21 +988,37 @@
 
 	/*##------------------------------------------------TESTS------------------------------------------------##
 	echo new HTMLForm(
-		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST, array(new InputField(
-		$inputType = InputTypes::text, $inputName = "TransType", $value = TransType::Deposit, $disabled = true, $inputCSSClass = NULL,
-		$labelText = "Transaction Type", $labelCSSClass = NULL
-	), new InputField(
-		$inputType = InputTypes::text, $inputName = "CMPName", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Name",
-		$labelCSSClass = NULL
-	), new InputField(
-		$inputType = InputTypes::text, $inputName = "Amount", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Amount",
-		$labelCSSClass = NULL
-	), new InputField(
-		$inputType = InputTypes::submit, $inputName = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
-	)),
-
-		$title = "Insert details of sponsorship received"
+		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
+		$fields = array(
+			new InputField(
+				$inputType = InputTypes::text, $name = "TransType", $value = TransType::Deposit, $disabled = true, $inputCSSClass = NULL,
+				$labelText = "Transaction Type", $labelCSSClass = NULL
+			),
+			new InputField(
+				$inputType = InputTypes::text, $name = "CMPName", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Name",
+				$labelCSSClass = NULL
+			),
+			new InputField(
+				$inputType = InputTypes::text, $name = "Amount", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Amount",
+				$labelCSSClass = NULL
+			),
+			new SelectField(
+				$options = [
+					new OptionField(UserTypes::SponsRep, UserTypes::SponsRep),
+					new OptionField(UserTypes::SectorHead, UserTypes::SectorHead)
+				],
+				$name = "UserType",$selectCSSClass=NULL, $labelText="User Type", $labelCSSClass=NULL
+			),
+			new InputField(
+				$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+			)
+		),
+		$formCSSClass=NULL,
+		$title = "Insert details of sponsorship received",
+		$fieldSeparator = "<br>"
 	);
+
+
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
