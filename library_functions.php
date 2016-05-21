@@ -446,39 +446,41 @@
 		var $UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;" class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
 
 		var $CSOAuth = [
-				SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
-				SQLTables::CommitteeMember => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
-				SQLTables::SponsLogin => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
-				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
-				SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
-				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
-				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
-				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
-				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
+			SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
+			SQLTables::CommitteeMember => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View], //can only add SponsReps and SectorHeads.
+			SQLTables::SponsLogin => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
 		];
 
 		var $SectorHeadAuth = [
-				SQLTables::Event => [],
-				SQLTables::CommitteeMember => [],
-				SQLTables::SponsLogin => [],
-				SQLTables::SponsRep => [],
-				SQLTables::SectorHead => [],
-				SQLTables::AccountLog => [],
-				SQLTables::Company => [],
-				SQLTables::CompanyExec => [],
-				SQLTables::Meeting => []
+			SQLTables::Event => [],	//empty means no queries allowed
+			SQLTables::CommitteeMember => [QueryTypes::View], //Can only view name etc of SponsReps
+			SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
+			SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
+			SQLTables::SectorHead => [],
+			SQLTables::AccountLog => [],
+			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 		];
 
 		var $SponsRepAuth = [
-				SQLTables::Event => [],
-				SQLTables::CommitteeMember => [],
-				SQLTables::SponsLogin => [],
-				SQLTables::SponsRep => [],
-				SQLTables::SectorHead => [],
-				SQLTables::AccountLog => [],
-				SQLTables::Company => [],
-				SQLTables::CompanyExec => [],
-				SQLTables::Meeting => []
+			SQLTables::Event => [QueryTypes::View],		//Can only view own details.
+			SQLTables::CommitteeMember => [QueryTypes::View],	//Can only view own details and name of others in Meeting, etc.
+			SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
+			SQLTables::SponsRep => [QueryTypes::View],
+			SQLTables::SectorHead => [],
+			SQLTables::AccountLog => [QueryTypes::View],	//can only view own sponsorships
+			SQLTables::Company => [QueryTypes::Insert, ],
+			SQLTables::CompanyExec => [],
+			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 		];
 
 
