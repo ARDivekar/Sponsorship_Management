@@ -25,8 +25,7 @@
 
 	require('DBconnect.php');
 	require('library_functions.php');
-	$UserLoginID = $_SESSION[SessionEnums::UserLoginID]; 	//get SponsID from previous session
-	$UserLoginID = $_SESSION[SessionEnums::UserLoginID]; 	//get SponsID from previous session
+	$SponsID = $_SESSION['loginID'];
 
 
 
