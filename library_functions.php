@@ -1,6 +1,7 @@
 <?php
-//	session_start();
+	session_start();
 	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
+	$_SESSION[SessionEnums::UserFestival] = "Techno";
 
 	abstract class BasicEnum{
 		private static $constCacheArray = NULL;
@@ -375,7 +376,12 @@
 			if ($this->inputCSSClass){
 				$out .= ' class="' . $this->inputCSSClass . '"';
 			}
-			$out .= '/>';
+			if($this->inputType == InputTypes::textarea){
+				$out .= '</textarea> ';
+			}
+			else{
+				$out .= '/>';
+			}
 
 			return $out;
 		}
@@ -596,7 +602,6 @@
 		var $UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;" class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
 
 
-
 		var $CSOAuth = [
 			SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
 			SQLTables::SponsLogin => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
@@ -657,6 +662,7 @@
 			if($UnauthorizedMessage != NULL)
 				$this->UnauthorizedMessage = $UnauthorizedMessage;
 		}
+
 
 
 		function parseQuery(){
@@ -738,8 +744,7 @@
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value ="",
-									//$_SESSION[SessionEnums::UserFestival],
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
 								$disabled = true, $inputCSSClass = NULL,
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
@@ -753,7 +758,7 @@
 							),
 							new InputField(
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $disabled = false, $inputCSSClass = NULL,
-								$labelText = "Reg. ID of new SponsRep", $labelCSSClass = NULL
+								$labelText = "Reg. ID of SponsRep", $labelCSSClass = NULL
 							),
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Name",
@@ -788,7 +793,7 @@
 							)
 						),
 						$formCSSClass=NULL,
-						$title = "Insert a new ".UserTypes::SponsRep.":",
+						$title = "Insert a ".UserTypes::SponsRep,
 						$fieldSeparator = "<br>"
 					);
 					break;
@@ -837,7 +842,7 @@
 							)
 						),
 						$formCSSClass=NULL,
-						$title = "Modify details of a ".UserTypes::SponsRep.":",
+						$title = "Modify details of a ".UserTypes::SponsRep,
 						$fieldSeparator = "<br>"
 					);
 					break;
@@ -870,7 +875,7 @@
 							)
 						),
 						$formCSSClass=NULL,
-						$title = "Completely Remove ".UserTypes::SponsRep.":",
+						$title = "Completely Remove ".UserTypes::SponsRep,
 						$fieldSeparator = "<br>"
 					);
 					break;
@@ -884,13 +889,26 @@
 				SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
 			$CSOSectorHeadHTMLForm = $this->parseCSOSponsRepQuery();
-			$CSOSectorHeadHTMLForm->removeField(QueryFieldNames::SponsRole);
-			$CSOSectorHeadHTMLForm->addField(
-					new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SectorHead, $disabled = true, $inputCSSClass = NULL,
-								$labelText = "Role", $labelCSSClass = NULL
-					)
-			);
+			$CSOSectorHeadHTMLForm->fields[QueryFieldNames::SponsRole]->value = UserTypes::SectorHead;
+			$CSOSectorHeadHTMLForm->fields[QueryFieldNames::SponsID]->labelText = "Reg. ID of Sector Head";
+			switch($this->queryType){
+				case QueryTypes::Insert;
+					$CSOSectorHeadHTMLForm->title = "Insert a new ".UserTypes::SectorHead;
+					break;
+				case QueryTypes::Modify;
+					$CSOSectorHeadHTMLForm->title = "Modify details of a ".UserTypes::SectorHead;
+					break;
+				case QueryTypes::Delete;
+					$CSOSectorHeadHTMLForm->title = "Completely remove a ".UserTypes::SectorHead;
+					break;
+			}
+//			$CSOSectorHeadHTMLForm->removeField(QueryFieldNames::SponsRole);
+//			$CSOSectorHeadHTMLForm->addField(
+//					new InputField(
+//								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SectorHead, $disabled = true, $inputCSSClass = NULL,
+//								$labelText = "Role", $labelCSSClass = NULL
+//					)
+//			);
 
 			return $CSOSectorHeadHTMLForm;
 		}
@@ -905,13 +923,13 @@
 						$formName = $this->tableName . $this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = "", //$_SESSION[SessionEnums::UserFestival],
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
 								$disabled = true, $inputCSSClass = NULL, $labelText = "Festival", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsTransType, $value = TransType::Deposit, $disabled = true,
 								$inputCSSClass = NULL, $labelText = "Transaction Type", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $disabled = false, $inputCSSClass = NULL,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $disabled = true, $inputCSSClass = NULL,
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
@@ -925,7 +943,7 @@
 							), new InputField(
 								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
 							)
-						), $formCSSClass = NULL, $title = "Enter a new transaction into the Festival Account:", $fieldSeparator = "<br>"
+						), $formCSSClass = NULL, $title = "Enter a new transaction into the Festival Account", $fieldSeparator = "<br>"
 					);
 					break;
 
@@ -935,7 +953,7 @@
 						$formName = $this->tableName . $this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = "", //$_SESSION[SessionEnums::UserFestival],
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
 								$disabled = true, $inputCSSClass = NULL, $labelText = "Festival", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $disabled = true,
@@ -955,7 +973,7 @@
 							), new InputField(
 								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
 							)
-						), $formCSSClass = NULL, $title = "Enter the values of the modified transaction:", $fieldSeparator = "<br>"
+						), $formCSSClass = NULL, $title = "Enter the values of the modified transaction", $fieldSeparator = "<br>"
 					);
 					break;
 				case QueryTypes::Delete :
@@ -963,7 +981,7 @@
 						$formName = $this->tableName . $this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = "", //$_SESSION[SessionEnums::UserFestival],
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
 								$disabled = true, $inputCSSClass = NULL, $labelText = "Festival", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $disabled = true,
@@ -974,7 +992,7 @@
 							), new InputField(
 								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
 							)
-						), $formCSSClass = NULL, $title = "Delete an account transaction:", $fieldSeparator = "<br>"
+						), $formCSSClass = NULL, $title = "Delete an account transaction", $fieldSeparator = "<br>"
 					);
 					break;
 			}
@@ -992,7 +1010,7 @@
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
 								$disabled = true, $inputCSSClass = NULL,
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
@@ -1029,6 +1047,7 @@
 
 					);
 					break;
+
 				case QueryTypes::Modify:
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
@@ -1090,9 +1109,8 @@
 							)
 						),
 						$formCSSClass=NULL,
-						$title = "Update Company details",
+						$title = "Remove details of a Company",
 						$fieldSeparator = "<br>"
-
 					);
 					break;
 			}
@@ -1577,12 +1595,111 @@
 		$title = "Insert details of sponsorship received",
 		$fieldSeparator = "<br>"
 	);
+*/
+	echo $_SESSION[SessionEnums::UserLoginID];
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::SponsRep, QueryTypes::Insert);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::SponsRep, QueryTypes::Modify);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::SponsRep, QueryTypes::Delete);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
 
 
 	$r = new QueryForm(UserTypes::CSO, SQLTables::SectorHead, QueryTypes::Insert);
 	$r->parseQuery();
 	echo $r->HTMLQueryForm;
+	echo "<br><br>";
 
+	$r = new QueryForm(UserTypes::CSO, SQLTables::SectorHead, QueryTypes::Modify);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::SectorHead, QueryTypes::Delete);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::AccountLog, QueryTypes::Insert);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::AccountLog, QueryTypes::Modify);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::AccountLog, QueryTypes::Delete);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::Company, QueryTypes::Insert);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::Company, QueryTypes::Modify);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::Company, QueryTypes::Delete);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+
+
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::CompanyExec, QueryTypes::Insert);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::CompanyExec, QueryTypes::Modify);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::CompanyExec, QueryTypes::Delete);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+
+
+
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::Meeting, QueryTypes::Insert);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::Meeting, QueryTypes::Modify);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	$r = new QueryForm(UserTypes::CSO, SQLTables::Meeting, QueryTypes::Delete);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
 
