@@ -560,16 +560,30 @@
 		const SponsCompany = "SponsCompany";
 		const SponsTransType = "SponsTransType";
 		const SponsDate = "SponsDate";
+		const SponsTime = "SponsTime";
 		const SponsAmount = "SponsAmount";
 		const SponsAccountLogEntryID = "SponsAccountLogEntryID";
 		const SponsCompanyStatus = "SponsCompanyStatus";
-		const CompanySponsoredOthers = "CompanySponsoredOthers";
-		const CompanyAddress = "CompanyAddress";
+		const SponsCompanySponsoredOthers = "SponsCompanySponsoredOthers";
+		const SponsCompanyAddress = "SponsCompanyAddress";
+		const SponsCompanyExec = "SponsCompanyExec";
+		const SponsCompanyExecPosition = "SponsCompanyExecPosition";
+		const SponsMeetingAddress = "SponsMeetingAddress";
+		const SponsMeetingType = "SponsMeetingType";
+		const SponsMeetingOutcome = "SponsMeetingOutcome";
+		const SponsMeetingEntryID = "SponsMeetingEntryID";
+
 	}
 
-	abstract class CompanySponsoredOthersEnum extends BasicEnum{
+	abstract class CompanySponsoredOthers extends BasicEnum{
 		const Yes = "Yes";
 		const No = "No";
+	}
+
+	abstract class MeetingTypes extends BasicEnum{
+		const Call = "Call";
+		const Email = "Email";
+		const FaceToFace = "Face-To-Face meeting";
 	}
 
 
@@ -995,27 +1009,90 @@
 								$labelText = "Status", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::textarea, $name = QueryFieldNames::CompanyAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Address",
-								$labelCSSClass = NULL
-							),
-							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::CompanySponsoredOthers, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Sponsored Others",
+								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Address",
 								$labelCSSClass = NULL
 							),
 							new SelectField(
 								$options = [
-									new OptionField(CompanySponsoredOthersEnum::Yes, CompanySponsoredOthersEnum::Yes),
-									new OptionField(CompanySponsoredOthersEnum::No, CompanySponsoredOthersEnum::No)
+									new OptionField(CompanySponsoredOthers::Yes, CompanySponsoredOthers::Yes),
+									new OptionField(CompanySponsoredOthers::No, CompanySponsoredOthers::No)
 								],
-								$name = QueryFieldNames::CompanySponsoredOthers, $selectCSSClass=NULL, $labelText="Sponsored Others", $labelCSSClass=NULL
+								$name = QueryFieldNames::SponsCompanySponsoredOthers, $selectCSSClass=NULL, $labelText="Sponsored Others", $labelCSSClass=NULL
 							),
 							new InputField(
 								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
-						$title = "Insert a new ".UserTypes::SponsRep.":",
+						$title = "Insert a new Company",
 						$fieldSeparator = "<br>"
+
+					);
+					break;
+				case QueryTypes::Modify:
+					return new HTMLForm(
+						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Sector", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Status", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Address",
+								$labelCSSClass = NULL
+							),
+							new SelectField(
+								$options = [
+									new OptionField(CompanySponsoredOthers::Yes, CompanySponsoredOthers::Yes),
+									new OptionField(CompanySponsoredOthers::No, CompanySponsoredOthers::No)
+								],
+								$name = QueryFieldNames::SponsCompanySponsoredOthers, $selectCSSClass=NULL, $labelText="Sponsored Others", $labelCSSClass=NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Update Company details",
+						$fieldSeparator = "<br>"
+
+					);
+					break;
+
+				case QueryTypes::Delete:
+					return new HTMLForm(
+						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Update Company details",
+						$fieldSeparator = "<br>"
+
 					);
 					break;
 			}
@@ -1027,12 +1104,250 @@
 			/*For reference:
 				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return new HTMLForm(
+						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Exec. Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Exec. Email", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Exec. Mobile", $labelCSSClass = NULL
+							),
+
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Exec. Position", $labelCSSClass = NULL
+							),
+
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Insert a new Company Executive",
+						$fieldSeparator = "<br>"
+					);
+
+				case QueryTypes::Modify :
+					return new HTMLForm(
+						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Exec. Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Exec. Email", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Exec. Mobile", $labelCSSClass = NULL
+							),
+
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Exec. Position", $labelCSSClass = NULL
+							),
+
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Edit details of Company Executive",
+						$fieldSeparator = "<br>"
+					);
+					break;
+
+				case QueryTypes::Delete:
+					return new HTMLForm(
+						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Exec. Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Remove a Company Executive",
+						$fieldSeparator = "<br>"
+					);
+
+			}
+
+
 			return NULL;
 		}
+
 		function parseCSOMeetingQuery(){
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
 			*/
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return new HTMLForm(
+						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Reg. ID", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Exec. Name", $labelCSSClass = NULL
+							),
+							new SelectField(
+								$options = [
+									new OptionField(MeetingTypes::Call, MeetingTypes::Call),
+									new OptionField(MeetingTypes::Email, MeetingTypes::Email),
+									new OptionField(MeetingTypes::FaceToFace, MeetingTypes::FaceToFace)
+								],
+								$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL
+							),
+							new InputField(
+								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Meeting Address",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $disabled = true, $inputCSSClass = NULL, $labelText = "Meeting Outcome",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Enter details of a meeting",
+						$fieldSeparator = "<br>"
+					);
+					break;
+				case QueryTypes::Modify :
+					return new HTMLForm(
+						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Reg. ID", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Meeting ID", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Name", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$labelText = "Company Exec. Name", $labelCSSClass = NULL
+							),
+							new SelectField(
+								$options = [
+									new OptionField(MeetingTypes::Call, MeetingTypes::Call),
+									new OptionField(MeetingTypes::Email, MeetingTypes::Email),
+									new OptionField(MeetingTypes::FaceToFace, MeetingTypes::FaceToFace)
+								],
+								$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL
+							),
+							new InputField(
+								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Meeting Address",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $disabled = true, $inputCSSClass = NULL, $labelText = "Meeting Outcome",
+								$labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Update details of a meeting",
+						$fieldSeparator = "<br>"
+					);
+					break;
+				case QueryTypes::Delete :
+					return new HTMLForm(
+						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
+						$fields = array(
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Festival", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Reg. ID", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
+								$disabled = true, $inputCSSClass = NULL,
+								$labelText = "Meeting ID", $labelCSSClass = NULL
+							),
+							new InputField(
+								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+							)
+						),
+						$formCSSClass=NULL,
+						$title = "Delete a meeting",
+						$fieldSeparator = "<br>"
+					);
+					break;
+			}
 			return NULL;
 		}
 
