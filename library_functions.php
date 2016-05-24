@@ -877,10 +877,10 @@
 				SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
 			$CSOSectorHeadHTMLForm = $this->parseCSOSponsRepQuery();
-			$CSOSectorHeadHTMLForm.removeField(QueryFieldNames::SponsRole);
-			$CSOSectorHeadHTMLForm.addField(
+			$CSOSectorHeadHTMLForm->removeField(QueryFieldNames::SponsRole);
+			$CSOSectorHeadHTMLForm->addField(
 					new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SectorHead, $disabled = true, $inputCSSClass = NULL,
 								$labelText = "Role", $labelCSSClass = NULL
 					)
 			);
@@ -1137,9 +1137,9 @@
 		$title = "Insert details of sponsorship received",
 		$fieldSeparator = "<br>"
 	);
+*/
 
-
-	$r = new QueryForm(UserTypes::CSO, SQLTables::SponsRep, QueryTypes::Insert);
+	$r = new QueryForm(UserTypes::CSO, SQLTables::SectorHead, QueryTypes::Insert);
 	$r->parseQuery();
 	echo $r->HTMLQueryForm;
 
