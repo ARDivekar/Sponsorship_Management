@@ -104,7 +104,7 @@
 					<label>Sponsorship ID:</label>			  <input type="text" name="SponsID" disabled value="' . $SponsID . '"  >
 					<br>
 					<br>
-					<label>Date:</label>     <input type="date" name="Date">
+					<label>Date:</label>     <input type="date" name="Date" >
 					<br>
 					<br>
 					<label>Amount:</label><input type="text" name="Amount">
@@ -467,7 +467,7 @@
 						<label>Sponsorship ID:</label>			  <input type="text" name="SponsID">
 						<br>
 						<br>
-						<label>Date:</label>     <input type="date" name="Date">
+						<label>Date:</label>     <input type="date" name="Date" value="'.date('Y-m-d', time()).'" >
 						<br>
 						<br>
 						<label>Amount:</label><input type="text" name="Amount">
