@@ -377,7 +377,7 @@
 				$out .= ' class="' . $this->inputCSSClass . '"';
 			}
 			if($this->inputType == InputTypes::textarea){
-				$out .= '</textarea> ';
+				$out .= '></textarea> ';
 			}
 			else{
 				$out .= '/>';
@@ -781,7 +781,7 @@
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year",
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year",
 								$labelCSSClass = NULL
 							),
 							new InputField(
@@ -814,7 +814,7 @@
 								$labelText = "Role", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsID, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $disabled = false, $inputCSSClass = NULL,
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -830,7 +830,7 @@
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year",
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year",
 								$labelCSSClass = NULL
 							),
 							new InputField(
@@ -863,7 +863,7 @@
 								$labelText = "Role", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsID, $value = "", $disabled = false, $inputCSSClass = NULL,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $disabled = false, $inputCSSClass = NULL,
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -938,7 +938,7 @@
 								$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = date('Y-m-d', time()), $disabled = false, $inputCSSClass = NULL,
 								$labelText = "Date of Transaction", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsAmount, $value = "", $disabled = false,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $disabled = false,
 								$inputCSSClass = NULL, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
@@ -956,10 +956,10 @@
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
 								$disabled = true, $inputCSSClass = NULL, $labelText = "Festival", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $disabled = true,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $disabled = false,
 								$inputCSSClass = NULL, $labelText = "ID of transaction", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $disabled = true, $inputCSSClass = NULL,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $disabled = true, $inputCSSClass = NULL,
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
@@ -968,7 +968,7 @@
 								$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = "", $disabled = false, $inputCSSClass = NULL,
 								$labelText = "Date of Transaction", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsAmount, $value = "", $disabled = false,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $disabled = false,
 								$inputCSSClass = NULL, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
@@ -984,7 +984,7 @@
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
 								$disabled = true, $inputCSSClass = NULL, $labelText = "Festival", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $disabled = true,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $disabled = false,
 								$inputCSSClass = NULL, $labelText = "ID of transaction", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
@@ -1023,7 +1023,7 @@
 								$labelText = "Sector", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $disabled = true, $inputCSSClass = NULL,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $disabled = true, $inputCSSClass = NULL,
 								$labelText = "Status", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -1066,7 +1066,7 @@
 								$labelText = "Sector", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $disabled = true, $inputCSSClass = NULL,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $disabled = true, $inputCSSClass = NULL,
 								$labelText = "Status", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -1302,7 +1302,7 @@
 							),
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
-								$disabled = true, $inputCSSClass = NULL,
+								$disabled = false, $inputCSSClass = NULL,
 								$labelText = "Meeting ID", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -1353,7 +1353,7 @@
 							),
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
-								$disabled = true, $inputCSSClass = NULL,
+								$disabled = false, $inputCSSClass = NULL,
 								$labelText = "Meeting ID", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -1595,7 +1595,7 @@
 		$title = "Insert details of sponsorship received",
 		$fieldSeparator = "<br>"
 	);
-*/
+
 	echo $_SESSION[SessionEnums::UserLoginID];
 
 	$r = new QueryForm(UserTypes::CSO, SQLTables::SponsRep, QueryTypes::Insert);
