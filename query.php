@@ -10,7 +10,7 @@
 <body>
 
 <?php
-	if (!isset($_POST['submit'])) {
+	if (!isset($_GET['submit'])) {
 		header("Location: home.php");
 	}
 	/*
@@ -45,9 +45,9 @@
 
 
 
-	if (isset($_POST['submit'])) {
-		$query_type = $_POST['query_type'];
-		$table_name = $_POST['table_name'];
+	if (isset($_GET['submit'])) {
+		$query_type = $_GET['query_type'];
+		$table_name = $_GET['table_name'];
 		//echo $query_type;
 		//echo $table_name;
 

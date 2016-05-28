@@ -123,7 +123,12 @@
 					<!-- /.panel-heading -->
 					<div class="panel-body">
 						<div class="dataTable_wrapper">
-							<table class="table table-striped table-bordered table-hover" id="dataTables-example">
+							<?php
+								$result = mysql_query("SELECT ID, Organization, EventName, Name, Department, Role, Mobile, Email, Year, Branch
+								FROM CommitteeMember;");
+								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+							?>
+							<!--<table class="table table-striped table-bordered table-hover" id="dataTables-example">
 								<thead>
 								<tr>
 									<th>Company Name</th>
@@ -134,7 +139,7 @@
 								</tr>
 								</thead>
 								<tbody>
-								<tr class="odd gradeX">
+								<tr >
 									<td>Trident</td>
 									<td>Internet Explorer 4.0</td>
 									<td>Win 95+</td>

@@ -1,6 +1,7 @@
 <?php
-	session_start();
-	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
+//	session_start();
+//	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
+
 	$_SESSION[SessionEnums::UserFestival] = "Techno";
 
 	abstract class BasicEnum{
@@ -231,6 +232,45 @@
 	}
 
 
+	function print_simple_table($result, $table_classes=NULL, $table_id=NULL){
+		$out = "<table ";
+		if ($table_classes){
+			$out .= "class =\"";
+			foreach($table_classes as $table_class){
+				$out.= $table_class." ";
+			}
+			$out .= "\" ";
+		}
+
+		if($table_id){
+			$out.= " id = \"$table_id\"";
+		}
+		$out .= ">";
+
+
+		//table headers:
+		$i = 0;
+		$out.= "<thead><tr>";
+		while ($i < mysql_num_fields($result)){
+			$attr = mysql_fetch_field($result, $i);
+			$out .= "<th>".$attr->name."</th>";
+			$i++;
+		}
+		$out.= "</tr></thead>";
+
+
+		while ($row = mysql_fetch_assoc($result)){
+			$out.= '<tr>';
+			foreach ($row as $key => $value){
+				$out.= '<td>' . $value . '</td>';
+			}
+			$out.= "</tr>";
+		}
+
+		$out .="</table>";
+		echo $out;
+		return $out;
+	}
 
 
 
@@ -1701,6 +1741,8 @@
 	echo $r->HTMLQueryForm;
 	echo "<br><br>";
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
-
-
+//	require('DBconnect.php');
+//	$result = mysql_query("SELECT ID, Organization, EventName, Name, Department, Role, Mobile, Email, Year, Branch
+//								FROM CommitteeMember;");
+//	print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 ?>
