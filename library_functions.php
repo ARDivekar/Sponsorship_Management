@@ -262,7 +262,12 @@
 		while ($row = mysql_fetch_assoc($result)){
 			$out.= '<tr>';
 			foreach ($row as $key => $value){
-				$out.= '<td>' . $value . '</td>';
+				if($value!=NULL && $value!=""){
+					$out.= '<td>' . $value . '</td>';
+				}
+				else{
+					$out.= '<td class="center">-</td>';
+				}
 			}
 			$out.= "</tr>";
 		}

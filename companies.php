@@ -124,8 +124,8 @@
 					<div class="panel-body">
 						<div class="dataTable_wrapper">
 							<?php
-								$result = mysql_query("SELECT ID, Organization, EventName, Name, Department, Role, Mobile, Email, Year, Branch
-								FROM CommitteeMember;");
+								$result = mysql_query("SELECT * FROM committeemember;");
+								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
 								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 							<!--<table class="table table-striped table-bordered table-hover" id="dataTables-example">
