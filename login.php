@@ -33,7 +33,7 @@
 
 
 require('DBconnect.php');
-
+$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
 
 
 //Getting data from HTML form:

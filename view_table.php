@@ -25,6 +25,7 @@
 	require('DBconnect.php');
 	require('library_functions.php');
 	$SponsID = $_SESSION['loginID']; //get SponsID from previous session
+	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
 
 	$UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;"  class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
 	$FieldEmptyMessage = '<div align=center><h3 align=center style="padding: 40px; font-size:28px; line-height:50px;"  class="invalid_message">Error<br>You have not filled all the required fields.</h3> </div>';

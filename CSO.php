@@ -19,7 +19,7 @@
 
 		require('DBconnect.php');
 		require('library_functions.php');
-		$SponsID=$_SESSION['loginID']; //get SponsID from previos session
+		$SponsID=$_SESSION['loginID']; //get SponsID from previous session
 
 	?>
 	<header>
