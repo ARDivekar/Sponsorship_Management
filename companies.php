@@ -122,13 +122,15 @@
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-						<div class="dataTable_wrapper">
+						<div class="dataTable_wrapper" style="overflow: scroll;">
+
 							<?php
 								$result = mysql_query("SELECT * FROM committeemember;");
 								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
 								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
-							<!--<table class="table table-striped table-bordered table-hover" id="dataTables-example">
+						<?php /*
+							<table class="table table-striped table-bordered table-hover" id="dataTables-example">
 								<thead>
 								<tr>
 									<th>Company Name</th>
@@ -541,8 +543,11 @@
 								</tr>
 								</tbody>
 							</table>
+ 						*/
+						?>
 						</div>
 						<!-- /.table-responsive -->
+						<?php /*
 						<div class="well">
 							<h4>DataTables Usage Information</h4>
 
@@ -552,6 +557,8 @@
 																					   href="https://datatables.net/">https://datatables.net/</a>.</p>
 							<a class="btn btn-default btn-lg btn-block" target="_blank" href="https://datatables.net/">View DataTables Documentation</a>
 						</div>
+						 */
+						?>
 					</div>
 					<!-- /.panel-body -->
 				</div>

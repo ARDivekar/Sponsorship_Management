@@ -1746,8 +1746,5 @@
 	echo $r->HTMLQueryForm;
 	echo "<br><br>";
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
-//	require('DBconnect.php');
-//	$result = mysql_query("SELECT ID, Organization, EventName, Name, Department, Role, Mobile, Email, Year, Branch
-//								FROM CommitteeMember;");
-//	print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+
 ?>
