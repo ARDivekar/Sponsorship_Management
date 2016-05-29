@@ -125,8 +125,8 @@
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
-								$result = mysql_query("SELECT * FROM committeemember;");
-								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
+//								$result = mysql_query("SELECT * FROM committeemember;");
+								$result = mysql_query("SELECT * FROM company;");
 								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 						<?php /*

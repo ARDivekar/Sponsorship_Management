@@ -105,7 +105,7 @@
 
 	<div id="query" align="center">
 		<!-- SponsRep form -->
-		<form action="query.php" method ="post"> 
+		<form action="query.php" method ="GET">
 		<h2>Options:</h2>
 			<select name="query_type">
 				<option>Insert</option>
