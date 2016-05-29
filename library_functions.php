@@ -553,6 +553,14 @@
 			}
 		}
 
+		function rearrangeFields($orderedFieldNames){
+			$tempArr = [];
+			foreach($orderedFieldNames as $orderedFieldName){
+				$tempArr[$orderedFieldName] = $this->fields[$orderedFieldName];
+			}
+			$this->fields = $tempArr;
+		}
+
 		function __toString(){
 //			$this->echoFieldNames();
 			$out = "";
@@ -569,6 +577,7 @@
 
 			return $out;
 		}
+
 	}
 
 	abstract class SessionEnums extends BasicEnum{
@@ -928,10 +937,6 @@
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival], $disabled = true, $inputCSSClass = NULL,
 								$labelText = "Festival", $labelCSSClass = NULL
-							),
-							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $disabled = false, $inputCSSClass = NULL,
-								$labelText = "Sector", $labelCSSClass = NULL
 							),
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
@@ -1490,13 +1495,27 @@
 			/*For reference:
 				SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
 			*/
+
 			return NULL;
 		}
 		function parseSectorHeadSponsRepQuery(){
 			/*For reference:
 				SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
 			*/
-			return NULL;
+			$SectorHeadSponsRepForm = $this->parseCSOSponsRepQuery();
+			$SectorHeadSponsRepForm->addField(new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Sector", $labelCSSClass = NULL
+							));
+			$SectorHeadSponsRepForm->rearrangeFields(
+				[QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsRole,
+				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsID,
+				QueryFieldNames::SponsName]
+			);
+
+			return $SectorHeadSponsRepForm;
 		}
 		function parseSectorHeadSectorHeadQuery(){
 			/*For reference:
@@ -1617,7 +1636,11 @@
 		}
 
 
-
+		function rearrangeFields($orderedFieldNames){
+			if($this->HTMLQueryForm != NULL){
+				$this->HTMLQueryForm->rearrangeFields($orderedFieldNames);
+			}
+		}
 
 
 
@@ -1778,6 +1801,12 @@
 
 
 	$r = new QueryForm(UserTypes::SponsRep, SQLTables::SponsRep, QueryTypes::Delete);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+	*/
+	$r = new QueryForm(UserTypes::SectorHead, SQLTables::SponsRep, QueryTypes::Delete);
 	$r->parseQuery();
 	echo $r->HTMLQueryForm;
 	echo "<br><br>";
