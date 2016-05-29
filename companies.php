@@ -122,7 +122,7 @@
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-						<div class="dataTable_wrapper" style="overflow: scroll;">
+						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
 								$result = mysql_query("SELECT * FROM committeemember;");
