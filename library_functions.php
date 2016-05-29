@@ -637,17 +637,8 @@
 		const FaceToFace = "Face-To-Face meeting";
 	}
 
-
-	class QueryForm{ // this has all the settings and restrictions we require for the various users.
-		var $userType = NULL;
-		var $tableName = NULL;
-		var $queryType = NULL;
-		var $isValidForm = NULL;
-		var $HTMLQueryForm = NULL;
-		var $UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;" class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
-
-
-		var $CSOAuth = [
+	abstract class Authorization{
+		static $CSOAuth = [
 			SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
 			SQLTables::SponsLogin => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
@@ -658,7 +649,7 @@
 			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
 		];
 
-		var $SectorHeadAuth = [
+		static $SectorHeadAuth = [
 			SQLTables::Event => [],	//empty means no queries allowed
 			SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
 			SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
@@ -669,7 +660,7 @@
 			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 		];
 
-		var $SponsRepAuth = [
+		static $SponsRepAuth = [
 			SQLTables::Event => [QueryTypes::View],		//Can only view own details.
 			SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
 			SQLTables::SponsRep => [QueryTypes::View],
@@ -679,6 +670,47 @@
 			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 		];
+
+		static function checkValidAuthorization($userType, $tableName, $queryType){
+			if (UserTypes::isValidValue($userType) && SQLTables::isValidValue($tableName) && QueryTypes::isValidValue($queryType)){
+				switch($userType){
+					case UserTypes::CSO:
+						if(in_array($queryType, Authorization::$CSOAuth[$tableName])){
+							return true;
+						}
+						break;
+
+					case UserTypes::SectorHead:
+						if(in_array($queryType, Authorization::$SectorHeadAuth[$tableName])){
+							return true;
+						}
+						break;
+
+					case UserTypes::SponsRep:
+						if(in_array($queryType, Authorization::$SponsRepAuth[$tableName])){
+							return true;
+						}
+						break;
+				}
+
+			}
+			else{
+				echo "input values are not valid";
+			}
+			return false;
+		}
+	}
+
+
+	class QueryForm{ // this has all the settings and restrictions we require for the various users.
+		var $userType = NULL;
+		var $tableName = NULL;
+		var $queryType = NULL;
+		var $isValidForm = NULL;
+		var $HTMLQueryForm = NULL;
+		var $UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;" class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
+
+
 
 
 
@@ -712,22 +744,20 @@
 
 		function parseQuery(){
 			if ($this->isValidForm){ //all values must be valid
-				if($this->userType == UserTypes::CSO){
-					if(in_array($this->queryType, $this->CSOAuth[$this->tableName])){
-						$this->HTMLQueryForm = $this->parseCSOQuery();
-					} else echo $this->UnauthorizedMessage;
-
-				}
-				else if($this->userType == UserTypes::SectorHead){
-					if(in_array($this->queryType, $this->SectorHeadAuth[$this->tableName])){
-						$this->HTMLQueryForm = $this->parseSectorHeadQuery();
-					} else echo $this->UnauthorizedMessage;
-				}
-				else if($this->userType == UserTypes::SponsorshipRepresentative){
-					if(in_array($this->queryType, $this->SponsRepAuth[$this->tableName])){
-						$this->HTMLQueryForm = $this->parseSponsRepQuery();
-					} else echo $this->UnauthorizedMessage;
-				}
+				if (Authorization::checkValidAuthorization($this->userType, $this->tableName, $this->queryType)){
+					//user is authorized to run this query
+					switch ($this->userType){
+						case UserTypes::CSO:
+							$this->HTMLQueryForm = $this->parseCSOQuery();
+							break;
+						case UserTypes::SectorHead:
+							$this->HTMLQueryForm = $this->parseSectorHeadQuery();
+							break;
+						case UserTypes::SponsRep:
+							$this->HTMLQueryForm = $this->parseSponsRepQuery();
+							break;
+					}
+				} else echo $this->UnauthorizedMessage;
 			}
 		}
 
@@ -1741,7 +1771,13 @@
 	echo $r->HTMLQueryForm;
 	echo "<br><br>";
 
-	$r = new QueryForm(UserTypes::CSO, SQLTables::Meeting, QueryTypes::Delete);
+	$r = new QueryForm(UserTypes::CSO, SQLTables::SponsRep, QueryTypes::Delete);
+	$r->parseQuery();
+	echo $r->HTMLQueryForm;
+	echo "<br><br>";
+
+
+	$r = new QueryForm(UserTypes::SponsRep, SQLTables::SponsRep, QueryTypes::Delete);
 	$r->parseQuery();
 	echo $r->HTMLQueryForm;
 	echo "<br><br>";
