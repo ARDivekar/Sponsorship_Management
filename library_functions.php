@@ -556,7 +556,8 @@
 		function rearrangeFields($orderedFieldNames){
 			$tempArr = [];
 			foreach($orderedFieldNames as $orderedFieldName){
-				$tempArr[$orderedFieldName] = $this->fields[$orderedFieldName];
+				if(array_key_exists($orderedFieldName,$this->fields))
+					$tempArr[$orderedFieldName] = $this->fields[$orderedFieldName];
 			}
 			$this->fields = $tempArr;
 		}
@@ -632,6 +633,95 @@
 		const SponsMeetingType = "SponsMeetingType";
 		const SponsMeetingOutcome = "SponsMeetingOutcome";
 		const SponsMeetingEntryID = "SponsMeetingEntryID";
+		const Submit = "Submit";
+
+
+		static $TableToFieldNameOrdering = [ //used to specify ordering in forms
+			SQLTables::AccountLog => [
+				QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsAccountLogEntryID,
+				QueryFieldNames::SponsTransType,
+				QueryFieldNames::SponsID,
+				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsCompany,
+				QueryFieldNames::SponsDate,
+				QueryFieldNames::SponsAmount,
+				QueryFieldNames::Submit
+			],
+
+			SQLTables::Company => [
+				QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsCompany,
+				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsCompanyStatus,
+				QueryFieldNames::SponsCompanyAddress,
+				QueryFieldNames::SponsCompanySponsoredOthers,
+				QueryFieldNames::Submit
+			],
+
+			SQLTables::CompanyExec => [
+				QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsCompany,
+				QueryFieldNames::SponsCompanyExec,
+				QueryFieldNames::SponsEmail,
+				QueryFieldNames::SponsMobile,
+				QueryFieldNames::SponsCompanyExecPosition,
+				QueryFieldNames::Submit
+			],
+
+			SQLTables::Meeting => [
+				QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsID,
+				QueryFieldNames::SponsMeetingEntryID,
+				QueryFieldNames::SponsCompany,
+				QueryFieldNames::SponsCompanyExec,
+				QueryFieldNames::SponsMeetingType,
+				QueryFieldNames::SponsMeetingAddress,
+				QueryFieldNames::SponsMeetingOutcome,
+				QueryFieldNames::Submit
+			],
+
+			SQLTables::SponsRep => [
+				QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsRole,
+				QueryFieldNames::SponsID,
+				QueryFieldNames::SponsName,
+				QueryFieldNames::SponsPassword,
+				QueryFieldNames::SponsRePassword,
+				QueryFieldNames::SponsEmail,
+				QueryFieldNames::SponsMobile,
+				QueryFieldNames::SponsYear,
+				QueryFieldNames::SponsBranch,
+				QueryFieldNames::Submit
+			],
+
+			SQLTables::SectorHead => [
+				QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsRole,
+				QueryFieldNames::SponsID,
+				QueryFieldNames::SponsName,
+				QueryFieldNames::SponsPassword,
+				QueryFieldNames::SponsRePassword,
+				QueryFieldNames::SponsEmail,
+				QueryFieldNames::SponsMobile,
+				QueryFieldNames::SponsYear,
+				QueryFieldNames::SponsBranch,
+				QueryFieldNames::Submit
+			],
+
+
+
+			SQLTables::Event => [
+
+			],
+
+			SQLTables::SponsLogin => [
+
+			]
+
+		];
 
 	}
 
@@ -711,6 +801,9 @@
 	}
 
 
+
+
+
 	class QueryForm{ // this has all the settings and restrictions we require for the various users.
 		var $userType = NULL;
 		var $tableName = NULL;
@@ -766,6 +859,7 @@
 							$this->HTMLQueryForm = $this->parseSponsRepQuery();
 							break;
 					}
+					$this->HTMLQueryForm->rearrangeFields(QueryFieldNames::$TableToFieldNameOrdering[$this->tableName]);
 				} else echo $this->UnauthorizedMessage;
 			}
 		}
@@ -799,7 +893,6 @@
 			}
 			return NULL;
 		}
-
 
 
 		function parseCSOEventQuery(){
@@ -873,7 +966,7 @@
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -922,7 +1015,7 @@
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -951,7 +1044,7 @@
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1021,7 +1114,7 @@
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $disabled = false,
 								$inputCSSClass = NULL, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						), $formCSSClass = NULL, $title = "Enter a new transaction into the Festival Account", $fieldSeparator = "<br>"
 					);
@@ -1051,7 +1144,7 @@
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $disabled = false,
 								$inputCSSClass = NULL, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						), $formCSSClass = NULL, $title = "Enter the values of the modified transaction", $fieldSeparator = "<br>"
 					);
@@ -1070,7 +1163,7 @@
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
 								$labelText = "Company Name", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						), $formCSSClass = NULL, $title = "Delete an account transaction", $fieldSeparator = "<br>"
 					);
@@ -1118,7 +1211,7 @@
 								$name = QueryFieldNames::SponsCompanySponsoredOthers, $selectCSSClass=NULL, $labelText="Sponsored Others", $labelCSSClass=NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1161,7 +1254,7 @@
 								$name = QueryFieldNames::SponsCompanySponsoredOthers, $selectCSSClass=NULL, $labelText="Sponsored Others", $labelCSSClass=NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1185,7 +1278,7 @@
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1235,7 +1328,7 @@
 							),
 
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1275,7 +1368,7 @@
 							),
 
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1302,7 +1395,7 @@
 								$labelText = "Company Exec. Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1359,7 +1452,7 @@
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1367,6 +1460,7 @@
 						$fieldSeparator = "<br>"
 					);
 					break;
+
 				case QueryTypes::Modify :
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
@@ -1410,7 +1504,7 @@
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1437,7 +1531,7 @@
 								$labelText = "Meeting ID", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $disabled = false, $inputCSSClass = "query_forms"
 							)
 						),
 						$formCSSClass=NULL,
@@ -1507,27 +1601,29 @@
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $disabled = true, $inputCSSClass = NULL,
 								$labelText = "Sector", $labelCSSClass = NULL
 							));
-			$SectorHeadSponsRepForm->rearrangeFields(
-				[QueryFieldNames::SponsFestival,
-				QueryFieldNames::SponsRole,
-				QueryFieldNames::SponsSector,
-				QueryFieldNames::SponsID,
-				QueryFieldNames::SponsName]
-			);
 
 			return $SectorHeadSponsRepForm;
 		}
+
 		function parseSectorHeadSectorHeadQuery(){
 			/*For reference:
 				SQLTables::SectorHead => [],
 			*/
 			return NULL;
 		}
+
 		function parseSectorHeadAccountLogQuery(){
 			/*For reference:
 				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//Can only insert, modify, delete, and view for own sector
 			*/
-			return NULL;
+			$SectorHeadAccountLogForm = $this->parseCSOAccountLogQuery();
+			$SectorHeadAccountLogForm->addField(new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Company Sector", $labelCSSClass = NULL
+							));
+
+			//These are all the possible fields
+			return $SectorHeadAccountLogForm;
 		}
 		function parseSectorHeadCompanyQuery(){
 			/*For reference:
@@ -1647,7 +1743,7 @@
 		function generateForm(){
 			$out = "";
 			if ($this->isValidForm){
-
+				$out.=$this->HTMLQueryForm;
 			}
 			else echo "The Query form is not valid";
 			return $out;
@@ -1806,7 +1902,7 @@
 	echo "<br><br>";
 
 	*/
-	$r = new QueryForm(UserTypes::SectorHead, SQLTables::SponsRep, QueryTypes::Delete);
+	$r = new QueryForm(UserTypes::SectorHead, SQLTables::AccountLog, QueryTypes::Insert);
 	$r->parseQuery();
 	echo $r->HTMLQueryForm;
 	echo "<br><br>";
