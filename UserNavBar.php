@@ -58,7 +58,7 @@
                     <a href="meeting.php"><i class="fa fa-calendar fa-fw"></i> Meeting Log</a>
                 </li>
                 <li>
-                    <a href="account.php"><i class="fa fa-inr fa-fw"></i> Account Log</a>
+                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i> Account Log</a>
                 </li>
                 <li>
                     <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i> Reports</a>

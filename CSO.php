@@ -19,7 +19,8 @@
 
 		require('DBconnect.php');
 		require('library_functions.php');
-		$SponsID=$_SESSION['loginID']; //get SponsID from previos session
+		$SponsID=$_SESSION['loginID']; //get SponsID from previous session
+		$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
 
 	?>
 	<header>
@@ -111,7 +112,7 @@
 	<div id="query" align="center">
 		
 		<!-- SectorHead form -->
-		<form action="query.php" method ="POST">
+		<form action="query.php" method ="GET">
 			<h2>Options:</h2>
 			<select name="query_type">
 				<option>Insert</option>
