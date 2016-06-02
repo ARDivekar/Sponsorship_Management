@@ -123,7 +123,7 @@
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-
+<!-- 
 						<div class="dataTable_wrapper">
 							<table class="table table-striped table-bordered table-hover" id="dataTables-example">
 								<thead>
@@ -549,7 +549,7 @@
 																					   href="https://datatables.net/">https://datatables.net/</a>.</p>
 							<a class="btn btn-default btn-lg btn-block" target="_blank" href="https://datatables.net/">View DataTables Documentation</a>
 						</div>
-
+ -->
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php

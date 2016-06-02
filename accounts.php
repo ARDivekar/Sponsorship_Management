@@ -5,7 +5,7 @@
 	<?php
 		include('UserNavBarImports.php');
 	?>
-	<title>Meetings</title>
+	<title>Account Log</title>
 
 	<!-- DataTables CSS -->
 	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
@@ -104,7 +104,7 @@
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Meeting</h1>
+				<h1 class="page-header">Account Log</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
