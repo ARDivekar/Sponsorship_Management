@@ -1,0 +1,66 @@
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+.custom-validation-required {
+  content:"*";
+  color:red;
+}
+</style>
+
+</head>
+
+<body>
+	<div class="container" style="margin-top:10%">
+		<!-- <div class="col-md-12 col-md-offset-1">
+			<h1>NAV BAR</h1>
+		</div> -->
+		<div class="col-md-6 col-md-offset-2">
+			<div class="panel panel-primary">
+			 	<div class="panel-heading">
+			 		<label><h4>Insert a Sponsorship Representative into another sector</h4></label>
+			 	</div>
+			 	<div class="panel-body">
+				  	<form>
+				  		<div class="row">
+					  		<div class="form-group col-xs-12">
+						    	<label for="SponsId">SponsID <span class="custom-validation-required">*</span> </label>
+						    	<input class="form-control" id="sponsid" pattern="\d+" required>
+						  	</div>
+					  	</div>
+					  	<div class="row">
+						  	<div class="form-group col-xs-12">
+						  		<label for="name">Name <span class="custom-validation-required">*</span> </label>
+						    	<input type="text" class="form-control" id="name" required>
+						  	</div>
+					  	</div>
+					  	<div class="row">
+						  	<div class="form-group col-xs-12">
+						  		<label for="password">Password <span class="custom-validation-required">*</span> </label>
+						    	<input type="password" class="form-control" id="password" required>
+						  	</div>
+					  	</div>
+					  	<div class="row">
+						  	<div class="form-group col-xs-12">
+						  		<label for="eventName">Event Name <span class="custom-validation-required">*</span> </label>
+						    	<input type="text" class="form-control" id="eventName" required>
+						  	</div>
+					  	</div>
+				  	</form>
+			 	</div>
+			 	<div class="panel-footer">
+			  		<div class="col-md-offset-10">
+			  			<button type="submit" class="btn btn-success">Submit</button>
+			  		</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>

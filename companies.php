@@ -104,24 +104,26 @@
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Tables</h1>
+				<h1 class="page-header">Companies</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
 
-		<div class="row col-md-2 col-sm-offset-1">
+		<div class="row col-md-6">
 			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Company</h4></a>
 		</div>
+		<br />
 
 		<!-- /.row -->
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						DataTables Advanced Tables
+						Companies of ___ Sector ( For CSO - All)
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
+
 						<div class="dataTable_wrapper">
 							<table class="table table-striped table-bordered table-hover" id="dataTables-example">
 								<thead>
@@ -547,6 +549,18 @@
 																					   href="https://datatables.net/">https://datatables.net/</a>.</p>
 							<a class="btn btn-default btn-lg btn-block" target="_blank" href="https://datatables.net/">View DataTables Documentation</a>
 						</div>
+
+						<div class="dataTable_wrapper" style="overflow-x: scroll;">
+
+							<?php
+								$result = mysql_query("SELECT * FROM company;");
+								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
+								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+							?>
+
+						</div>
+						<!-- /.table-responsive -->
+						
 					</div>
 					<!-- /.panel-body -->
 				</div>
