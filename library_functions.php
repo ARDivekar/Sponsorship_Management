@@ -1,7 +1,7 @@
 <?php
 //	session_start();
 //	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
-
+	require('DBconnect.php');
 	$_SESSION[SessionEnums::UserFestival] = "Techno";
 	$_SESSION[SessionEnums::UserLoginID] = 131080052;
 	$_SESSION[SessionEnums::UserSector] = "All";
@@ -187,6 +187,23 @@
 	}
 
 
+	function select_single_column_from_table($column_name, $table_name, $where_params=NULL){
+		$out_list = [];
+
+		$single_col_select_query = "SELECT $column_name FROM $table_name";
+		if($where_params)
+			$single_col_select_query.= " WHERE $where_params;";
+		$single_col_select_query .= ";";
+
+		echo $single_col_select_query;
+		$result = mysql_query($single_col_select_query);
+		if (mysql_num_rows($result) > 0){
+			while ($row = mysql_fetch_assoc($result))
+				array_push($out_list, $row[$column_name]);
+		}
+		return $out_list;
+	}
+
 	/*
 	function print_table($result){ //array of arritubtes and corresponding sql result we get from querying the attributes
 		echo '<table style=\"width:100%\" class="output_table">';
@@ -209,7 +226,7 @@
 		echo "</table>";
 	}
 	*/
-	
+
 	function print_table($result){ //array of attributes and corresponding sql result we get from querying the attributes
 		echo '<div align="center">';
 		echo '<table align="center" style=\"width:100%\" class="output_table">';
@@ -381,9 +398,11 @@
 		var $inputCSSClass = NULL;
 		var $labelText = NULL;
 		var $labelCSSClass = NULL;
+		var $inputDataListID = NULL;
+		var $inputDataList = NULL;
 
 
-		function InputField($inputType, $name, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL){
+		function InputField($inputType, $name, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL){
 
 			if (!InputTypes::isValidValue($inputType)){
 				echo "Invalid type passed to constructor of class InputField.";
@@ -397,6 +416,8 @@
 			$this->inputCSSClass = $inputCSSClass;
 			$this->labelText = $labelText;
 			$this->labelCSSClass = $labelCSSClass;
+			$this->inputDataListID = $inputDataListID;
+			$this->inputDataList = $inputDataList;
 		}
 
 
@@ -423,11 +444,27 @@
 			if ($this->inputCSSClass){
 				$out .= ' class="' . $this->inputCSSClass . '"';
 			}
+
+			//add datalist if present:
+			if( ($this->inputType==InputTypes::number ||  $this->inputType==InputTypes::text) && $this->inputDataListID && $this->inputDataList){
+				$out .= " list=\"$this->inputDataListID\"";
+			}
+
+
 			if($this->inputType == InputTypes::textarea){
 				$out .= '></textarea> ';
 			}
 			else{
 				$out .= '/>';
+			}
+
+			//add datalist items if present:
+			if( ($this->inputType==InputTypes::number ||  $this->inputType==InputTypes::text) && $this->inputDataListID && $this->inputDataList){
+				$out .= "<datalist id= \"$this->inputDataListID\">";
+				foreach($this->inputDataList as $datalistItem){
+					$out .= "<option value=\"$datalistItem\" />";
+				}
+				$out .= "</datalist>";
 			}
 
 			return $out;
@@ -817,6 +854,8 @@
 		}
 		return NULL;
 	}
+
+
 
 
 
@@ -1635,7 +1674,7 @@
 			$SectorHeadAccountLogForm = $this->parseCSOAccountLogQuery();
 			$SectorHeadAccountLogForm->addField(new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $disabled = true, $inputCSSClass = NULL,
-								$labelText = "Company Sector", $labelCSSClass = NULL
+								$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=NULL
 							));
 
 			//These are all the possible fields
@@ -1786,6 +1825,11 @@
 
 
 
+
+	$r = new QueryForm(UserTypes::SectorHead, SQLTables::AccountLog, QueryTypes::Insert);
+	$r->parseQuery();
+	echo $r;
+	echo "<br><br>";
 	/*##------------------------------------------------TESTS------------------------------------------------##
 	echo new HTMLForm(
 		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
@@ -1929,11 +1973,12 @@
 	echo $r->HTMLQueryForm;
 	echo "<br><br>";
 */
+	echo new InputField(
+		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $disabled = false, $inputCSSClass = NULL,
+		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company")
+	);
 
-	$r = new QueryForm(UserTypes::SectorHead, SQLTables::AccountLog, QueryTypes::Insert);
-	$r->parseQuery();
-	echo $r;
-	echo "<br><br>";
+
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
 ?>
