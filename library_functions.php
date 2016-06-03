@@ -650,6 +650,7 @@
 		const SponsSector = "SponsSector";
 		const SponsRole = "SponsRole";
 		const SponsID = "SponsID";
+		const SponsOthersID = "SponsOthersID";
 		const SponsName = "SponsName";
 		const SponsPassword = "SponsPassword";
 		const SponsRePassword = "SponsRePassword";
@@ -715,6 +716,8 @@
 				QueryFieldNames::SponsCompany,
 				QueryFieldNames::SponsCompanyExec,
 				QueryFieldNames::SponsMeetingType,
+				QueryFieldNames::SponsDate,
+				QueryFieldNames::SponsTime,
 				QueryFieldNames::SponsMeetingAddress,
 				QueryFieldNames::SponsMeetingOutcome,
 				QueryFieldNames::Submit
@@ -724,7 +727,7 @@
 				QueryFieldNames::SponsFestival,
 				QueryFieldNames::SponsSector,
 				QueryFieldNames::SponsRole,
-				QueryFieldNames::SponsID,
+				QueryFieldNames::SponsOthersID,
 				QueryFieldNames::SponsName,
 				QueryFieldNames::SponsPassword,
 				QueryFieldNames::SponsRePassword,
@@ -739,7 +742,7 @@
 				QueryFieldNames::SponsFestival,
 				QueryFieldNames::SponsSector,
 				QueryFieldNames::SponsRole,
-				QueryFieldNames::SponsID,
+				QueryFieldNames::SponsOthersID,
 				QueryFieldNames::SponsName,
 				QueryFieldNames::SponsPassword,
 				QueryFieldNames::SponsRePassword,
@@ -763,6 +766,176 @@
 		];
 
 	}
+
+
+	abstract class PredefinedQueryInputFields extends BasicEnum{
+		static $inputFieldsList = [];
+		function PredefinedQueryInputFields(){
+			PredefinedQueryInputFields::$inputFieldsList = [
+				QueryFieldNames::SponsFestival =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
+						$disabled = true, $inputCSSClass = NULL,
+						$labelText = "Festival", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsID =>
+					new InputField(
+						$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $disabled = true, $inputCSSClass = NULL,
+						$labelText = "My ID", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsOthersID =>
+					new InputField(
+						$inputType = InputTypes::number, $name = QueryFieldNames::SponsOthersID, $value = "", $disabled = false, $inputCSSClass = NULL,
+						$labelText = "Person's ID", $labelCSSClass = NULL
+					),
+
+
+				QueryFieldNames::SponsName =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Name",
+						$labelCSSClass = NULL,
+					),
+
+				QueryFieldNames::SponsEmail =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Email",
+						$labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsMobile =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Mobile",
+						$labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsYear =>
+					new InputField(
+					$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year",
+					$labelCSSClass = NULL
+				),
+
+				QueryFieldNames::SponsBranch =>
+					new InputField(
+					$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Branch",
+					$labelCSSClass = NULL
+				),
+
+				QueryFieldNames::SponsCompany =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
+						$labelText = "Company Name", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsTransType =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsTransType, $value = TransType::Deposit, $disabled = true,
+						$inputCSSClass = NULL, $labelText = "Transaction Type", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsDate =>
+					new InputField(
+						$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = "", $disabled = false, $inputCSSClass = NULL,
+						$labelText = "Date", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsTime =>
+					new InputField(
+						$inputType = InputTypes::time, $name = QueryFieldNames::SponsDate, $value = "", $disabled = false, $inputCSSClass = NULL,
+						$labelText = "Time", $labelCSSClass = NULL
+					),
+
+
+				QueryFieldNames::SponsAmount =>
+					new InputField(
+						$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $disabled = false,
+						$inputCSSClass = NULL, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsAccountLogEntryID =>
+					new InputField(
+						$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $disabled = false,
+						$inputCSSClass = NULL, $labelText = "Account Transaction ID", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsCompanyStatus =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = "", $disabled = false, $inputCSSClass = NULL,
+						$labelText = "Company's status", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsCompanySponsoredOthers =>
+					new SelectField(
+						$options = [
+							new OptionField(CompanySponsoredOthers::Yes, CompanySponsoredOthers::Yes),
+							new OptionField(CompanySponsoredOthers::No, CompanySponsoredOthers::No)
+						],
+						$name = QueryFieldNames::SponsCompanySponsoredOthers, $selectCSSClass=NULL, $labelText="Sponsored Others?", $labelCSSClass=NULL
+					),
+
+				QueryFieldNames::SponsCompanyAddress =>
+					new InputField(
+						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Address",
+						$labelCSSClass = NULL
+					),
+
+
+				QueryFieldNames::SponsCompanyExec =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $disabled = false, $inputCSSClass = NULL,
+						$labelText = "Company Exec. Name", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsCompanyExecPosition =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $disabled = false, $inputCSSClass = NULL,
+						$labelText = "Exec. Position", $labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsMeetingAddress =>
+					new InputField(
+						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Meeting Address",
+						$labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsMeetingType =>
+					new SelectField(
+						$options = [
+							new OptionField(MeetingTypes::Call, MeetingTypes::Call),
+							new OptionField(MeetingTypes::Email, MeetingTypes::Email),
+							new OptionField(MeetingTypes::FaceToFace, MeetingTypes::FaceToFace)
+						],
+						$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL
+					),
+
+
+				QueryFieldNames::SponsMeetingOutcome =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $disabled = true, $inputCSSClass = NULL, $labelText = "Meeting Outcome",
+						$labelCSSClass = NULL
+					),
+
+				QueryFieldNames::SponsMeetingEntryID =>
+					new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
+						$disabled = false, $inputCSSClass = NULL,
+						$labelText = "Meeting ID", $labelCSSClass = NULL
+					)
+
+			];
+
+
+
+
+		}
+
+
+
+	}
+
+
+
 
 	abstract class CompanySponsoredOthers extends BasicEnum{
 		const Yes = "Yes";
@@ -854,8 +1027,6 @@
 		}
 		return NULL;
 	}
-
-
 
 
 
