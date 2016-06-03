@@ -3,6 +3,8 @@
 //	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
 
 	$_SESSION[SessionEnums::UserFestival] = "Techno";
+	$_SESSION[SessionEnums::UserLoginID] = 131080052;
+	$_SESSION[SessionEnums::UserSector] = "All";
 
 	abstract class BasicEnum{
 		private static $constCacheArray = NULL;
@@ -801,6 +803,20 @@
 	}
 
 
+	function extractValueFromGET($valueName){
+		if(array_key_exists($valueName, $_GET)){
+			return $_GET[$valueName];
+		}
+		return NULL;
+	}
+
+
+	function extractValueFromPOST($valueName){
+		if(array_key_exists($valueName, $_POST)){
+			return $_POST[$valueName];
+		}
+		return NULL;
+	}
 
 
 
@@ -1738,11 +1754,23 @@
 			}
 		}
 
+		function extractFromGET(){
+
+			if($this->isValidForm){
+				foreach($this->HTMLQueryForm->fields as $fieldName => $inputField){
+					$valueFromGET = extractValueFromGET($fieldName);
+					if ($valueFromGET != NULL){
+						$inputField->value = $valueFromGET;
+					}
+				}
+			}
+		}
 
 
 		function generateForm(){
 			$out = "";
 			if ($this->isValidForm){
+				$this->extractFromGET();
 				$out.=$this->HTMLQueryForm;
 			}
 			else echo "The Query form is not valid";
@@ -1900,11 +1928,11 @@
 	$r->parseQuery();
 	echo $r->HTMLQueryForm;
 	echo "<br><br>";
+*/
 
-	*/
 	$r = new QueryForm(UserTypes::SectorHead, SQLTables::AccountLog, QueryTypes::Insert);
 	$r->parseQuery();
-	echo $r->HTMLQueryForm;
+	echo $r;
 	echo "<br><br>";
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
