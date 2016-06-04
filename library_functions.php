@@ -821,6 +821,22 @@
 					break;
 
 
+				case QueryFieldNames::SponsPassword :
+					return new InputField(
+						$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Password",
+						$labelCSSClass = NULL
+					);
+					break;
+
+
+				case QueryFieldNames::SponsRePassword :
+					return new InputField(
+						$inputType = InputTypes::password, $name = QueryFieldNames::SponsRePassword, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Re-enter Password",
+						$labelCSSClass = NULL
+					);
+					break;
+
+
 				case QueryFieldNames::SponsEmail :
 					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Email",
