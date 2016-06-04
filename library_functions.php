@@ -4,7 +4,7 @@
 	require('DBconnect.php');
 	$_SESSION[SessionEnums::UserFestival] = "Techno";
 	$_SESSION[SessionEnums::UserLoginID] = 131080052;
-	$_SESSION[SessionEnums::UserAccessLevel] = UserTypes::SectorHead;
+	$_SESSION[SessionEnums::UserAccessLevel] = UserTypes::SponsRep; //for testing purposes
 	$_SESSION[SessionEnums::UserSector] = "Music Stores";
 
 	abstract class BasicEnum{
@@ -689,8 +689,8 @@
 				QueryFieldNames::SponsAccountLogEntryID,
 				QueryFieldNames::SponsTransType,
 				QueryFieldNames::SponsID,
-				QueryFieldNames::SponsSector,
 				QueryFieldNames::SponsCompany,
+				QueryFieldNames::SponsSector,
 				QueryFieldNames::SponsDate,
 				QueryFieldNames::SponsAmount,
 				QueryFieldNames::Submit
@@ -709,18 +709,20 @@
 			SQLTables::CompanyExec => [
 				QueryFieldNames::SponsFestival,
 				QueryFieldNames::SponsCompany,
+				QueryFieldNames::SponsSector,
 				QueryFieldNames::SponsCompanyExec,
-				QueryFieldNames::SponsEmail,
-				QueryFieldNames::SponsMobile,
+				QueryFieldNames::SponsCompanyExecEmail,
+				QueryFieldNames::SponsCompanyExecMobile,
 				QueryFieldNames::SponsCompanyExecPosition,
 				QueryFieldNames::Submit
 			],
 
 			SQLTables::Meeting => [
 				QueryFieldNames::SponsFestival,
-				QueryFieldNames::SponsID,
 				QueryFieldNames::SponsMeetingEntryID,
+				QueryFieldNames::SponsID,
 				QueryFieldNames::SponsCompany,
+				QueryFieldNames::SponsSector,
 				QueryFieldNames::SponsCompanyExec,
 				QueryFieldNames::SponsMeetingType,
 				QueryFieldNames::SponsDate,
@@ -1080,7 +1082,7 @@
 			SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//Can only insert, modify, delete, and view for own sector
 			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
-			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
+			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View] //Can only view for own sector, and only modify own.
 		];
 
 		static $SponsRepAuth = [
@@ -1091,7 +1093,7 @@
 			SQLTables::AccountLog => [QueryTypes::View],	//can only view own sponsorships
 			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
-			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
+			SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View] //Can only view for own sector, and only modify own.
 		];
 
 		static function checkValidAuthorization($userType, $tableName, $queryType){
@@ -1178,6 +1180,7 @@
 
 			if($UnauthorizedMessage != NULL)
 				$this->UnauthorizedMessage = $UnauthorizedMessage;
+
 		}
 
 
@@ -1197,7 +1200,10 @@
 							$this->HTMLQueryForm = $this->parseSponsRepQuery();
 							break;
 					}
-					$this->HTMLQueryForm->rearrangeFields(QueryFieldNames::$TableToFieldNameOrdering[$this->tableName]);
+					if($this->HTMLQueryForm)
+						$this->HTMLQueryForm->rearrangeFields(QueryFieldNames::$TableToFieldNameOrdering[$this->tableName]);
+					else $this->isValidForm = false;
+
 				} else {
 					$this->isValidForm = false;
 					echo $this->UnauthorizedMessage;
@@ -2114,19 +2120,25 @@
 			/*For reference:
 				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
-			return $this->parseCSOCompanyQuery();
+			$SectorHeadCompanyQuery = $this->parseCSOCompanyQuery();
+			$SectorHeadCompanyQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector));
+			return $SectorHeadCompanyQuery;
 		}
 		function parseSectorHeadCompanyExecQuery(){
 			/*For reference:
 				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
-			return $this->parseCSOCompanyExecQuery();
+			$SectorHeadCompanyExecQuery = $this->parseCSOCompanyExecQuery();
+			$SectorHeadCompanyExecQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector));
+			return $SectorHeadCompanyExecQuery;
 		}
 		function parseSectorHeadMeetingQuery(){
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 			*/
-			return $this->parseCSOMeetingQuery();
+			$SectorHeadMeetingQuery = $this->parseCSOMeetingQuery();
+			$SectorHeadMeetingQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector));
+			return $SectorHeadMeetingQuery;
 		}
 
 
@@ -2179,41 +2191,47 @@
 			*/
 			return NULL;
 		}
+
 		function parseSponsRepSponsRepQuery(){
 			/*For reference:
 				SQLTables::SponsRep => [QueryTypes::View],
 			*/
 			return NULL;
 		}
+
 		function parseSponsRepSectorHeadQuery(){
 			/*For reference:
 				SQLTables::SectorHead => [],
 			*/
 			return NULL;
 		}
+
 		function parseSponsRepAccountLogQuery(){
 			/*For reference:
 				SQLTables::AccountLog => [QueryTypes::View],	//can only view own sponsorships
 			*/
 			return NULL;
 		}
+
 		function parseSponsRepCompanyQuery(){
 			/*For reference:
 				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
-			return NULL;
+			return $this->parseSectorHeadCompanyQuery();
 		}
+
 		function parseSponsRepCompanyExecQuery(){
 			/*For reference:
 				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
-			return NULL;
+			return $this->parseSectorHeadCompanyExecQuery();
 		}
+
 		function parseSponsRepMeetingQuery(){
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 			*/
-			return NULL;
+			return $this->parseSectorHeadMeetingQuery();
 		}
 
 
@@ -2290,7 +2308,17 @@
 		$fieldSeparator = "<br>"
 	);
 
+
+	echo new InputField(
+		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $disabled = false, $inputCSSClass = NULL,
+		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company")
+	);
+
+
 	echo $_SESSION[SessionEnums::UserLoginID];
+
+
+
 */
 
 	$r = new QueryForm($_SESSION[SessionEnums::UserAccessLevel], SQLTables::SponsRep, QueryTypes::Insert);
@@ -2361,7 +2389,6 @@
 
 
 
-
 	$r = new QueryForm($_SESSION[SessionEnums::UserAccessLevel], SQLTables::CompanyExec, QueryTypes::Insert);
 	$r->parseQuery();
 	echo $r;
@@ -2376,7 +2403,6 @@
 	$r->parseQuery();
 	echo $r;
 	echo "<br><br>";
-
 
 
 
@@ -2395,13 +2421,6 @@
 	echo $r;
 	echo "<br><br>";
 
-
-/*
-	echo new InputField(
-		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $disabled = false, $inputCSSClass = NULL,
-		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company")
-	);
-*/
 
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
