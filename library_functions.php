@@ -9,8 +9,7 @@
 	abstract class BasicEnum{
 		private static $constCacheArray = NULL;
 
-
-		private static function getConstants(){
+		public static function getConstants(){
 			if (self::$constCacheArray == NULL){
 				self::$constCacheArray = [];
 			}
@@ -195,7 +194,7 @@
 			$single_col_select_query.= " WHERE $where_params;";
 		$single_col_select_query .= ";";
 
-		echo $single_col_select_query;
+//		echo $single_col_select_query;
 		$result = mysql_query($single_col_select_query);
 		if (mysql_num_rows($result) > 0){
 			while ($row = mysql_fetch_assoc($result))
@@ -620,6 +619,8 @@
 
 	}
 
+
+
 	abstract class SessionEnums extends BasicEnum{
 		const UserLoginID = "UserLoginID";
 		const UserAccessLevel = "UserAccessLevel";
@@ -641,8 +642,9 @@
 
 	abstract class CompanyStatus extends BasicEnum{
 		const NotCalled = "Not Called";
-		const Sponsored = "Sponsored";
-		const NotInterested = "NotInterested";
+		const PendingReply = "Pending reply";
+		const NotInterested = "Not Interested";
+		const AlreadyASponsor = "Already a sponsor";
 	}
 
 	abstract class QueryFieldNames extends BasicEnum{
@@ -673,7 +675,9 @@
 		const SponsMeetingType = "SponsMeetingType";
 		const SponsMeetingOutcome = "SponsMeetingOutcome";
 		const SponsMeetingEntryID = "SponsMeetingEntryID";
+		const CSOSector = "All";
 		const Submit = "Submit";
+
 
 
 		static $TableToFieldNameOrdering = [ //used to specify ordering in forms
@@ -769,167 +773,211 @@
 
 
 	abstract class PredefinedQueryInputFields extends BasicEnum{
-		static $inputFieldsList = [];
-		function PredefinedQueryInputFields(){
-			PredefinedQueryInputFields::$inputFieldsList = [
-				QueryFieldNames::SponsFestival =>
-					new InputField(
+		public static function get($queryFieldName){
+			switch($queryFieldName){
+
+				case QueryFieldNames::SponsFestival :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
 						$disabled = true, $inputCSSClass = NULL,
 						$labelText = "Festival", $labelCSSClass = NULL
-					),
+					);
+					break;
 
-				QueryFieldNames::SponsID =>
-					new InputField(
+
+				case QueryFieldNames::SponsID :
+					return new InputField(
 						$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $disabled = true, $inputCSSClass = NULL,
 						$labelText = "My ID", $labelCSSClass = NULL
-					),
+					);
+					break;
 
-				QueryFieldNames::SponsOthersID =>
-					new InputField(
+
+				case QueryFieldNames::SponsOthersID :
+					return new InputField(
 						$inputType = InputTypes::number, $name = QueryFieldNames::SponsOthersID, $value = "", $disabled = false, $inputCSSClass = NULL,
 						$labelText = "Person's ID", $labelCSSClass = NULL
-					),
+					);
+					break;
 
 
-				QueryFieldNames::SponsName =>
-					new InputField(
+				case QueryFieldNames::SponsName :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Name",
-						$labelCSSClass = NULL,
-					),
+						$labelCSSClass = NULL, $inputDataListID="NameInDB", $inputDataList=select_single_column_from_table("Name", "CommitteeMember")
+					);
+					break;
 
-				QueryFieldNames::SponsEmail =>
-					new InputField(
+
+				case QueryFieldNames::SponsEmail :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Email",
-						$labelCSSClass = NULL
-					),
+						$labelCSSClass = NULL, $inputDataListID="EmailInDB", $inputDataList=select_single_column_from_table("Email", "CommitteeMember")
+					);
+					break;
 
-				QueryFieldNames::SponsMobile =>
-					new InputField(
+
+				case QueryFieldNames::SponsMobile :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Mobile",
-						$labelCSSClass = NULL
-					),
+						$labelCSSClass = NULL, $inputDataListID="MobileInDB", $inputDataList=select_single_column_from_table("Mobile", "CommitteeMember")
+					);
+					break;
 
-				QueryFieldNames::SponsYear =>
-					new InputField(
-					$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year",
-					$labelCSSClass = NULL
-				),
 
-				QueryFieldNames::SponsBranch =>
-					new InputField(
+				case QueryFieldNames::SponsYear :
+					return new InputField(
+					$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Year", $labelCSSClass = NULL, $inputDataListID="YearEnum", $inputDataList=["1","2","3","4"]
+					);
+					break;
+
+
+				case QueryFieldNames::SponsBranch :
+					return new InputField(
 					$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Branch",
-					$labelCSSClass = NULL
-				),
+					$labelCSSClass = NULL, $inputDataListID="BranchInDB", $inputDataList=select_single_column_from_table("Branch", "CommitteeMember")
+					);
+					break;
 
-				QueryFieldNames::SponsCompany =>
-					new InputField(
+
+				case QueryFieldNames::SponsCompany :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $disabled = false, $inputCSSClass = NULL,
-						$labelText = "Company Name", $labelCSSClass = NULL
-					),
+						$labelText = "Company Name", $labelCSSClass = NULL, $inputDataListID="CompanyInDB",
+						$inputDataList= ($_SESSION[SessionEnums::UserSector] == QueryFieldNames::CSOSector ? select_single_column_from_table("CMPName", "Company") : select_single_column_from_table("CMPName", "Company", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
+					);
+					break;
 
-				QueryFieldNames::SponsTransType =>
-					new InputField(
+
+				case QueryFieldNames::SponsTransType :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsTransType, $value = TransType::Deposit, $disabled = true,
 						$inputCSSClass = NULL, $labelText = "Transaction Type", $labelCSSClass = NULL
-					),
+					);
+					break;
 
-				QueryFieldNames::SponsDate =>
-					new InputField(
+
+				case QueryFieldNames::SponsDate :
+					return new InputField(
 						$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = "", $disabled = false, $inputCSSClass = NULL,
-						$labelText = "Date", $labelCSSClass = NULL
-					),
+						$labelText = "Date", $labelCSSClass = NULL, $inputDataListID="TodaysDate",
+						$inputDataList=[date('Y-m-d', time())]
+					);
+					break;
 
-				QueryFieldNames::SponsTime =>
-					new InputField(
+
+				case QueryFieldNames::SponsTime :
+					return new InputField(
 						$inputType = InputTypes::time, $name = QueryFieldNames::SponsDate, $value = "", $disabled = false, $inputCSSClass = NULL,
 						$labelText = "Time", $labelCSSClass = NULL
-					),
+					);
+					break;
 
 
-				QueryFieldNames::SponsAmount =>
-					new InputField(
+				case QueryFieldNames::SponsAmount :
+					return new InputField(
 						$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $disabled = false,
 						$inputCSSClass = NULL, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
-					),
+					);
+					break;
 
-				QueryFieldNames::SponsAccountLogEntryID =>
-					new InputField(
+
+				case QueryFieldNames::SponsAccountLogEntryID :
+					return new InputField(
 						$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $disabled = false,
 						$inputCSSClass = NULL, $labelText = "Account Transaction ID", $labelCSSClass = NULL
-					),
+					);
+					break;
 
-				QueryFieldNames::SponsCompanyStatus =>
-					new InputField(
+
+				case QueryFieldNames::SponsCompanyStatus :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = "", $disabled = false, $inputCSSClass = NULL,
-						$labelText = "Company's status", $labelCSSClass = NULL
-					),
+						$labelText = "Company's status", $labelCSSClass = NULL, $inputDataListID="CompanyStatusEnum",
+						$inputDataList=CompanyStatus::getConstants()
+					);
+					break;
 
-				QueryFieldNames::SponsCompanySponsoredOthers =>
-					new SelectField(
+
+				case QueryFieldNames::SponsCompanySponsoredOthers :
+					return new SelectField(
 						$options = [
 							new OptionField(CompanySponsoredOthers::Yes, CompanySponsoredOthers::Yes),
 							new OptionField(CompanySponsoredOthers::No, CompanySponsoredOthers::No)
 						],
 						$name = QueryFieldNames::SponsCompanySponsoredOthers, $selectCSSClass=NULL, $labelText="Sponsored Others?", $labelCSSClass=NULL
-					),
+					);
+					break;
 
-				QueryFieldNames::SponsCompanyAddress =>
-					new InputField(
+
+				case QueryFieldNames::SponsCompanyAddress :
+					return new InputField(
 						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Address",
-						$labelCSSClass = NULL
-					),
+						$labelCSSClass = NULL, $inputDataListID="CompanyAddressInDB",
+						$inputDataList= ($_SESSION[SessionEnums::UserSector] == QueryFieldNames::CSOSector ? select_single_column_from_table("CMPAddress", "Company") : select_single_column_from_table("CMPAddress", "Company", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
+					);
+					break;
 
 
-				QueryFieldNames::SponsCompanyExec =>
-					new InputField(
+				case QueryFieldNames::SponsCompanyExec :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $disabled = false, $inputCSSClass = NULL,
-						$labelText = "Company Exec. Name", $labelCSSClass = NULL
-					),
+						$labelText = "Company Exec. Name", $labelCSSClass = NULL, $inputDataListID="CompanyExecInDB",
+						$inputDataList= ($_SESSION[SessionEnums::UserSector] == QueryFieldNames::CSOSector ? select_single_column_from_table("CEName", "CompanyExec") : select_single_column_from_table("CEName", "Company INNER JOIN CompanyExec ON (Company.CMPName = CompanyExec.CMPName)", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
+					);
+					break;
 
-				QueryFieldNames::SponsCompanyExecPosition =>
-					new InputField(
+
+				case QueryFieldNames::SponsCompanyExecPosition :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $disabled = false, $inputCSSClass = NULL,
-						$labelText = "Exec. Position", $labelCSSClass = NULL
-					),
+						$labelText = "Exec. Position", $labelCSSClass = NULL, $inputDataListID="CompanyExecPositionInDB",
+						$inputDataList= select_single_column_from_table("CEPosition", "CompanyExec")
+					);
+					break;
 
-				QueryFieldNames::SponsMeetingAddress =>
-					new InputField(
+
+				case QueryFieldNames::SponsMeetingAddress :
+					return new InputField(
 						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Meeting Address",
-						$labelCSSClass = NULL
-					),
+						$labelCSSClass = NULL, $inputDataListID="CompanyExecPositionInDB",
+						$inputDataList = ["VJTI"]
+					);
+					break;
 
-				QueryFieldNames::SponsMeetingType =>
-					new SelectField(
+
+				case QueryFieldNames::SponsMeetingType :
+					return new SelectField(
 						$options = [
 							new OptionField(MeetingTypes::Call, MeetingTypes::Call),
 							new OptionField(MeetingTypes::Email, MeetingTypes::Email),
 							new OptionField(MeetingTypes::FaceToFace, MeetingTypes::FaceToFace)
 						],
-						$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL
-					),
+						$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL,
+						$inputDataListID="MeetingTypeEnum", $inputDataList= MeetingTypes::getConstants()
+					);
+					break;
 
 
-				QueryFieldNames::SponsMeetingOutcome =>
-					new InputField(
+				case QueryFieldNames::SponsMeetingOutcome :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $disabled = true, $inputCSSClass = NULL, $labelText = "Meeting Outcome",
-						$labelCSSClass = NULL
-					),
+						$labelCSSClass = NULL, $inputDataListID="MeetingOutcomeEnum", $inputDataList= MeetingOutcomes::getConstants()
+					);
+					break;
 
-				QueryFieldNames::SponsMeetingEntryID =>
-					new InputField(
+
+				case QueryFieldNames::SponsMeetingEntryID :
+					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
 						$disabled = false, $inputCSSClass = NULL,
 						$labelText = "Meeting ID", $labelCSSClass = NULL
-					)
+					);
+					break;
+			}
 
-			];
-
-
-
-
+			return new InputField(NULL, NULL);
 		}
-
 
 
 	}
@@ -946,6 +994,12 @@
 		const Call = "Call";
 		const Email = "Email";
 		const FaceToFace = "Face-To-Face meeting";
+	}
+
+	abstract class MeetingOutcomes extends BasicEnum{
+		const CompanyAgreedToSponsor = "Company has agreed to sponsor";
+		const ScheduledFurtherMeeting = "Another meeting has been scheduled";
+		const CompanyIsNotInterested = "Company is not interested at this moment";
 	}
 
 	abstract class Authorization{
@@ -2148,6 +2202,7 @@
 		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $disabled = false, $inputCSSClass = NULL,
 		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company")
 	);
+
 
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
