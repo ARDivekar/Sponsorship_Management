@@ -1,7 +1,9 @@
 <?php
 //	session_start();
 //	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
-//	require('DBconnect.php');
+	include_once('DBconnect.php');
+
+
 //	$_SESSION[SessionEnums::UserFestival] = "Techno";
 //	$_SESSION[SessionEnums::UserLoginID] = 131080052;
 //	$_SESSION[SessionEnums::UserAccessLevel] = UserTypes::SponsRep; //for testing purposes
@@ -91,6 +93,7 @@
 		const Event = "Event";
 		const SponsLogin = "SponsLogin";
 
+		const CommitteeMember = "CommitteeMember";
 		const SponsRep = "SponsRep";
 		const SectorHead = "SectorHead";
 
@@ -439,53 +442,51 @@
 
 
 	function get_person_name($SponsID){
-		require('DBconnect.php'); //this is needed in every function that uses mySQL
-		$rep_name = mysql_query("SELECT Name FROM CommitteeMember WHERE ID = " . $SponsID);
-		$rep_name = mysql_fetch_assoc($rep_name);
-		$rep_name = $rep_name["Name"];
+		$db = new SponsorshipDB();
+		$rep_access_level = $db->select("SELECT Name FROM CommitteeMember WHERE ID = " . $SponsID);
+		if(count($rep_access_level)==0)
+			return NULL;
 
-		return $rep_name;
+		return $rep_access_level[0]["Name"];
+
 	}
 
 
 
 	function get_access_level($SponsID){
-		require('DBconnect.php'); //this is needed in every function that uses mySQL
-		$rep_access_level = mysql_query("SELECT AccessLevel FROM SponsLogin WHERE SponsID = $SponsID");
-		$rep_access_level = mysql_fetch_assoc($rep_access_level);
-		$rep_access_level = $rep_access_level["AccessLevel"];
+		$db = new SponsorshipDB();
+		$rep_access_level = $db->select("SELECT AccessLevel FROM SponsLogin WHERE SponsID = $SponsID");
+		if(count($rep_access_level)==0)
+			return NULL;
 
-		return $rep_access_level;
+		return $rep_access_level[0]["AccessLevel"];
 	}
 
 
 
 
 	function get_person_sector($SponsID){
-		require('DBconnect.php'); //this is needed in every function that uses mySQL
-		$rep_sector = mysql_query("SELECT Sector FROM SponsRep WHERE SponsID = $SponsID");
-		if (mysql_num_rows($rep_sector) == 0)//i.e. you don't find the person with that SponsID in the SponsRep table.
-		{
-			$rep_sector = mysql_query("SELECT Sector FROM SectorHead WHERE SponsID = $SponsID");
-		} //look in the SectorHead table.
+		$db = new SponsorshipDB();
+		$rep_sector = $db->select("SELECT Sector FROM ((Select SponsID, Sector from SponsRep) UNION (Select SponsID, Sector from SectorHead)) as SponsOfficer  WHERE SponsOfficer.SponsID = $SponsID");
+		if (count($rep_sector) == 0)//i.e. you don't find the person with that SponsID in the SponsRep table.
+			return NULL;
 
-		$rep_sector = mysql_fetch_assoc($rep_sector);
-		$rep_sector = $rep_sector["Sector"];
-
-		return $rep_sector;
+		return $rep_sector[0]["Sector"];
 	}
 
 
 
 	function get_earning_report($SponsID){
-		require('DBconnect.php'); //this is needed in every function that uses mySQL
 		$rep_name = get_person_name($SponsID);
 		$rep_amount = 0;
 		$rep_num_companies = 0; //gets nummber of companies signed by that spons rep
+
 		$rep_amount_query = "SELECT Amount FROM AccountLog WHERE SponsID = $SponsID";
-		$result = mysql_query($rep_amount_query);
-		if (mysql_num_rows($result) > 0){
-			while ($row = mysql_fetch_assoc($result)){
+
+		$db = new SponsorshipDB();
+		$result = $db->select($rep_amount_query);
+		if (count($result) > 0){
+			foreach ($result as $row){
 				$rep_num_companies++;
 				$rep_amount = $rep_amount + $row["Amount"];
 			}
@@ -498,23 +499,24 @@
 
 
 	function get_meeting_report($SponsID){
-		require('DBconnect.php'); //this is needed in every function that uses mySQL
 		$rep_name = get_person_name($SponsID);
 		$rep_calls = 0;
 		$rep_emails = 0;
 		$rep_meetings = 0;
+
 		$rep_meeting_query = "SELECT * FROM Meeting WHERE SponsID = $SponsID";
-		$result = mysql_query($rep_meeting_query);
-		if (mysql_num_rows($result) > 0){
-			while ($row = mysql_fetch_assoc($result)){
+		$db = new SponsorshipDB();
+		$result = $db->select($rep_meeting_query);
+		if (count($result) > 0){
+			foreach ($result as $row){
 				switch ($row["MeetingType"]){
-					case "Call":
+					case MeetingTypes::Call:
 						$rep_calls++;
 						break;
-					case "Email":
+					case MeetingTypes::Email:
 						$rep_emails++;
 						break;
-					case "Meet":
+					case MeetingTypes::FaceToFace:
 						$rep_meetings++;
 						break;
 
@@ -528,7 +530,6 @@
 
 
 	function get_sector_details($SponsSector){
-		require('DBconnect.php'); //this is needed in every function that uses mySQL
 		$num_spons_reps = 0;
 		$num_sector_heads = 0;
 		$num_companies_in_sector = 0;
@@ -538,10 +539,11 @@
 		$max_earner_ID = -1;
 
 		$Sector_SR_query = "SELECT * FROM SponsRep WHERE Sector = '$SponsSector'";
-		$result = mysql_query($Sector_SR_query);
+		$db = new SponsorshipDB();
+		$result = $db->select($Sector_SR_query);
 
-		if (mysql_num_rows($result) > 0){
-			while ($row = mysql_fetch_assoc($result)){
+		if (count($result) > 0){
+			foreach ($result as $row){
 				$num_spons_reps++;
 				$SponsRepID = $row['SponsID'];
 				$SponsRepEarningReport = get_earning_report($SponsRepID);
@@ -555,16 +557,13 @@
 		}
 
 		$Sector_SH_query = "SELECT * FROM SectorHead WHERE Sector='$SponsSector'";
-		$result = mysql_query($Sector_SH_query);
-		if (mysql_num_rows($result) > 0){
-			while ($row = mysql_fetch_assoc($result)) $num_sector_heads++;
-		}
+		$result = $db->select($Sector_SH_query);
+		$num_sector_heads = count($result);
+
 
 		$Sector_CMP_query = "SELECT * FROM Company WHERE Sector='$SponsSector'";
-		$result = mysql_query($Sector_CMP_query);
-		if (mysql_num_rows($result) > 0){
-			while ($row = mysql_fetch_assoc($result)) $num_companies_in_sector++;
-		}
+		$result = $db->select($Sector_CMP_query);
+		$num_companies_in_sector = count($result);
 
 		return array("num_spons_reps" => $num_spons_reps, "num_sector_heads" => $num_sector_heads, "num_companies_in_sector" => $num_companies_in_sector, "total_companies_signed" => $total_companies_signed, "total_earned" => $total_earned, "max_earner_ID" => $max_earner_ID, "max_earned" => $max_earned);
 	}
@@ -579,9 +578,10 @@
 		$single_col_select_query .= ";";
 
 //		echo $single_col_select_query;
-		$result = mysql_query($single_col_select_query);
-		if (mysql_num_rows($result) > 0){
-			while ($row = mysql_fetch_assoc($result))
+		$db = new SponsorshipDB();
+		$result = $db->select($single_col_select_query);
+		if (count($result) > 0){
+			foreach ($result as $row)
 				array_push($out_list, $row[$column_name]);
 		}
 		return $out_list;
@@ -774,7 +774,12 @@
 		const CSOSector = "All";
 		const Submit = "Submit";
 
-
+		static $systemGenerated = [ //fields that should not be replaced by GET parameters, etc.
+			QueryFieldNames::SponsFestival,
+			QueryFieldNames::SponsID,
+			QueryFieldNames::SponsTransType,
+			QueryFieldNames::SponsSector
+		];
 
 		static $TableToFieldNameOrdering = [ //used to specify ordering in forms
 			SQLTables::AccountLog => [
@@ -869,6 +874,35 @@
 
 	}
 
+
+	/*##------------------------------------------------TESTS------------------------------------------------##
+
+	foreach($db->select("Select * from committeemember") as $key1 => $val1){
+		echo "<br><br><br>".$key1." : ";
+		foreach($val1 as $key2 => $val2) {
+			echo "<br>\t" . $key2 . " => " . $val2;
+		}
+	}
+
+	*/
+
+	echo get_person_sector("131010004")."<hr>";
+	echo get_access_level(131010004)."<hr>";
+	echo get_person_name("131010004")."<hr>";
+	foreach(get_earning_report("131010004") as $x){
+		echo "<br>".$x;
+	}
+	echo "<hr>";
+	foreach(get_meeting_report("131010004") as $x){
+		echo "<br>".$x;
+	}
+	echo "<hr>";
+	foreach(get_sector_details(get_person_sector("131010004")) as $x){
+		echo "<br>".$x;
+	}
+
+
+	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
 
 ?>

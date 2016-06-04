@@ -17,8 +17,8 @@
 		header("Location: home.php");
 	}
 
-	require('DBconnect.php');
-	require('library_functions.php');
+//	include_once('DBconnect.php');
+	include_once('library_functions.php');
 	$_SESSION[SessionEnums::UserFestival] = "Techno";
 	$_SESSION[SessionEnums::UserLoginID] = 131080052;
 	$_SESSION[SessionEnums::UserAccessLevel] = UserTypes::SponsRep; //for testing purposes
@@ -265,7 +265,7 @@
 
 				case QueryFieldNames::SponsMeetingOutcome :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $disabled = true, $inputCSSClass = NULL, $labelText = "Meeting Outcome",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $disabled = false, $inputCSSClass = NULL, $labelText = "Meeting Outcome",
 						$labelCSSClass = NULL, $inputDataListID="MeetingOutcomeEnum", $inputDataList= MeetingOutcomes::getConstants()
 					);
 					break;
@@ -1402,7 +1402,7 @@
 		function extractFromGET(){
 			if($this->isValidForm){
 				foreach($this->HTMLQueryForm->fields as $fieldName => $inputField){
-					if($fieldName == QueryFieldNames::Submit)
+					if($fieldName == QueryFieldNames::Submit || $fieldName == QueryFieldNames::SponsID || $fieldName == QueryFieldNames::SponsSector || $fieldName == QueryFieldNames::SponsRole)
 						continue;
 					$valueFromGET = extractValueFromGET($fieldName);
 					if ($valueFromGET != NULL){
