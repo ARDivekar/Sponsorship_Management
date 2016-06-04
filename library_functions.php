@@ -4,8 +4,8 @@
 	require('DBconnect.php');
 	$_SESSION[SessionEnums::UserFestival] = "Techno";
 	$_SESSION[SessionEnums::UserLoginID] = 131080052;
-	$_SESSION[SessionEnums::UserAccessLevel] = UserTypes::CSO;
-//	$_SESSION[SessionEnums::UserSector] = "Music Stores";
+	$_SESSION[SessionEnums::UserAccessLevel] = UserTypes::SectorHead;
+	$_SESSION[SessionEnums::UserSector] = "Music Stores";
 
 	abstract class BasicEnum{
 		private static $constCacheArray = NULL;
@@ -671,6 +671,8 @@
 		const SponsCompanySponsoredOthers = "SponsCompanySponsoredOthers";
 		const SponsCompanyAddress = "SponsCompanyAddress";
 		const SponsCompanyExec = "SponsCompanyExec";
+		const SponsCompanyExecEmail = "SponsCompanyExecEmail";
+		const SponsCompanyExecMobile = "SponsCompanyExecMobile";
 		const SponsCompanyExecPosition = "SponsCompanyExecPosition";
 		const SponsMeetingAddress = "SponsMeetingAddress";
 		const SponsMeetingType = "SponsMeetingType";
@@ -958,6 +960,24 @@
 					break;
 
 
+				case QueryFieldNames::SponsCompanyExecEmail :
+					return new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecEmail, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Mobile",
+						$labelCSSClass = NULL, $inputDataListID="CompanyExecMobileInDB",
+						$inputDataList=($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? select_single_column_from_table("CEEmail", "CompanyExec") : select_single_column_from_table("CEEmail", "Company INNER JOIN CompanyExec ON (Company.CMPName = CompanyExec.CMPName)", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
+					);
+					break;
+
+
+				case QueryFieldNames::SponsCompanyExecMobile :
+					return new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecMobile, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Email",
+						$labelCSSClass = NULL, $inputDataListID="CompanyExecEmailInDB",
+						$inputDataList=($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? select_single_column_from_table("CEMobile", "CompanyExec") : select_single_column_from_table("CEMobile", "Company INNER JOIN CompanyExec ON (Company.CMPName = CompanyExec.CMPName)", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
+					);
+					break;
+
+
 				case QueryFieldNames::SponsCompanyExecPosition :
 					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $disabled = false, $inputCSSClass = NULL,
@@ -1236,6 +1256,10 @@
 			/*For reference:
 				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
+			$SponsRepRole = new InputField(
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
+								$labelText = "Role", $labelCSSClass = NULL
+							);
 			switch($this->queryType){
 				case QueryTypes::Insert :
 					return new HTMLForm(
@@ -1243,10 +1267,7 @@
 						$fields = array(
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector),
-							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
-								$labelText = "Role", $labelCSSClass = NULL
-							),
+							$SponsRepRole,
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsPassword),
@@ -1319,10 +1340,7 @@
 						$fields = array(
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector),
-							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
-								$labelText = "Role", $labelCSSClass = NULL
-							),
+							$SponsRepRole,
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsPassword),
@@ -1384,10 +1402,7 @@
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
-							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $disabled = true, $inputCSSClass = NULL,
-								$labelText = "Role", $labelCSSClass = NULL
-							),
+							$SponsRepRole,
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
@@ -1429,7 +1444,6 @@
 			*/
 			$CSOSectorHeadHTMLForm = $this->parseCSOSponsRepQuery();
 			$CSOSectorHeadHTMLForm->fields[QueryFieldNames::SponsRole]->value = UserTypes::SectorHead;
-			$CSOSectorHeadHTMLForm->fields[QueryFieldNames::SponsOthersID]->labelText = "Reg. ID of Sector Head";
 			switch($this->queryType){
 				case QueryTypes::Insert;
 					$CSOSectorHeadHTMLForm->title = "Insert a new ".UserTypes::SectorHead;
@@ -1441,13 +1455,6 @@
 					$CSOSectorHeadHTMLForm->title = "Completely remove a ".UserTypes::SectorHead;
 					break;
 			}
-//			$CSOSectorHeadHTMLForm->removeField(QueryFieldNames::SponsRole);
-//			$CSOSectorHeadHTMLForm->addField(
-//					new InputField(
-//								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SectorHead, $disabled = true, $inputCSSClass = NULL,
-//								$labelText = "Role", $labelCSSClass = NULL
-//					)
-//			);
 
 			return $CSOSectorHeadHTMLForm;
 		}
@@ -1716,8 +1723,8 @@
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsEmail),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsMobile),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecEmail),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecMobile),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecPosition),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
@@ -1765,8 +1772,8 @@
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsEmail),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsMobile),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecEmail),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecMobile),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecPosition),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
@@ -2107,19 +2114,19 @@
 			/*For reference:
 				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
-			return NULL;
+			return $this->parseCSOCompanyQuery();
 		}
 		function parseSectorHeadCompanyExecQuery(){
 			/*For reference:
 				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
-			return NULL;
+			return $this->parseCSOCompanyExecQuery();
 		}
 		function parseSectorHeadMeetingQuery(){
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 			*/
-			return NULL;
+			return $this->parseCSOMeetingQuery();
 		}
 
 
