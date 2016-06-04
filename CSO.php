@@ -17,8 +17,8 @@
 		/*Resume old session:*/
 		session_start();
 
-		require('DBconnect.php');
-		require('library_functions.php');
+		include_once('DBconnect.php');
+		include_once('library_functions.php');
 		$SponsID=$_SESSION['loginID']; //get SponsID from previous session
 		$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
 

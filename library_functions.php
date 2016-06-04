@@ -884,7 +884,7 @@
 		}
 	}
 
-	*/
+	
 
 	echo get_person_sector("131010004")."<hr>";
 	echo get_access_level(131010004)."<hr>";
