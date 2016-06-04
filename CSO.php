@@ -19,8 +19,8 @@
 
 		include_once('DBconnect.php');
 		include_once('library_functions.php');
-		$SponsID=$_SESSION['loginID']; //get SponsID from previous session
-		$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
+		$SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
+
 
 	?>
 	<header>
@@ -41,7 +41,7 @@
 			echo "<tr align=left>
 				<th>Name:</th>
 			<td>";
-			echo get_person_name($SponsID);
+			echo $_SESSION[SessionEnums::UserName];
 
 			
 			echo "</td></tr>
@@ -96,7 +96,7 @@
 	</section>	
 	
 	<div id="welcome" align="right">
-		<h2>Welcome, <?php echo get_person_name($SponsID); ?> <!-- The name of the  SponsRep will come here -->
+		<h2>Welcome, <?php echo $_SESSION[SessionEnums::UserName]; ?> <!-- The name of the  SponsRep will come here -->
 		<br>
 		<a href='logout.php'>Logout</a>
 	</div>

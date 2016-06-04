@@ -9,11 +9,16 @@
 <body>
 <?php
 
+
 	/*Resume old session:*/
 	session_start();
-	if (!isset($_SESSION['table_name'])){
-		header("Location: home.php");
-	}
+
+	include_once('library_functions.php');
+
+	if(empty($_SESSION[SessionEnums::UserLoginID]))
+		header("Location: login.php");
+
+	$SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
 
 	/*
 	echo "<br><br>In view_table.php<br>";
@@ -22,8 +27,6 @@
 	}
 	*/
 
-	require('DBconnect.php');
-	require('library_functions.php');
 	$SponsID = $_SESSION['loginID']; //get SponsID from previous session
 	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
 

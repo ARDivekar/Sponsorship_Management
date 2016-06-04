@@ -62,6 +62,7 @@
 		const UserOrganization = "UserOrganization";
 		const UserFestival = "UserFestival";
 		const UserDepartment = "UserDepartment";
+		const UserName = "UserName";
 		const UserRole = "UserRole";
 		const UserSector = "UserSector";
 		const UserEmail = "UserEmail";
@@ -877,6 +878,45 @@
 
 	/*##------------------------------------------------TESTS------------------------------------------------##
 
+	echo new HTMLForm(
+		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
+		$fields = array(
+			new InputField(
+				$inputType = InputTypes::text, $name = "TransType", $value = TransType::Deposit, $disabled = true, $inputCSSClass = NULL,
+				$labelText = "Transaction Type", $labelCSSClass = NULL
+			),
+			new InputField(
+				$inputType = InputTypes::text, $name = "CMPName", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Name",
+				$labelCSSClass = NULL
+			),
+			new InputField(
+				$inputType = InputTypes::text, $name = "Amount", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Amount",
+				$labelCSSClass = NULL
+			),
+			new SelectField(
+				$options = [
+					new OptionField(UserTypes::SponsRep, UserTypes::SponsRep),
+					new OptionField(UserTypes::SectorHead, UserTypes::SectorHead)
+				],
+				$name = "UserType",$selectCSSClass=NULL, $labelText="User Type", $labelCSSClass=NULL
+			),
+			new InputField(
+				$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+			)
+		),
+		$formCSSClass=NULL,
+		$title = "Insert details of sponsorship received",
+		$fieldSeparator = "<br>"
+	);
+
+
+	echo new InputField(
+		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $disabled = false, $inputCSSClass = NULL,
+		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company")
+	);
+
+
+
 	foreach($db->select("Select * from committeemember") as $key1 => $val1){
 		echo "<br><br><br>".$key1." : ";
 		foreach($val1 as $key2 => $val2) {
@@ -884,7 +924,7 @@
 		}
 	}
 
-	
+
 
 	echo get_person_sector("131010004")."<hr>";
 	echo get_access_level(131010004)."<hr>";

@@ -12,18 +12,30 @@
 <?php
 	/*Resume old session:*/
 	session_start();
+	include_once('library_functions.php');
 
 	if (!isset($_GET['Submit']) && !isset($_GET['submit'])) {
 		header("Location: home.php");
 	}
 
-//	include_once('DBconnect.php');
-	include_once('library_functions.php');
+	if( !Authorization::checkValidAuthorization(
+			$_SESSION[SessionEnums::UserAccessLevel],
+			extractValueFromGET(QueryFormSessionEnums::TableName),
+			extractValueFromGET(QueryFormSessionEnums::QueryType)
+		)){
+		header("Location: home.php");
+	}
+
+	$_SESSION[QueryFormSessionEnums::TableName] = extractValueFromGET(QueryFormSessionEnums::TableName);
+	$_SESSION[QueryFormSessionEnums::QueryType]= extractValueFromGET(QueryFormSessionEnums::QueryType);
+
+
+	/* For testing purposes:
 	$_SESSION[SessionEnums::UserFestival] = "Techno";
 	$_SESSION[SessionEnums::UserLoginID] = 131080052;
 	$_SESSION[SessionEnums::UserAccessLevel] = UserTypes::SponsRep; //for testing purposes
 	$_SESSION[SessionEnums::UserSector] = "Music Stores";
-
+	*/
 
 
 
@@ -1441,42 +1453,6 @@
 
 
 	/*##------------------------------------------------TESTS------------------------------------------------##
-	echo new HTMLForm(
-		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
-		$fields = array(
-			new InputField(
-				$inputType = InputTypes::text, $name = "TransType", $value = TransType::Deposit, $disabled = true, $inputCSSClass = NULL,
-				$labelText = "Transaction Type", $labelCSSClass = NULL
-			),
-			new InputField(
-				$inputType = InputTypes::text, $name = "CMPName", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Name",
-				$labelCSSClass = NULL
-			),
-			new InputField(
-				$inputType = InputTypes::text, $name = "Amount", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Amount",
-				$labelCSSClass = NULL
-			),
-			new SelectField(
-				$options = [
-					new OptionField(UserTypes::SponsRep, UserTypes::SponsRep),
-					new OptionField(UserTypes::SectorHead, UserTypes::SectorHead)
-				],
-				$name = "UserType",$selectCSSClass=NULL, $labelText="User Type", $labelCSSClass=NULL
-			),
-			new InputField(
-				$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
-			)
-		),
-		$formCSSClass=NULL,
-		$title = "Insert details of sponsorship received",
-		$fieldSeparator = "<br>"
-	);
-
-
-	echo new InputField(
-		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $disabled = false, $inputCSSClass = NULL,
-		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company")
-	);
 
 
 	echo $_SESSION[SessionEnums::UserLoginID];
