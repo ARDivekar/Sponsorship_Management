@@ -220,14 +220,13 @@
 			$this->required = $required;
 		}
 
-		function setDisabledAndReturnObject(){
+		function setDisabled(){
 			$this->disabled = true;
-			return $this;
 		}
 
-		function setRequiredAndReturnObject(){
+
+		function setRequired(){
 			$this->required = true;
-			return $this;
 		}
 
 
@@ -413,6 +412,18 @@
 			}
 			$this->fields = $tempArr;
 		}
+
+		function setRequiredFields($requiredFieldsLookup, $tableName, $queryType){
+			if(array_key_exists($tableName,$requiredFieldsLookup) && array_key_exists($queryType,$requiredFieldsLookup[$tableName])){
+				foreach ($requiredFieldsLookup[$tableName][$queryType] as $requiredField){
+					if(array_key_exists($requiredField,$this->fields))
+						$this->fields[$requiredField]->setRequired();
+				}
+				return true;
+			}
+			return false;
+		}
+
 
 		function __toString(){
 //			$this->echoFieldNames();
@@ -868,6 +879,169 @@
 				QueryFieldNames::SponsYear,
 				QueryFieldNames::SponsBranch,
 				QueryFieldNames::Submit
+			],
+
+
+
+			SQLTables::Event => [
+
+			],
+
+			SQLTables::SponsLogin => [
+
+			]
+
+		];
+
+
+		static $requiredFields = [ //used to specify ordering in forms
+			SQLTables::AccountLog => [
+				QueryTypes::Insert => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsTransType,
+					QueryFieldNames::SponsID,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsDate,
+					QueryFieldNames::SponsAmount,
+					QueryFieldNames::SponsSector
+				],
+
+				QueryTypes::Modify => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsAccountLogEntryID,
+					QueryFieldNames::SponsSector
+				],
+
+				QueryTypes::Delete => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsAccountLogEntryID,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsSector
+				]
+
+			],
+
+
+
+
+			SQLTables::Company => [
+				QueryTypes::Insert => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsSector
+				],
+
+				QueryTypes::Modify => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsSector
+				],
+
+				QueryTypes::Delete => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsSector
+				]
+
+			],
+
+			SQLTables::CompanyExec => [
+				QueryTypes::Insert => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsCompanyExec,
+					QueryFieldNames::SponsSector
+				],
+
+				QueryTypes::Modify => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsCompanyExec,
+					QueryFieldNames::SponsSector
+				],
+
+				QueryTypes::Delete => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsCompanyExec,
+					QueryFieldNames::SponsSector
+				]
+
+			],
+
+			SQLTables::Meeting => [
+				QueryTypes::Insert => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsID,
+					QueryFieldNames::SponsCompany,
+					QueryFieldNames::SponsCompanyExec,
+					QueryFieldNames::SponsMeetingType,
+					QueryFieldNames::SponsDate,
+					QueryFieldNames::SponsSector
+				],
+
+				QueryTypes::Modify => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsID,
+					QueryFieldNames::SponsMeetingEntryID,
+					QueryFieldNames::SponsSector
+				],
+
+				QueryTypes::Delete => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsID,
+					QueryFieldNames::SponsMeetingEntryID,
+					QueryFieldNames::SponsSector
+				]
+			],
+
+			SQLTables::SponsRep => [
+				QueryTypes::Insert => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsSector,
+					QueryFieldNames::SponsRole,
+					QueryFieldNames::SponsOthersID,
+					QueryFieldNames::SponsName,
+					QueryFieldNames::SponsPassword,
+					QueryFieldNames::SponsRePassword
+				],
+
+				QueryTypes::Modify => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsSector,
+					QueryFieldNames::SponsRole,
+					QueryFieldNames::SponsOthersID
+				],
+
+				QueryTypes::Delete => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsSector,
+					QueryFieldNames::SponsRole,
+					QueryFieldNames::SponsOthersID
+				]
+			],
+
+
+			SQLTables::SectorHead => [ //identical to SponsRep
+				QueryTypes::Insert => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsSector,
+					QueryFieldNames::SponsRole,
+					QueryFieldNames::SponsOthersID,
+					QueryFieldNames::SponsName,
+					QueryFieldNames::SponsPassword,
+					QueryFieldNames::SponsRePassword
+				],
+
+				QueryTypes::Modify => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsOthersID
+				],
+
+				QueryTypes::Delete => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsOthersID
+				]
 			],
 
 

@@ -373,8 +373,10 @@
 							$this->HTMLQueryForm = $this->parseSponsRepQuery();
 							break;
 					}
-					if($this->HTMLQueryForm)
-						$this->HTMLQueryForm->rearrangeFields(QueryFieldNames::$TableToFieldNameOrdering[$this->tableName]);
+					if($this->HTMLQueryForm){
+						$this->rearrangeFields(QueryFieldNames::$TableToFieldNameOrdering[$this->tableName]);
+						$this->setRequiredFields(QueryFieldNames::$requiredFields, $this->tableName, $this->queryType);
+					}
 					else $this->isValidForm = false;
 
 				} else {
@@ -444,13 +446,13 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector),
 							$SponsRepRole,
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsName)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsPassword)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsRePassword)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsPassword),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsRePassword),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsEmail),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsMobile),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsYear),
@@ -517,10 +519,10 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector),
 							$SponsRepRole,
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsPassword),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsRePassword),
@@ -580,10 +582,10 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
 							$SponsRepRole,
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsName)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
 							new InputField(
@@ -647,12 +649,12 @@
 					return new HTMLForm(
 						$formName = $this->tableName . $this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsTransType)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsID)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsDate)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsAmount)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsTransType),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsID),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsDate),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsAmount),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
 							new InputField(
@@ -686,8 +688,8 @@
 					return new HTMLForm(
 						$formName = $this->tableName . $this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsAccountLogEntryID)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsAccountLogEntryID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsDate),
@@ -724,9 +726,9 @@
 					return new HTMLForm(
 						$formName = $this->tableName . $this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsAccountLogEntryID)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsAccountLogEntryID),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
 							new InputField(
@@ -759,9 +761,9 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyStatus),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyAddress),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanySponsoredOthers),
@@ -811,8 +813,8 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyStatus),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyAddress),
@@ -862,8 +864,8 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
 							new InputField(
@@ -899,9 +901,9 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecEmail),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecMobile),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecPosition),
@@ -948,9 +950,9 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecEmail),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecMobile),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExecPosition),
@@ -998,9 +1000,9 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
 							new InputField(
@@ -1041,12 +1043,12 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsID)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingType)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsDate)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsID),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingType),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsDate),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsTime),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingAddress),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingOutcome),
@@ -1100,9 +1102,9 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsID)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingEntryID)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsID),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingEntryID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompany),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsCompanyExec),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingType),
@@ -1164,9 +1166,9 @@
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsID)->setRequiredAndReturnObject(),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingEntryID)->setRequiredAndReturnObject(),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsID),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsMeetingEntryID),
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
 							new InputField(
@@ -1252,7 +1254,7 @@
 			*/
 			$SectorHeadSponsRepForm = $this->parseCSOSponsRepQuery();
 			$SectorHeadSponsRepForm->addField(
-					PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)->setRequiredAndReturnObject()
+					PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)
 					/*
 					new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $disabled = true, $inputCSSClass = NULL,
@@ -1277,7 +1279,7 @@
 			*/
 			$SectorHeadAccountLogForm = $this->parseCSOAccountLogQuery();
 			$SectorHeadAccountLogForm->addField(
-					PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)->setRequiredAndReturnObject()
+					PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)
 					/*
 					new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $disabled = true, $inputCSSClass = NULL,
@@ -1294,7 +1296,7 @@
 				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
 			$SectorHeadCompanyQuery = $this->parseCSOCompanyQuery();
-			$SectorHeadCompanyQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)->setRequiredAndReturnObject());
+			$SectorHeadCompanyQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector));
 			return $SectorHeadCompanyQuery;
 		}
 		function parseSectorHeadCompanyExecQuery(){
@@ -1302,7 +1304,7 @@
 				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
 			$SectorHeadCompanyExecQuery = $this->parseCSOCompanyExecQuery();
-			$SectorHeadCompanyExecQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)->setRequiredAndReturnObject());
+			$SectorHeadCompanyExecQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector));
 			return $SectorHeadCompanyExecQuery;
 		}
 		function parseSectorHeadMeetingQuery(){
@@ -1310,7 +1312,7 @@
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 			*/
 			$SectorHeadMeetingQuery = $this->parseCSOMeetingQuery();
-			$SectorHeadMeetingQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)->setRequiredAndReturnObject());
+			$SectorHeadMeetingQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector));
 			return $SectorHeadMeetingQuery;
 		}
 
@@ -1408,7 +1410,11 @@
 		}
 
 
-
+		function setRequiredFields($requiredFieldsLookup, $tableName, $queryType){
+			if($this->HTMLQueryForm != NULL){
+				$this->HTMLQueryForm->setRequiredFields($requiredFieldsLookup, $tableName, $queryType);
+			}
+		}
 
 
 		function rearrangeFields($orderedFieldNames){
