@@ -3,7 +3,7 @@
 	/*Resume old session:*/
 	session_start();
 /*
-	if(!isset($_POST[QueryFieldNames::Submit])){ //can only be set from submitting a form at query.php
+	if(!isset($_POST[QueryFieldNames::Submit])){ //can only be set from submitting a form from query.php
 		header("Location: home.php");
 	}
 
@@ -24,6 +24,7 @@
 		var $whereClause = NULL;
 
 		var $tableInsertFieldValues = NULL; //a 2-D array;
+		var $tableUpdateFieldValues = NULL; //a 2-D array;
 
 
 		function SQLQuery($tableName=NULL, $tableFields=NULL){
@@ -31,8 +32,14 @@
 			$this->tableFields = $tableFields;
 		}
 
-		public function setSelectQuery($selectQuery){
-
+		public function setSelectQuery($tableName=NULL, $tableFields=NULL, $whereClause=NULL){
+			$this->queryType = QueryTypes::View;
+			if($tableName)
+				$this->tableName = $tableName;
+			if($tableFields)
+				$this->tableFields = $tableFields;
+			if($whereClause)
+				$this->whereClause = $whereClause;
 		}
 
 		public function setInsertQuery($tableName=NULL, $tableFields=NULL, $tableInsertFieldValues, $whereClause=NULL, $necessaryFields=NULL){
@@ -48,16 +55,40 @@
 			$this->necessaryFields = $necessaryFields;
 		}
 
+		public function setUpdateQuery($tableName=NULL, $tableUpdateFieldValues, $whereClause=NULL, $necessaryFields=NULL){
+			$this->queryType = QueryTypes::Modify;
+			if($tableName)
+				$this->tableName = $tableName;
+
+			$this->tableUpdateFieldValues = $tableUpdateFieldValues;
+			$this->whereClause = $whereClause;
+			$this->necessaryFields = $necessaryFields;
+		}
+
+
+		public function setDeleteQuery($tableName=NULL, $whereClause=NULL, $necessaryFields=NULL){
+			$this->queryType = QueryTypes::Delete;
+			if($tableName)
+				$this->tableName = $tableName;
+
+			$this->whereClause = $whereClause;
+			$this->necessaryFields = $necessaryFields;
+		}
+
+
 		public function getQuery(){
 			switch($this->queryType){
 				case QueryTypes::Insert :
 					return $this->generateInsertQuery();
 					break;
 				case QueryTypes::Modify :
+					return $this->generateUpdateQuery();
 					break;
 				case QueryTypes::Delete :
-
+					return $this->generateDeleteQuery();
 					break;
+				case QueryTypes::View :
+					return $this->generateSelectQuery();
 			}
 			return NULL;
 		}
@@ -94,15 +125,63 @@
 			return false;
 		}
 
-		private function convertArrayToCommaSeparatedTuple($array, $surrounder="'"){
-			$out = " (";
+		private static function convertArrayToCommaSeparatedTuple($array, $surrounder="'", $parens=true){
+			$out = " ";
+			if($parens)
+				$out .= "(";
 			for($i=0; $i<count($array) - 1; $i++){
-				$out .= $this->surroundWith($array[$i], $surrounder).", ";
+				$out .= self::surroundWith($array[$i], $surrounder).", ";
 			}
-			$out .= $this->surroundWith($array[$i], $surrounder);
-			$out .= ") ";
+			$out .= self::surroundWith($array[$i], $surrounder);
+			if($parens)
+				$out .= ") ";
+			$out .= " ";
 			return $out;
 		}
+
+
+		private function generateSelectQuery(){
+			if($this->checkNecessaryFields()){
+				$out = "SELECT ";
+
+				$len = count($this->tableFields);
+				/* Allowed values for the tableFields array:
+				 * ["ID", "Name", "Company"]
+				 * [["ID"], ["Name"], ["Company"]]
+				 * [["ID"], "Name", ["Company"]]
+				 * [["ID"], ["Name"], ["Company", "Company I work for"]]
+				 * ["ID", ["Name"], ["Company", "Company I work for"]]
+				 * */
+				for($i=0; $i < $len ; $i++){
+					$field = $this->tableFields[$i];
+					if(!is_array($field))
+						$out .= " $field ";
+					else if(count($field) == 1)
+						$out .= " $field[0] ";
+					else if(count($field) == 2)
+						$out .= " $field[0] AS '$field[1]' ";
+					else return NULL;
+
+					if($i != $len-1)
+						$out .= ", ";
+				}
+
+				$out .=  "FROM $this->tableName ";
+				if($this->whereClause)
+					$out .= " WHERE ".$this->whereClause;
+
+				if($this->checkForSQLInjection($out)){
+					return NULL;
+				}
+
+				$out .= ";";
+				return $out;
+			}
+			return NULL;
+		}
+
+
+
 
 		private function generateInsertQuery(){
 			if($this->checkNecessaryFields()){
@@ -114,7 +193,7 @@
 				for($i=0; $i<$len; $i++){
 					$row = $this->tableInsertFieldValues[$i];
 					if(count($row) != count($this->tableFields)){
-						echo "<br>Length of ".$this->convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`")." and ". $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'")." are different.";
+						echo "<br>Length of ".self::convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`")." and ". $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'")." are different.";
 						return NULL;
 					}
 
@@ -124,7 +203,6 @@
 				}
 
 				if($this->checkForSQLInjection($out)){
-					echo "NO SQL INJECTION ALLOWED";
 					return NULL;
 				}
 
@@ -135,11 +213,77 @@
 			return NULL;
 		}
 
-		private function checkForSQLInjection($text){
-			return false;
+
+		private function generateUpdateQuery(){
+			if($this->checkNecessaryFields()){
+				$out = "";
+				$out .= " SET ";
+				$len = count($this->tableUpdateFieldValues);
+				for($i=0; $i < $len; $i++){
+					$row = $this->tableUpdateFieldValues[$i];
+					if(count($row)!=2)
+						return NULL;
+					$out .= " " . self::surroundWith($row[0], $surrounder=" ") ." = ". self::surroundWith($row[1], $surrounder="'") ." ";
+
+					if($i != $len-1)
+						$out .= ", ";
+				}
+
+				if($this->whereClause)
+					$out .= " WHERE ".$this->whereClause;
+
+				if($this->checkForSQLInjection($out)){
+					return NULL;
+				}
+
+				$out = "UPDATE $this->tableName " . $out;
+				$out .= ";";
+				return $out;
+			}
+			return NULL;
 		}
 
-		public function surroundWith($string, $surrounder="'"){
+
+
+		private function generateDeleteQuery(){
+			if($this->checkNecessaryFields()){
+				$out = "";
+
+				if($this->whereClause)
+					$out .= " WHERE ".$this->whereClause;
+
+				if($this->checkForSQLInjection($out)){
+					return NULL;
+				}
+
+				$out = "DELETE FROM $this->tableName " . $out;
+				$out .= ";";
+				return $out;
+			}
+			return NULL;
+		}
+
+
+
+
+		private function checkForSQLInjection($text){
+			if(!$text)
+				return false;
+			$text = strtolower($text); //to lowercase
+			if( 	//Source: http://php.net/manual/en/function.strpos.php
+					strpos($text, ";") === FALSE &&
+					strpos($text, " insert ") === FALSE &&
+					strpos($text, " update ") === FALSE &&
+					strpos($text, " delete ") === FALSE
+				)
+				return false;
+
+//			echo "<br>$text<br>";
+			echo "NO SQL INJECTION ALLOWED";
+			return true;
+		}
+
+		public static function surroundWith($string, $surrounder="'"){
 			//Source: http://stackoverflow.com/questions/1555434/php-wrap-a-string-in-double-quotes
 			return $surrounder . trim(
 					trim(trim(trim(trim($string), '"'), "'"), '"')
@@ -150,11 +294,102 @@
 			//	echo $a->surroundWithSingleQuotes("'\"Hello\"'");
 		}
 
+		public static function getWhereEquality($whereArray, $joiner="AND"){ //an array of arrays in which each sub-array has two values which must be equal. One must be a field in the database, at that must come first.
+			if(count($whereArray) == 0)
+				return NULL;
+
+			$out = "";
+			$len = count($whereArray);
+			for($i=0; $i<$len; $i++){
+				$wherePair = $whereArray[$i];
+				if(count($wherePair) != 2){
+					echo "$wherePair must be an array of exactly two elements";
+					return NULL;
+				}
+				if($i != $len-1)
+					$out .= " ".$wherePair[0]." = ".self::surroundWith($wherePair[1])." $joiner ";
+				else $out .= " ".$wherePair[0]." = ".self::surroundWith($wherePair[1])." ";
+
+			}
+			return $out;
+
+		}
+
+
+
+		public static function getTableInnerJoin($table1, $field1, $table2, $field2){
+			if($table1 && $field1 && $table2 && $field2){
+				$out = " ( $table1 INNER JOIN $table2 ON ($table1.$field1 = $table2.$field2) ) ";
+				return $out;
+			}
+			return NULL;
+		}
 	}
 
-//	/*
+
+	/*##------------------------------------------------TESTS------------------------------------------------##
+
 	$a = new SQLQuery();
 	$a->setInsertQuery("Committeemember",["ID", "Name"],[["lol","lol"],["lol2","lol3"]]);
 	echo $a->getQuery();
-//	*/
+
+
+
+
+
+	echo "<hr>";
+	$a->setSelectQuery(
+			$tableName = "CommitteeMember",
+			$tableFields = ["ID", "Name"],
+			$whereClause = SQLQuery::getWhereEquality([["ID",131080051], ["Name","Abhishek Divekar"]])
+	);
+	echo $a->getQuery();
+
+
+
+
+
+	echo "<hr>";
+	$a->setSelectQuery(
+		$tableName = SQLQuery::getTableInnerJoin("CommitteeMember", "ID", "AccountLog", "SponsID"),
+		$tableFields = [["CommitteeMember.ID", "ID"], "Name", ["AccountLog.Title", "Company Name"]],
+		$whereClause = SQLQuery::getWhereEquality([
+								["CommitteeMember.ID",131080051],
+								["Name","Abhishek Divekar"]
+							])
+	);
+	echo $a->getQuery();
+
+
+
+
+
+	echo "<hr>";
+	$a->setUpdateQuery(
+		$tableName = "CommitteeMember",
+		$tableUpdateFieldValues = [["ID", "123"],["Title", "Heelo world"]],
+		$whereClause = SQLQuery::getWhereEquality([
+								["CommitteeMember.ID",131080051],
+								["Name","Abhishek Divekar"]
+							])
+	);
+	echo $a->getQuery();
+
+
+
+
+
+	echo "<hr>";
+	$a->setDeleteQuery(
+		$tableName = "CommitteeMember",
+		$whereClause = SQLQuery::getWhereEquality([
+								["CommitteeMember.ID",131080051],
+								["Name","Abhishek Divekar"]
+							])
+	);
+	echo $a->getQuery();
+
+
+
+	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 ?>
