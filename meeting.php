@@ -5,7 +5,7 @@
 	<?php
 		include('UserNavBarImports.php');
 	?>
-	<title>Companies</title>
+	<title>Meetings</title>
 
 	<!-- DataTables CSS -->
 	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
@@ -104,13 +104,13 @@
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Companies</h1>
+				<h1 class="page-header">Meeting</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
 
 		<div class="row col-md-6">
-			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Company</h4></a>
+			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Meeting</h4></a>
 		</div>
 		<br />
 
@@ -119,21 +119,21 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Companies of ___ Sector ( For CSO - All)
+						Meetings of ___ Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-
-						<div class="dataTable_wrapper">
-
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
-//								$result = mysql_query("SELECT * FROM committeemember;");
-								$result = mysql_query("SELECT * FROM company;");
+								$result = mysql_query("SELECT ID, Date, Time, MeetingType, CMPName, CEName, Address, Outcome FROM meeting;");
+								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
 								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 
+						</div>
+						<!-- /.table-responsive -->
+						
 					</div>
 					<!-- /.panel-body -->
 				</div>
