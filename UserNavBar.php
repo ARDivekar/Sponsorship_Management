@@ -33,7 +33,7 @@
             <ul class="dropdown-menu dropdown-user">
                 <li><a href="home.php"><i class="fa fa-user fa-fw"></i> User Profile</a>
                 </li>
-                <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                <li><a data-toggle="collapse" data-target="#changePassword"><i class="fa fa-gear fa-fw"></i> Change Password</a>
                 </li>
                 <li class="divider"></li>
                 <li><a href="./logout.php"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
@@ -49,7 +49,7 @@
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 <li>
-                    <a href="home.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    <a href="homepage.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
                 <li>
                     <a href="companies.php"><i class="fa fa-building-o fa-fw"></i> Companies</a>

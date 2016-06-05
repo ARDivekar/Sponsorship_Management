@@ -100,7 +100,7 @@
 								<i class="fa fa-building-o fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">26</div>
+								<div class="huge">Write Query</div>
 								<div>Companies Signed</div>
 							</div>
 						</div>
@@ -123,7 +123,7 @@
 								<i class="fa fa-inr fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">12</div>
+								<div class="huge">Write Query</div>
 								<div>Amount Earned</div>
 							</div>
 						</div>
@@ -146,7 +146,7 @@
 								<i class="fa fa-calendar fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">124</div>
+								<div class="huge">Write Query</div>
 								<div>Meetings Scheduled</div>
 							</div>
 						</div>
@@ -169,7 +169,7 @@
 								<i class="fa fa-phone fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">13</div>
+								<div class="huge">Write Query</div>
 								<div>Companies Called</div>
 							</div>
 						</div>
@@ -218,7 +218,7 @@
 					<!-- /.panel-body -->
 				</div>
 				<!-- /.panel -->
-				<div class="panel panel-default">
+				<!-- <div class="panel panel-default">
 					<div class="panel-heading">
 						<i class="fa fa-bar-chart-o fa-fw"></i> Bar Chart Example
 						<div class="pull-right">
@@ -240,9 +240,9 @@
 								</ul>
 							</div>
 						</div>
-					</div>
+					</div> -->
 					<!-- /.panel-heading -->
-					<div class="panel-body">
+					<!-- <div class="panel-body">
 						<div class="row">
 							<div class="col-lg-4">
 								<div class="table-responsive">
@@ -307,13 +307,13 @@
 										</tbody>
 									</table>
 								</div>
-								<!-- /.table-responsive -->
+					 -->			<!-- /.table-responsive -->
 							</div>
 							<!-- /.col-lg-4 (nested) -->
-							<div class="col-lg-8">
+					<!-- 		<div class="col-lg-8">
 								<div id="morris-bar-chart"></div>
 							</div>
-							<!-- /.col-lg-8 (nested) -->
+					 -->		<!-- /.col-lg-8 (nested) -->
 						</div>
 						<!-- /.row -->
 					</div>
