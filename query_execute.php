@@ -317,9 +317,11 @@
 
 
 
-		public static function getTableInnerJoin($table1, $field1, $table2, $field2){
+		public static function getInnerJoin($table1, $field1, $table2, $field2, $alias=NULL){
 			if($table1 && $field1 && $table2 && $field2){
 				$out = " ( $table1 INNER JOIN $table2 ON ($table1.$field1 = $table2.$field2) ) ";
+				if($alias)
+					$out .= " AS ".self::surroundWith($alias, "'")." ";
 				return $out;
 			}
 			return NULL;
@@ -351,7 +353,7 @@
 
 	echo "<hr>";
 	$a->setSelectQuery(
-		$tableName = SQLQuery::getTableInnerJoin("CommitteeMember", "ID", "AccountLog", "SponsID"),
+		$tableName = SQLQuery::getInnerJoin("CommitteeMember", "ID", "AccountLog", "SponsID"),
 		$tableFields = [["CommitteeMember.ID", "ID"], "Name", ["AccountLog.Title", "Company Name"]],
 		$whereClause = SQLQuery::getWhereEquality([
 								["CommitteeMember.ID",131080051],
