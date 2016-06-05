@@ -123,9 +123,15 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 		 */
 		public function query($query) { //this code must be swapped when changing PHP database handlers
 			// Query the database
+			if(!$query){
+				echo "Query passed is NULL";
+				return FALSE;
+			}
+
 			$result = SponsorshipDB::$connection->query($query);
 
-			return $result;
+			return $result; //From: http://php.net/manual/en/mysqli.query.php ...
+			//Returns FALSE on failure. For successful SELECT, SHOW, DESCRIBE or EXPLAIN queries mysqli_query() will return a mysqli_result object. For other successful queries mysqli_query() will return TRUE.
 		}
 
 		/**

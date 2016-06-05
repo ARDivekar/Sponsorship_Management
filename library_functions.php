@@ -4,10 +4,6 @@
 	include_once('DBconnect.php');
 
 
-//	$_SESSION[SessionEnums::UserFestival] = "Techno";
-//	$_SESSION[SessionEnums::UserLoginID] = 131080052;
-//	$_SESSION[SessionEnums::UserAccessLevel] = UserTypes::SponsRep; //for testing purposes
-//	$_SESSION[SessionEnums::UserSector] = "Music Stores";
 
 	abstract class BasicEnum{
 		private static $constCacheArray = NULL;
@@ -940,6 +936,18 @@
 	foreach(get_sector_details(get_person_sector("131010004")) as $x){
 		echo "<br>".$x;
 	}
+
+
+	$db = new SponsorshipDB();
+	$x = $db->query("INSERT INTO committeemember
+		(ID, Organization, EventName, Name, Department, Role, Mobile, Email, Year, Branch)
+		VALUES
+		(".mt_rand(10,1000).", 'Technovanza', 'Technovanza','Lol', 'LOL', 'CSO', '989', NULL, 2, 'Comps');
+		"
+	);
+	echo $x."<hr>";
+	$x = $db->query("UPDATE committeemember SET Name = 'AAAA' WHERE Name = 'Hi';");
+	echo $x;
 
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
