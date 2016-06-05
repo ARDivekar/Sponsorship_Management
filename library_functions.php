@@ -629,15 +629,13 @@
 		//table headers:
 		$i = 0;
 		$out.= "<thead><tr>";
-		while ($i < mysql_num_fields($result)){
-			$attr = mysql_fetch_field($result, $i);
-			$out .= "<th>".$attr->name."</th>";
-			$i++;
+		foreach($result[0] as $columnName => $value){
+			$out .= "<th>".$columnName."</th>";
 		}
 		$out.= "</tr></thead>";
 
 
-		while ($row = mysql_fetch_assoc($result)){
+		foreach($result as $row){
 			$out.= '<tr>';
 			foreach ($row as $key => $value){
 				if($value!=NULL && $value!=""){
