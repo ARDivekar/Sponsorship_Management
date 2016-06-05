@@ -198,9 +198,10 @@
 		var $labelCSSClass = NULL;
 		var $inputDataListID = NULL;
 		var $inputDataList = NULL;
+		var $required = NULL; //required="required"
 
 
-		function InputField($inputType, $name, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL){
+		function InputField($inputType, $name, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = NULL){
 
 			if (!InputTypes::isValidValue($inputType)){
 				echo "Invalid type passed to constructor of class InputField.";
@@ -216,6 +217,17 @@
 			$this->labelCSSClass = $labelCSSClass;
 			$this->inputDataListID = $inputDataListID;
 			$this->inputDataList = $inputDataList;
+			$this->required = $required;
+		}
+
+		function setDisabledAndReturnObject(){
+			$this->disabled = true;
+			return $this;
+		}
+
+		function setRequiredAndReturnObject(){
+			$this->required = true;
+			return $this;
 		}
 
 
@@ -238,6 +250,9 @@
 			$out.= ' name="' . $this->name . '" value="' . $this->value . '" ';
 			if ($this->disabled){
 				$out .= " disabled ";
+			}
+			if ($this->required){
+				$out .= " required=\"required\" ";
 			}
 			if ($this->inputCSSClass){
 				$out .= ' class="' . $this->inputCSSClass . '"';
@@ -769,7 +784,7 @@
 		const CSOSector = "All";
 		const Submit = "Submit";
 
-		static $systemGenerated = [ //fields that should not be replaced by GET parameters, etc.
+		static $systemGenerated = [ //fields that should use the $_SESSION values and not those passed in the form.
 			QueryFieldNames::SponsFestival,
 			QueryFieldNames::SponsID,
 			QueryFieldNames::SponsTransType,
@@ -906,7 +921,7 @@
 
 	echo new InputField(
 		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $disabled = false, $inputCSSClass = NULL,
-		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company")
+		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company"), $required=true
 	);
 
 
