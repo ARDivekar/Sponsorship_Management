@@ -5,11 +5,11 @@
 <html lang="en">
 <head>
 <!--	<link rel="stylesheet" type="text/css" href="style.css">-->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-	<script type="text/javascript" src="./User_GUI_CSS/disable_code_view.js"></script>
+<!--	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>-->
+<!--	<script type="text/javascript" src="./User_GUI_CSS/disable_code_view.js"></script>-->
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
 <?php
 	/*Resume old session:*/
