@@ -12,20 +12,17 @@
 </head>
 
 <body>
-	<?php 
+	<?php
 
-		
 		/*Resume old session:*/
 		session_start();
-		if(empty($_SESSION['loginID']))
+
+		include_once('library_functions.php');
+
+		if(empty($_SESSION[SessionEnums::UserLoginID]))
 			header("Location: login.php");
 
-
-		require('DBconnect.php');
-		require('library_functions.php');
-
-		$SponsID=$_SESSION['loginID']; //get SponsID from previous session
-		$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
+		$SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
 
 	?>
 	<header>

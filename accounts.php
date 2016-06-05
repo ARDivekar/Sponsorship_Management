@@ -126,7 +126,8 @@
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
-								$result = mysql_query("SELECT ID, Date, Time, MeetingType, CMPName, CEName, Address, Outcome FROM meeting;");
+								$db = new SponsorshipDB();
+								$result = $db->select("SELECT ID, Date, Time, MeetingType, CMPName, CEName, Address, Outcome FROM meeting;");
 								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
 								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
