@@ -318,13 +318,19 @@
 		var $selectCSSClass = NULL;
 		var $labelText = NULL;
 		var $labelCSSClass = NULL;
+		var $required = NULL;
 
-		function SelectField($options, $name, $selectCSSClass=NULL, $labelText=NULL, $labelCSSClass=NULL){
+		function SelectField($options, $name, $selectCSSClass=NULL, $labelText=NULL, $labelCSSClass=NULL, $required = NULL){
 			$this->options = $options;
 			$this->name = $name;
 			$this->selectCSSClass = $selectCSSClass;
 			$this->labelText = $labelText;
 			$this->labelCSSClass = $labelCSSClass;
+			$this->required = $required;
+		}
+
+		function setRequired(){
+			$this->required = true;
 		}
 
 
@@ -337,7 +343,10 @@
 				else $out .= '<label for="' . $this->name . '">' . $this->labelText . ':</label> ';
 			}
 
-			$out .= "<select name=\"$this->name\" class=\"$this->selectCSSClass\">";
+			$out .= "<select name=\"$this->name\" class=\"$this->selectCSSClass\" ";
+			if($this->required)
+				$out .= " required = \"required\" ";
+			$out .= ">";
 			foreach($this->options as $option){
 				$out.=$option;
 			}
@@ -1061,6 +1070,40 @@
 
 	}
 
+	abstract class QueryFieldNamesToSQLTableFields extends BasicEnum{
+		static $map =[
+			QueryFieldNames::SponsFestival => "EventName",
+			QueryFieldNames::SponsSector => "Sector",
+			QueryFieldNames::SponsRole => "Role",
+			QueryFieldNames::SponsID => "SponsID",
+			QueryFieldNames::SponsOthersID => "SponsID",
+			QueryFieldNames::SponsName => "Name",
+			QueryFieldNames::SponsPassword => "Password",
+			QueryFieldNames::SponsRePassword => "",
+			QueryFieldNames::SponsEmail => "Email",
+			QueryFieldNames::SponsMobile => "Mobile",
+			QueryFieldNames::SponsYear => "Year",
+			QueryFieldNames::SponsBranch => "Branch",
+			QueryFieldNames::SponsCompany => "CMPName",
+			QueryFieldNames::SponsTransType => "TransType",
+			QueryFieldNames::SponsDate => "Date",
+			QueryFieldNames::SponsTime => "Time",
+			QueryFieldNames::SponsAmount => "Amount",
+			QueryFieldNames::SponsAccountLogEntryID => "AccountLog.ID",
+			QueryFieldNames::SponsCompanyStatus => "CMPStatus",
+			QueryFieldNames::SponsCompanySponsoredOthers => "SponsoredOtherOrganization",
+			QueryFieldNames::SponsCompanyAddress => "CMPAddress",
+			QueryFieldNames::SponsCompanyExec => "CEName",
+			QueryFieldNames::SponsCompanyExecEmail => "CEEmail",
+			QueryFieldNames::SponsCompanyExecMobile => "CEMobile",
+			QueryFieldNames::SponsCompanyExecPosition => "CEPosition",
+			QueryFieldNames::SponsMeetingAddress => "Meeting.Address",
+			QueryFieldNames::SponsMeetingType => "MeetingType",
+			QueryFieldNames::SponsMeetingOutcome => "Outcome",
+			QueryFieldNames::SponsMeetingEntryID => "Meeting.ID"
+		];
+	}
+
 
 	/*##------------------------------------------------TESTS------------------------------------------------##
 
@@ -1318,7 +1361,7 @@
 		private function generateInsertQuery(){
 			if($this->checkNecessaryFields()){
 				$out = "";
-				$out .= $this->convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`");
+				$out .= self::convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`");
 				$out .= " VALUES \n";
 
 				$len = count($this->tableInsertFieldValues);
@@ -1471,6 +1514,9 @@
 			return $this->getQuery();
 		}
 	}
+
+
+
 
 
 	/*##------------------------------------------------TESTS------------------------------------------------##

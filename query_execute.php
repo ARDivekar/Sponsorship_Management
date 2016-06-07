@@ -23,6 +23,8 @@
 		var $tableName = NULL;
 		var $queryType = NULL;
 
+		var $tableFields = NULL;
+
 
 		function QueryExecute($userType, $tableName, $queryType){
 			if($queryType == QueryTypes::View)
@@ -32,50 +34,98 @@
 			$this->queryType = $queryType;
 		}
 
-		function executeQuery(){
-			if (Authorization::checkValidAuthorization($this->userType, $this->tableName, $this->queryType)){
-				//user is authorized to run this query
-				$db = new SponsorshipDB();
-				switch ($this->userType){
-					case UserTypes::CSO:
-						$this->executeCSOQuery();
-						break;
-					case UserTypes::SectorHead:
-						$this->executeSectorHeadQuery();
-						break;
-					case UserTypes::SponsRep:
-						$this->executeSponsRepQuery();
-						break;
+
+		function checkRequiredFields(){
+			foreach( QueryFieldNames::$requiredFields[$this->tableName][$this->queryType] as $requiredField ){
+				if(! ($this->userType == UserTypes::CSO && $requiredField == QueryFieldNames::SponsSector)){
+					if(!isset($_POST[$requiredField])){
+						echo "required field(s) : $requiredField are not set";
+						return false;
+					}
 				}
 			}
+			return true;
 		}
 
 
-		function executeCSOQuery(){
+		function getInsert(){
+			$q = new SQLQuery();
+			$insertFields = [];
+			$insertFieldValues = [[]];
+			if($this->checkRequiredFields()){
+				foreach( QueryFieldNames::$TableToFieldNameOrdering[$this->tableName] as $possibleField){
+					if($possibleField==QueryFieldNames::Submit)
+						continue;
+
+					$val = extractValueFromPOST($possibleField);
+					if($val != NULL){
+						array_push($insertFields, QueryFieldNamesToSQLTableFields::$map[$possibleField]);
+						array_push($insertFieldValues[0], $val);
+					}
+				}
+				$q->setInsertQuery($this->tableName, $insertFields, $insertFieldValues);
+				return $q->getQuery();
+			}
+			return NULL;
+		}
+
+
+		function executeQuery(){
+			if (Authorization::checkValidAuthorization($this->userType, $this->tableName, $this->queryType)){
+				//user is authorized to run this query
+
+				if(!$this->checkRequiredFields())
+					return false;
+
+				$db = new SponsorshipDB();
+				$sqlQueryObj = new SQLQuery();
+
+				switch ($this->userType){
+					case UserTypes::CSO:
+						$sqlQueryObj = $this->getCSOQuery();
+						break;
+					case UserTypes::SectorHead:
+						$sqlQueryObj = $this->getSectorHeadQuery();
+						break;
+					case UserTypes::SponsRep:
+						$sqlQueryObj = $this->getSponsRepQuery();
+						break;
+				}
+
+				echo $sqlQueryObj->getQuery();
+				if($db ->query($sqlQueryObj->getQuery()))
+					return true;
+			}
+
+			return false;
+		}
+
+
+		function getCSOQuery(){
 			switch($this->tableName){
 				case SQLTables::Event :
-					$this->getCSOEventSQLQuery();
+					return $this->getCSOEventSQLQuery();
 					break;
 				case SQLTables::SponsLogin :
 //					return $this->setCSOSponsLoginSQLQuery();
 					break;
 				case SQLTables::SponsRep :
-					$this->getCSOSponsRepSQLQuery();
+					return $this->getCSOSponsRepSQLQuery();
 					break;
 				case SQLTables::SectorHead :
-					$this->getCSOSectorHeadSQLQuery();
+					return $this->getCSOSectorHeadSQLQuery();
 					break;
 				case SQLTables::AccountLog :
-					$this->getCSOAccountLogSQLQuery();
+					return $this->getCSOAccountLogSQLQuery();
 					break;
 				case SQLTables::Company :
-					$this->getCSOCompanySQLQuery();
+					return $this->getCSOCompanySQLQuery();
 					break;
 				case SQLTables::CompanyExec :
-					$this->getCSOCompanyExecSQLQuery();
+					return $this->getCSOCompanyExecSQLQuery();
 					break;
 				case SQLTables::Meeting :
-					$this->getCSOMeetingSQLQuery();
+					return $this->getCSOMeetingSQLQuery();
 					break;
 			}
 		}
@@ -89,6 +139,7 @@
 			*/
 			switch($this->queryType){
 				case QueryTypes::Insert :
+
 					break;
 				case QueryTypes::Modify :
 					break;
@@ -103,9 +154,10 @@
 			/*For reference:
 				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
-
+			$q = new SQLQuery();
 			switch($this->queryType){
 				case QueryTypes::Insert :
+
 					break;
 				case QueryTypes::Modify :
 					break;
@@ -213,9 +265,16 @@
 
 	}
 
+	/*
+	foreach($_POST as $key => $value){
+		echo "<br>".$key." : ".$value;
+	}
+	echo "<hr>";
+	*/
 
-	$e = new QueryExecute($_SESSION[SessionEnums::UserAccessLevel], extractValueFromPOST(QueryFormSessionEnums::TableName), extractValueFromPOST(QueryFormSessionEnums::QueryType));
-	$e->executeQuery();
+	$e = new QueryExecute($_SESSION[SessionEnums::UserAccessLevel], $_SESSION[QueryFormSessionEnums::TableName], $_SESSION[QueryFormSessionEnums::QueryType]);
+	echo $e->getInsert();
+
 
 
 
