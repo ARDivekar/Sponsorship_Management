@@ -1462,6 +1462,11 @@
 			}
 			else return $field;
 		}
+
+
+		public function __toString(){
+			return $this->getQuery();
+		}
 	}
 
 
