@@ -191,7 +191,7 @@
 	class InputField{
 		var $inputType = NULL;
 		var $name = NULL;
-		var $disabled = NULL;
+		var $readonly = NULL;
 		var $value = NULL;
 		var $inputCSSClass = NULL;
 		var $labelText = NULL;
@@ -201,7 +201,7 @@
 		var $required = NULL; //required="required"
 
 
-		function InputField($inputType, $name, $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = NULL){
+		function InputField($inputType, $name, $value = "", $readonly = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = NULL){
 
 			if (!InputTypes::isValidValue($inputType)){
 				echo "Invalid type passed to constructor of class InputField.";
@@ -210,7 +210,7 @@
 			}
 			$this->inputType = $inputType;
 			$this->name = $name;
-			$this->disabled = $disabled;
+			$this->readonly = $readonly;
 			$this->value = $value;
 			$this->inputCSSClass = $inputCSSClass;
 			$this->labelText = $labelText;
@@ -220,8 +220,8 @@
 			$this->required = $required;
 		}
 
-		function setDisabled(){
-			$this->disabled = true;
+		function setReadOnly(){
+			$this->readonly = true;
 		}
 
 
@@ -247,8 +247,8 @@
 			}
 
 			$out.= ' name="' . $this->name . '" value="' . $this->value . '" ';
-			if ($this->disabled){
-				$out .= " disabled ";
+			if ($this->readonly){
+				$out .= " readonly=\"readonly\" ";
 			}
 			if ($this->required){
 				$out .= " required=\"required\" ";
@@ -802,7 +802,10 @@
 			QueryFieldNames::SponsSector
 		];
 
+
 		static $TableToFieldNameOrdering = [ //used to specify ordering in forms
+		//IMP! Each of these arrays must be a global list of ALL POSSIBLE fields in the form, many things depend on this variable!
+
 			SQLTables::AccountLog => [
 				QueryFieldNames::SponsFestival,
 				QueryFieldNames::SponsAccountLogEntryID,
@@ -1065,15 +1068,15 @@
 		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
 		$fields = array(
 			new InputField(
-				$inputType = InputTypes::text, $name = "TransType", $value = TransType::Deposit, $disabled = true, $inputCSSClass = NULL,
+				$inputType = InputTypes::text, $name = "TransType", $value = TransType::Deposit, $readonly = true, $inputCSSClass = NULL,
 				$labelText = "Transaction Type", $labelCSSClass = NULL
 			),
 			new InputField(
-				$inputType = InputTypes::text, $name = "CMPName", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Company Name",
+				$inputType = InputTypes::text, $name = "CMPName", $value = "", $readonly = false, $inputCSSClass = NULL, $labelText = "Company Name",
 				$labelCSSClass = NULL
 			),
 			new InputField(
-				$inputType = InputTypes::text, $name = "Amount", $value = "", $disabled = false, $inputCSSClass = NULL, $labelText = "Amount",
+				$inputType = InputTypes::text, $name = "Amount", $value = "", $readonly = false, $inputCSSClass = NULL, $labelText = "Amount",
 				$labelCSSClass = NULL
 			),
 			new SelectField(
@@ -1084,7 +1087,7 @@
 				$name = "UserType",$selectCSSClass=NULL, $labelText="User Type", $labelCSSClass=NULL
 			),
 			new InputField(
-				$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $disabled = false, $inputCSSClass = "query_forms"
+				$inputType = InputTypes::submit, $name = "Submit", $value = "Submit", $readonly = false, $inputCSSClass = "query_forms"
 			)
 		),
 		$formCSSClass=NULL,
@@ -1094,7 +1097,7 @@
 
 
 	echo new InputField(
-		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $disabled = false, $inputCSSClass = NULL,
+		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $readonly = false, $inputCSSClass = NULL,
 		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company"), $required=true
 	);
 
@@ -1535,9 +1538,6 @@
 
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
-
-
-
 
 
 ?>
