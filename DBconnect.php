@@ -190,15 +190,42 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			if(!self::$connection)
 				return false;
 			self::$connection->autocommit(FALSE);
+			return true;
 		}
 
-		
+		public function rollbackTransaction(){
+			if(!self::$connection)
+				return false;
+			self::$connection->rollback();
+			self::$connection->autocommit(TRUE);
+			return true;
+		}
+
+
 		public function endTransaction(){
 			if(!self::$connection)
 				return false;
 			self::$connection->commit();
 			self::$connection->autocommit(TRUE);
+			return true;
 		}
+
+
+		public function performTransaction($queryList){
+			if(!self::$connection)
+				return false;
+
+			self::startTransaction();
+			foreach($queryList as $query){
+				if(self::query($query) === FALSE){
+					self::rollbackTransaction();
+					return false;
+				}
+			}
+			self::endTransaction();
+			return true;
+		}
+
 	}
 
 	$db = new SponsorshipDB([
