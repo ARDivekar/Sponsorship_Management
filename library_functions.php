@@ -1,5 +1,5 @@
 <?php
-//	session_start();
+	session_start();
 //	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
 	include_once('DBconnect.php');
 
@@ -89,18 +89,31 @@
 	abstract class SQLTables extends BasicEnum{
 		const Event = "Event";
 		const SponsLogin = "SponsLogin";
-
 		const CommitteeMember = "CommitteeMember";
 		const SponsRep = "SponsRep";
 		const SectorHead = "SectorHead";
-
 		const AccountLog = "AccountLog";
-
 		const Company = "Company";
 		const CompanyExec = "CompanyExec";
 		const Meeting = "Meeting";
-	}
 
+		static $DBTableStructure = [
+		];
+
+		static function setDBStructure(){
+			$db = new SponsorshipDB();
+			SQLTables::$DBTableStructure[SQLTables::Event] = $db->getTableColumns(SQLTables::Event);
+			SQLTables::$DBTableStructure[SQLTables::SponsLogin] = $db->getTableColumns(SQLTables::SponsLogin);
+			SQLTables::$DBTableStructure[SQLTables::CommitteeMember] = $db->getTableColumns(SQLTables::CommitteeMember);
+			SQLTables::$DBTableStructure[SQLTables::SponsRep] = $db->getTableColumns(SQLTables::SponsRep);
+			SQLTables::$DBTableStructure[SQLTables::SectorHead] = $db->getTableColumns(SQLTables::SectorHead);
+			SQLTables::$DBTableStructure[SQLTables::AccountLog] = $db->getTableColumns(SQLTables::AccountLog);
+			SQLTables::$DBTableStructure[SQLTables::Company] = $db->getTableColumns(SQLTables::Company);
+			SQLTables::$DBTableStructure[SQLTables::CompanyExec] = $db->getTableColumns(SQLTables::CompanyExec);
+			SQLTables::$DBTableStructure[SQLTables::Meeting] = $db->getTableColumns(SQLTables::Meeting);
+		}
+
+	}
 
 
 
@@ -455,9 +468,29 @@
 
 
 
+	function echo_1d_array($array, $arrayName = "1D-Array"){
+		echo "<hr>$arrayName: ";
+		foreach($array as $key=>$value)
+			echo "<br>$key => $value";
+		echo "<hr>";
+	}
+
+
+	function echo_2d_array($array, $arrayName = "2D-Array"){
+		echo "<hr>$arrayName: ";
+		foreach($array as $key1=>$value1){
+			echo "<br><br><br>$key1 => ";
+			foreach($value1 as $key2=>$value2){
+				echo "<br>$key2 => $value2";
+			}
+		}
+		echo "<hr>";
+	}
+
+
 
 	function extractValueFromGET($valueName){
-		if(array_key_exists($valueName, $_GET)){
+		if(array_key_exists($valueName, $_GET) && $_GET[$valueName]!=NULL && $_GET[$valueName]!="" && strtolower($_GET[$valueName]) != 'null'){
 			return $_GET[$valueName];
 		}
 		return NULL;
@@ -465,7 +498,7 @@
 
 
 	function extractValueFromPOST($valueName){
-		if(array_key_exists($valueName, $_POST)){
+		if(array_key_exists($valueName, $_POST) && $_POST[$valueName]!=NULL && $_POST[$valueName]!="" && strtolower($_POST[$valueName]) != 'null'){
 			return $_POST[$valueName];
 		}
 		return NULL;
@@ -804,13 +837,6 @@
 		const CSOSector = "All";
 		const Submit = "Submit";
 
-		static $systemGenerated = [ //fields that should use the $_SESSION values and not those passed in the form.
-			QueryFieldNames::SponsFestival,
-			QueryFieldNames::SponsID,
-			QueryFieldNames::SponsTransType,
-			QueryFieldNames::SponsSector
-		];
-
 
 		static $TableToFieldNameOrdering = [ //used to specify ordering in forms
 		//IMP! Each of these arrays must be a global list of ALL POSSIBLE fields in the form, many things depend on this variable!
@@ -904,6 +930,7 @@
 			]
 
 		];
+
 
 
 		static $requiredFields = [ //used to specify ordering in forms
@@ -1068,10 +1095,8 @@
 
 		];
 
-	}
 
-	abstract class QueryFieldNamesToSQLTableFields extends BasicEnum{
-		static $map =[
+		static $mapToDBFieldNames = [
 			QueryFieldNames::SponsFestival => "EventName",
 			QueryFieldNames::SponsSector => "Sector",
 			QueryFieldNames::SponsRole => "Role",
@@ -1089,7 +1114,7 @@
 			QueryFieldNames::SponsDate => "Date",
 			QueryFieldNames::SponsTime => "Time",
 			QueryFieldNames::SponsAmount => "Amount",
-			QueryFieldNames::SponsAccountLogEntryID => "AccountLog.ID",
+			QueryFieldNames::SponsAccountLogEntryID => "ID",
 			QueryFieldNames::SponsCompanyStatus => "CMPStatus",
 			QueryFieldNames::SponsCompanySponsoredOthers => "SponsoredOtherOrganization",
 			QueryFieldNames::SponsCompanyAddress => "CMPAddress",
@@ -1097,12 +1122,28 @@
 			QueryFieldNames::SponsCompanyExecEmail => "CEEmail",
 			QueryFieldNames::SponsCompanyExecMobile => "CEMobile",
 			QueryFieldNames::SponsCompanyExecPosition => "CEPosition",
-			QueryFieldNames::SponsMeetingAddress => "Meeting.Address",
+			QueryFieldNames::SponsMeetingAddress => "Address",
 			QueryFieldNames::SponsMeetingType => "MeetingType",
 			QueryFieldNames::SponsMeetingOutcome => "Outcome",
-			QueryFieldNames::SponsMeetingEntryID => "Meeting.ID"
+			QueryFieldNames::SponsMeetingEntryID => "ID"
 		];
+
+
+		static $systemGenerated = [ //fields that should use the $_SESSION values and not those passed in the form.
+		];
+
+
+		static function setSystemGenerated (){ //fields that should use the $_SESSION values, and not those passed in the form.
+
+			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsFestival] = $_SESSION[SessionEnums::UserFestival];
+			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsID] = $_SESSION[SessionEnums::UserLoginID];
+			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsTransType] = TransType::Deposit;
+			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsSector] = $_SESSION[SessionEnums::UserSector];
+
+		}
+
 	}
+
 
 
 	/*##------------------------------------------------TESTS------------------------------------------------##
@@ -1582,8 +1623,20 @@
 	echo $a->getQuery();
 
 
+	
+	SQLTables::setDBStructure();	//set all the table columns for easy access.
+	echo_1d_array(SQLTables::$DBTableStructure[SQLTables::AccountLog], SQLTables::AccountLog);
+
+
+	QueryFieldNames::setSystemGenerated();		//set all system generated variables for later use.
+	echo_1d_array(QueryFieldNames::$systemGenerated, "System generated:");
+
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
+
+	$db = new SponsorshipDB();
+	SQLTables::setDBStructure();	//set all the table columns for easy access.
+	QueryFieldNames::setSystemGenerated();		//set all system generated variables for later use.
 
 
 ?>
