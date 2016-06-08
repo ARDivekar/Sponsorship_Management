@@ -54,6 +54,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 
 		function SponsorshipDB($config = NULL){
 			$this->set($config);
+			self::$connection = new mysqli();
 		}
 
 
@@ -128,7 +129,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 				return FALSE;
 			}
 
-			$result = SponsorshipDB::$connection->query($query);
+			$result = self::$connection->query($query);
 
 			return $result; //From: http://php.net/manual/en/mysqli.query.php ...
 			//Returns FALSE on failure. For successful SELECT, SHOW, DESCRIBE or EXPLAIN queries mysqli_query() will return a mysqli_result object. For other successful queries mysqli_query() will return TRUE.
@@ -183,6 +184,20 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			return $tableCols;
 
 
+		}
+
+		public function startTransaction(){
+			if(!self::$connection)
+				return false;
+			self::$connection->autocommit(FALSE);
+		}
+
+		
+		public function endTransaction(){
+			if(!self::$connection)
+				return false;
+			self::$connection->commit();
+			self::$connection->autocommit(TRUE);
 		}
 	}
 
