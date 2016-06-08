@@ -171,6 +171,19 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 		public function quote($value) {
 			return "'" . SponsorshipDB::$connection->real_escape_string($value) . "'";
 		}
+
+		public function getTableColumns($tableName){
+			$tableCols = [];
+			$structure = $this->select("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".SponsorshipDB::$dbname."' AND TABLE_NAME = '$tableName';");
+
+			foreach($structure as $column){
+				array_push($tableCols, $column["COLUMN_NAME"]);
+			}
+
+			return $tableCols;
+
+
+		}
 	}
 
 	$db = new SponsorshipDB([
@@ -181,5 +194,12 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 		 ]);
 
 
+	/*##------------------------------------------------TESTS------------------------------------------------##
+
+	echo "<hr>".SQLTables::CommitteeMember.":<br>";
+	foreach( $db->getTableColumns(SQLTables::CommitteeMember) as $col)
+		echo "<br>".$col;
+
+	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
 ?>
