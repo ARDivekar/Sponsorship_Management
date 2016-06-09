@@ -109,24 +109,31 @@
 			<!-- /.col-lg-12 -->
 		</div>
 
-		<div class="row col-md-6">
+		<div class="row">
 			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Meeting</h4></a>
+			<button class="btn btn-warning" data-toggle="collapse" data-target="#meetingOutcome">Add Outcome of Latest Meeting</button>
+		</div>
+		<br />
+		<div id="meetingOutcome" class="collapse row">
+			<input type="text" class="form-control"></input>
+			<br />
+			<button type="submit" class="btn btn-success">Submit</button>
 		</div>
 		<br />
 
 		<!-- /.row -->
 		<div class="row">
-			<div class="col-lg-12">
+			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Meetings of ___ Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
+						Meetings of <?php echo get_person_sector($SponsID); ?> Sector .Here we need to add an option of adding outcome for a particular meeting. It should be a column
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
-								$result = mysql_query("SELECT ID, Date, Time, MeetingType, CMPName, CEName, Address, Outcome FROM meeting;");
+								$result = mysql_query("SELECT ID, Date, Time, MeetingType as 'Meeting Type', CMPName as 'Company', CEName as 'Company Executive', Address, Outcome FROM meeting;");
 								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
 								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
