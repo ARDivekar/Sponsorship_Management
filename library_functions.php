@@ -1,5 +1,6 @@
 <?php
-	session_start();
+	if(!isset($_SESSION[SessionEnums::UserLoginID]))
+		session_start();
 //	$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
 	include_once('DBconnect.php');
 
@@ -101,6 +102,8 @@
 		];
 
 		static function setDBStructure(){
+			if(self::$DBTableStructure != []) //don't reset it multiple times.
+				return;
 			$db = new SponsorshipDB();
 			SQLTables::$DBTableStructure[SQLTables::Event] = $db->getTableColumns(SQLTables::Event);
 			SQLTables::$DBTableStructure[SQLTables::SponsLogin] = $db->getTableColumns(SQLTables::SponsLogin);
@@ -1041,8 +1044,7 @@
 					QueryFieldNames::SponsRole,
 					QueryFieldNames::SponsOthersID,
 					QueryFieldNames::SponsName,
-					QueryFieldNames::SponsPassword,
-					QueryFieldNames::SponsRePassword
+					QueryFieldNames::SponsPassword
 				],
 
 				QueryTypes::Modify => [
@@ -1068,8 +1070,7 @@
 					QueryFieldNames::SponsRole,
 					QueryFieldNames::SponsOthersID,
 					QueryFieldNames::SponsName,
-					QueryFieldNames::SponsPassword,
-					QueryFieldNames::SponsRePassword
+					QueryFieldNames::SponsPassword
 				],
 
 				QueryTypes::Modify => [
@@ -1104,7 +1105,6 @@
 			QueryFieldNames::SponsOthersID => "SponsID",
 			QueryFieldNames::SponsName => "Name",
 			QueryFieldNames::SponsPassword => "Password",
-			QueryFieldNames::SponsRePassword => "",
 			QueryFieldNames::SponsEmail => "Email",
 			QueryFieldNames::SponsMobile => "Mobile",
 			QueryFieldNames::SponsYear => "Year",
@@ -1134,7 +1134,8 @@
 
 
 		static function setSystemGenerated (){ //fields that should use the $_SESSION values, and not those passed in the form.
-
+			if(self::$systemGenerated != []) //don't reset it multiple times.
+				return;
 			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsFestival] = $_SESSION[SessionEnums::UserFestival];
 			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsID] = $_SESSION[SessionEnums::UserLoginID];
 			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsTransType] = TransType::Deposit;
@@ -1623,7 +1624,7 @@
 	echo $a->getQuery();
 
 
-	
+
 	SQLTables::setDBStructure();	//set all the table columns for easy access.
 	echo_1d_array(SQLTables::$DBTableStructure[SQLTables::AccountLog], SQLTables::AccountLog);
 
