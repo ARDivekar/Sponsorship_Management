@@ -113,7 +113,6 @@ if(isset($_POST[QueryFieldNames::Submit])){ //Check if the form has been submitt
 				
 				$_SESSION[SessionEnums::UserLoginID] = $SponsID; //we need to pass $SponsID between pages, hence we use the $_SESSION associative array. Google it.
 				$_SESSION[SessionEnums::UserAccessLevel] = $SponsLogin[0]["AccessLevel"];
-
 				$_SESSION[SessionEnums::UserOrganization] = $SponsLogin[0]["Organization"];
 				$_SESSION[SessionEnums::UserFestival] = $SponsLogin[0]["EventName"];
 				$_SESSION[SessionEnums::UserDepartment] = $SponsLogin[0]["Department"];

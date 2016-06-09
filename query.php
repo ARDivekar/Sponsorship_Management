@@ -70,6 +70,17 @@
 					);
 					break;
 
+				case QueryFieldNames::SponsOthersSector :
+					return new InputField(
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsOthersSector,
+						$value = ($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? "" : $_SESSION[SessionEnums::UserSector] ),
+						$readonly = ($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? false : true ), $inputCSSClass = NULL,
+						$labelText = "Sector", $labelCSSClass = NULL,
+						$inputDataListID ="SectorInDB",
+						$inputDataList = select_single_column_from_table("Sector", "Company")
+					);
+					break;
+
 
 				case QueryFieldNames::SponsID :
 					return new InputField(
@@ -446,9 +457,9 @@
 				case QueryTypes::Insert :
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
-						$fields = array(
+						$fields = [
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersSector),
 							$SponsRepRole,
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
@@ -510,18 +521,19 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						),
+						],
 						$formCSSClass=NULL,
 						$title = "Insert a ".UserTypes::SponsRep,
 						$fieldSeparator = "<br>"
 					);
 					break;
+
 				case QueryTypes::Modify :
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
 						$fields = array(
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsFestival),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsSector),
+							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersSector),
 							$SponsRepRole,
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
@@ -579,6 +591,7 @@
 						$fieldSeparator = "<br>"
 					);
 					break;
+
 				case QueryTypes::Delete :
 					return new HTMLForm(
 						$formName = $this->tableName.$this->queryType, $formAction = "view_table.php", $formMethod = FormMethod::POST,
@@ -1235,6 +1248,7 @@
 		}
 
 
+
 		function parseSectorHeadEventQuery(){
 			/*For reference:
 				SQLTables::Event => [],	//empty means no queries allowed
@@ -1249,11 +1263,13 @@
 
 			return NULL;
 		}
+
 		function parseSectorHeadSponsRepQuery(){
 			/*For reference:
 				SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
 			*/
 			$SectorHeadSponsRepForm = $this->parseCSOSponsRepQuery();
+			$SectorHeadSponsRepForm->removeField(QueryFieldNames::SponsOthersSector);
 			$SectorHeadSponsRepForm->addField(
 					PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)
 					/*
@@ -1292,6 +1308,7 @@
 			//These are all the possible fields
 			return $SectorHeadAccountLogForm;
 		}
+
 		function parseSectorHeadCompanyQuery(){
 			/*For reference:
 				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
@@ -1300,6 +1317,7 @@
 			$SectorHeadCompanyQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector));
 			return $SectorHeadCompanyQuery;
 		}
+
 		function parseSectorHeadCompanyExecQuery(){
 			/*For reference:
 				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
@@ -1308,6 +1326,7 @@
 			$SectorHeadCompanyExecQuery->addField(PredefinedQueryInputFields::get(QueryFieldNames::SponsSector));
 			return $SectorHeadCompanyExecQuery;
 		}
+
 		function parseSectorHeadMeetingQuery(){
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.

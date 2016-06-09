@@ -491,6 +491,9 @@
 	}
 
 
+	function get_current_date(){ //returns date in MySQL format.
+		return date("Y-m-d H:i:s");
+	}
 
 	function extractValueFromGET($valueName){
 		if(array_key_exists($valueName, $_GET) && $_GET[$valueName]!=NULL && $_GET[$valueName]!="" && strtolower($_GET[$valueName]) != 'null'){
@@ -808,8 +811,11 @@
 
 
 	abstract class QueryFieldNames extends BasicEnum{
+		const SponsOrganization = "SponsOrganization";
 		const SponsFestival = "SponsFestival";
 		const SponsSector = "SponsSector";
+		const SponsOthersSector = "SponsOthersSector";
+		const SponsDepartment = "SponsDepartment";
 		const SponsRole = "SponsRole";
 		const SponsID = "SponsID";
 		const SponsOthersID = "SponsOthersID";
@@ -820,6 +826,7 @@
 		const SponsMobile = "SponsMobile";
 		const SponsYear = "SponsYear";
 		const SponsBranch = "SponsBranch";
+		const SponsDateAssigned = "SponsDateAssigned";
 		const SponsCompany = "SponsCompany";
 		const SponsTransType = "SponsTransType";
 		const SponsDate = "SponsDate";
@@ -828,6 +835,7 @@
 		const SponsAccountLogEntryID = "SponsAccountLogEntryID";
 		const SponsCompanyStatus = "SponsCompanyStatus";
 		const SponsCompanySponsoredOthers = "SponsCompanySponsoredOthers";
+		const SponsCompanyPreviouslySponsoredYear = "SponsCompanyPreviouslySponsoredYear";
 		const SponsCompanyAddress = "SponsCompanyAddress";
 		const SponsCompanyExec = "SponsCompanyExec";
 		const SponsCompanyExecEmail = "SponsCompanyExecEmail";
@@ -892,25 +900,11 @@
 				QueryFieldNames::Submit
 			],
 
-			SQLTables::SponsRep => [
-				QueryFieldNames::SponsFestival,
-				QueryFieldNames::SponsSector,
-				QueryFieldNames::SponsRole,
-				QueryFieldNames::SponsOthersID,
-				QueryFieldNames::SponsName,
-				QueryFieldNames::SponsPassword,
-				QueryFieldNames::SponsRePassword,
-				QueryFieldNames::SponsEmail,
-				QueryFieldNames::SponsMobile,
-				QueryFieldNames::SponsYear,
-				QueryFieldNames::SponsBranch,
-				QueryFieldNames::Submit
-			],
-
 
 			SQLTables::CommitteeMember => [
 				QueryFieldNames::SponsFestival,
 				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsOthersSector,
 				QueryFieldNames::SponsRole,
 				QueryFieldNames::SponsOthersID,
 				QueryFieldNames::SponsName,
@@ -923,9 +917,28 @@
 				QueryFieldNames::Submit
 			],
 
+
+			SQLTables::SponsRep => [
+				QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsOthersSector,
+				QueryFieldNames::SponsRole,
+				QueryFieldNames::SponsOthersID,
+				QueryFieldNames::SponsName,
+				QueryFieldNames::SponsPassword,
+				QueryFieldNames::SponsRePassword,
+				QueryFieldNames::SponsEmail,
+				QueryFieldNames::SponsMobile,
+				QueryFieldNames::SponsYear,
+				QueryFieldNames::SponsBranch,
+				QueryFieldNames::Submit
+			],
+
+
 			SQLTables::SectorHead => [
 				QueryFieldNames::SponsFestival,
 				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsOthersSector,
 				QueryFieldNames::SponsRole,
 				QueryFieldNames::SponsOthersID,
 				QueryFieldNames::SponsName,
@@ -1139,6 +1152,7 @@
 		];
 
 
+/*
 		static $mapToDBFieldNames = [
 			QueryFieldNames::SponsFestival => "EventName",
 			QueryFieldNames::SponsSector => "Sector",
@@ -1169,21 +1183,13 @@
 			QueryFieldNames::SponsMeetingOutcome => "Outcome",
 			QueryFieldNames::SponsMeetingEntryID => "ID"
 		];
-
+*/
 
 		static $systemGenerated = [ //fields that should use the $_SESSION values and not those passed in the form.
 		];
 
 
-		static function setSystemGenerated (){ //fields that should use the $_SESSION values, and not those passed in the form.
-			if(self::$systemGenerated != []) //don't reset it multiple times.
-				return;
-			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsFestival] = $_SESSION[SessionEnums::UserFestival];
-			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsID] = $_SESSION[SessionEnums::UserLoginID];
-			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsTransType] = TransType::Deposit;
-			 QueryFieldNames::$systemGenerated[QueryFieldNames::SponsSector] = $_SESSION[SessionEnums::UserSector];
 
-		}
 
 	}
 
@@ -1674,12 +1680,12 @@
 	QueryFieldNames::setSystemGenerated();		//set all system generated variables for later use.
 	echo_1d_array(QueryFieldNames::$systemGenerated, "System generated:");
 
+	echo_2d_array(SQLTables::$DBTableStructure, "DB Structure");
+
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
 	$db = new SponsorshipDB();
 	SQLTables::setDBStructure();	//set all the table columns for easy access.
-	QueryFieldNames::setSystemGenerated();		//set all system generated variables for later use.
-
 
 ?>
