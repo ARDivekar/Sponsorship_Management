@@ -19,6 +19,8 @@
 
 
 
+
+
 	class QueryExecute{
 
 		var $userType = NULL;
@@ -34,6 +36,16 @@
 			$this->userType = $userType;
 			$this->tableName = $tableName;
 			$this->queryType = $queryType;
+		}
+
+		function setSystemGenerated (){ //fields that should use the $_SESSION values, and not those passed in the $_POST.
+			$_POST[QueryFieldNames::SponsOrganization] = $_SESSION[SessionEnums::UserOrganization];
+			$_POST[QueryFieldNames::SponsFestival] = $_SESSION[SessionEnums::UserFestival];
+			$_POST[QueryFieldNames::SponsDepartment] = $_SESSION[SessionEnums::UserDepartment];
+			$_POST[QueryFieldNames::SponsID] = $_SESSION[SessionEnums::UserLoginID];
+			$_POST[QueryFieldNames::SponsTransType] = TransType::Deposit;
+			$_POST[QueryFieldNames::SponsSector] = $_SESSION[SessionEnums::UserSector];
+			$_POST[QueryFieldNames::SponsDateAssigned] = get_current_date();
 		}
 
 
@@ -257,10 +269,16 @@
 				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
 
+			$q = new SQLQuery();
 
-			$this->makeInsert(SQLTables::SponsRep);
-			$this->makeInsert(SQLTables::CommitteeMember);
+			$queryVals = [];
+			foreach(SQLTables::$DBTableStructure[SQLTables::CommitteeMember] as $dbField){
+				$val = extractValueFromPOST(QueryFieldNames::mapDBToQueryForm(SQLTables::CommitteeMember)[$dbField]);
+				array_push($queryVals, $val ? $val : "NULL");
+			}
 
+			$q->setInsertQuery(SQLTables::CommitteeMember, SQLTables::$DBTableStructure[SQLTables::CommitteeMember], [$queryVals]);
+			echo $q->getQuery();
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
@@ -487,6 +505,7 @@
 	*/
 
 	$e = new QueryExecute($_SESSION[SessionEnums::UserAccessLevel], $_SESSION[QueryFormSessionEnums::TableName], $_SESSION[QueryFormSessionEnums::QueryType]);
+	$e->setSystemGenerated();
 	$e->executeQuery();
 //	echo $e->getInsert();
 

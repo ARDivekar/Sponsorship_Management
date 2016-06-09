@@ -1263,7 +1263,7 @@
 						"CEName" => QueryFieldNames::SponsCompanyExec,
 						"Outcome" => QueryFieldNames::SponsMeetingOutcome,
 						"Address" => QueryFieldNames::SponsMeetingAddress
-							
+
 					];
 					break;
 
@@ -1629,11 +1629,15 @@
 			return true;
 		}
 
-		public static function surroundWith($string, $surrounder="'"){
-			//Source: http://stackoverflow.com/questions/1555434/php-wrap-a-string-in-double-quotes
-			return $surrounder . trim(
+		public static function surroundWith($string, $surrounder="'", $unlessWordIs="NULL"){
+
+			$out = trim(
 					trim(trim(trim(trim($string), '"'), "'"), '"')
-			) . $surrounder; //This removes __all__ kinds of nested single and double quotes from around a word.
+			);
+			if($out == $unlessWordIs)
+				return $out;
+			//Source: http://stackoverflow.com/questions/1555434/php-wrap-a-string-in-double-quotes
+			return $surrounder . $out . $surrounder; //This removes __all__ kinds of nested single and double quotes from around a word.
 
 			//	$a = new SQLQuery();
 			//	echo $a->surroundWithSingleQuotes("\"'Hello'\"");
