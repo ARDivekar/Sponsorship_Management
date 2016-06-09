@@ -907,6 +907,22 @@
 				QueryFieldNames::Submit
 			],
 
+
+			SQLTables::CommitteeMember => [
+				QueryFieldNames::SponsFestival,
+				QueryFieldNames::SponsSector,
+				QueryFieldNames::SponsRole,
+				QueryFieldNames::SponsOthersID,
+				QueryFieldNames::SponsName,
+				QueryFieldNames::SponsPassword,
+				QueryFieldNames::SponsRePassword,
+				QueryFieldNames::SponsEmail,
+				QueryFieldNames::SponsMobile,
+				QueryFieldNames::SponsYear,
+				QueryFieldNames::SponsBranch,
+				QueryFieldNames::Submit
+			],
+
 			SQLTables::SectorHead => [
 				QueryFieldNames::SponsFestival,
 				QueryFieldNames::SponsSector,
@@ -1036,6 +1052,32 @@
 					QueryFieldNames::SponsSector
 				]
 			],
+
+			SQLTables::CommitteeMember => [
+				QueryTypes::Insert => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsSector,
+					QueryFieldNames::SponsRole,
+					QueryFieldNames::SponsOthersID,
+					QueryFieldNames::SponsName,
+					QueryFieldNames::SponsPassword
+				],
+
+				QueryTypes::Modify => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsSector,
+					QueryFieldNames::SponsRole,
+					QueryFieldNames::SponsOthersID
+				],
+
+				QueryTypes::Delete => [
+					QueryFieldNames::SponsFestival,
+					QueryFieldNames::SponsSector,
+					QueryFieldNames::SponsRole,
+					QueryFieldNames::SponsOthersID
+				]
+			],
+
 
 			SQLTables::SponsRep => [
 				QueryTypes::Insert => [
