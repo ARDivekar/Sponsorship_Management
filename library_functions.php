@@ -1152,43 +1152,124 @@
 		];
 
 
-/*
-		static $mapToDBFieldNames = [
-			QueryFieldNames::SponsFestival => "EventName",
-			QueryFieldNames::SponsSector => "Sector",
-			QueryFieldNames::SponsRole => "Role",
-			QueryFieldNames::SponsID => "SponsID",
-			QueryFieldNames::SponsOthersID => "SponsID",
-			QueryFieldNames::SponsName => "Name",
-			QueryFieldNames::SponsPassword => "Password",
-			QueryFieldNames::SponsEmail => "Email",
-			QueryFieldNames::SponsMobile => "Mobile",
-			QueryFieldNames::SponsYear => "Year",
-			QueryFieldNames::SponsBranch => "Branch",
-			QueryFieldNames::SponsCompany => "CMPName",
-			QueryFieldNames::SponsTransType => "TransType",
-			QueryFieldNames::SponsDate => "Date",
-			QueryFieldNames::SponsTime => "Time",
-			QueryFieldNames::SponsAmount => "Amount",
-			QueryFieldNames::SponsAccountLogEntryID => "ID",
-			QueryFieldNames::SponsCompanyStatus => "CMPStatus",
-			QueryFieldNames::SponsCompanySponsoredOthers => "SponsoredOtherOrganization",
-			QueryFieldNames::SponsCompanyAddress => "CMPAddress",
-			QueryFieldNames::SponsCompanyExec => "CEName",
-			QueryFieldNames::SponsCompanyExecEmail => "CEEmail",
-			QueryFieldNames::SponsCompanyExecMobile => "CEMobile",
-			QueryFieldNames::SponsCompanyExecPosition => "CEPosition",
-			QueryFieldNames::SponsMeetingAddress => "Address",
-			QueryFieldNames::SponsMeetingType => "MeetingType",
-			QueryFieldNames::SponsMeetingOutcome => "Outcome",
-			QueryFieldNames::SponsMeetingEntryID => "ID"
-		];
-*/
-
-		static $systemGenerated = [ //fields that should use the $_SESSION values and not those passed in the form.
-		];
 
 
+
+		static function mapDBToQueryForm($tableName){
+
+			switch($tableName){
+
+				case SQLTables::Event :
+					return  [
+						"EventName" => QueryFieldNames::SponsFestival
+					];
+					break;
+
+
+				case SQLTables::CommitteeMember :
+					return  [
+						"Organization" => QueryFieldNames::SponsOrganization,
+						"EventName" => QueryFieldNames::SponsFestival,
+						"ID" => QueryFieldNames::SponsOthersID,
+						"Name" => QueryFieldNames::SponsName,
+						"Department" => QueryFieldNames::SponsDepartment,
+						"Role" => QueryFieldNames::SponsRole,
+						"Mobile" => QueryFieldNames::SponsMobile,
+						"Email" => QueryFieldNames::SponsEmail,
+						"Year" => QueryFieldNames::SponsYear,
+						"Branch" => QueryFieldNames::SponsBranch,
+					];
+					break;
+
+
+				case SQLTables::SponsRep :
+					return  [
+						"SponsID" => QueryFieldNames::SponsOthersID,
+						"Sector" => $_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? QueryFieldNames::SponsOthersSector : QueryFieldNames::SponsSector,
+						"DateAssigned" => QueryFieldNames::SponsDateAssigned
+					];
+					break;
+
+
+				case SQLTables::SectorHead :
+					return  [
+						"SponsID" => QueryFieldNames::SponsOthersID,
+						"Sector" => $_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? QueryFieldNames::SponsOthersSector : QueryFieldNames::SponsSector,
+						"DateAssigned" => QueryFieldNames::SponsDateAssigned
+					];
+					break;
+
+
+				case SQLTables::SponsLogin :
+					return  [
+						"SponsID" => QueryFieldNames::SponsOthersID,
+						"Password" => QueryFieldNames::SponsPassword,
+						"AccessLevel" => QueryFieldNames::SponsRole
+					];
+					break;
+
+
+
+				case SQLTables::AccountLog :
+					return  [
+						"ID" => QueryFieldNames::SponsAccountLogEntryID,
+						"Organization" => QueryFieldNames::SponsOrganization,
+						"EventName" => QueryFieldNames::SponsFestival,
+						"Title" => QueryFieldNames::SponsCompany,
+						"SponsID" => QueryFieldNames::SponsID,
+						"Amount" => QueryFieldNames::SponsAmount,
+						"TransType" => QueryFieldNames::SponsTransType,
+						"Date" => QueryFieldNames::SponsDate
+					];
+					break;
+
+
+
+				case SQLTables::Company :
+					return  [
+						"CMPName" => QueryFieldNames::SponsCompany,
+						"CMPStatus" => QueryFieldNames::SponsCompanyStatus,
+						"Sector" => QueryFieldNames::SponsSector,
+						"CMPAddress" => QueryFieldNames::SponsCompanyAddress,
+						"PreviouslySponsoredYear" => QueryFieldNames::SponsCompanyPreviouslySponsoredYear,
+						"SponsoredOtherOrganization" => QueryFieldNames::SponsCompanySponsoredOthers
+					];
+					break;
+
+
+				case SQLTables::CompanyExec :
+					return  [
+						"CMPName" => QueryFieldNames::SponsCompany,
+						"CEName" => QueryFieldNames::SponsCompanyExec,
+						"CEMobile" => QueryFieldNames::SponsCompanyExecMobile,
+						"CEEmail" => QueryFieldNames::SponsCompanyExecEmail,
+						"CEPosition" => QueryFieldNames::SponsCompanyExecPosition
+					];
+					break;
+
+
+
+				case SQLTables::Meeting :
+					return  [
+
+						"ID" => QueryFieldNames::SponsMeetingEntryID,
+						"Organization" => QueryFieldNames::SponsOrganization,
+						"EventName" => QueryFieldNames::SponsFestival,
+						"Date" => QueryFieldNames::SponsDate,
+						"Time" => QueryFieldNames::SponsTime,
+						"SponsID" => QueryFieldNames::SponsID,
+						"MeetingType" => QueryFieldNames::SponsMeetingType,
+						"CMPName" => QueryFieldNames::SponsCompany,
+						"CEName" => QueryFieldNames::SponsCompanyExec,
+						"Outcome" => QueryFieldNames::SponsMeetingOutcome,
+						"Address" => QueryFieldNames::SponsMeetingAddress
+							
+					];
+					break;
+
+			}
+
+		}
 
 
 	}
