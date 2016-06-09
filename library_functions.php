@@ -210,7 +210,7 @@
 	
 	function print_table($result){ //array of attributes and corresponding sql result we get from querying the attributes
 		echo '<div align="center">';
-		echo '<table align="center" style=\"width:100%\" class="output_table">';
+		echo '<table align="center" class="output_table">';
 		echo "<tr>";
 		$i = 0;
 		//$attributes_info = mysql_fetch_field($result, $i); //gets a lot of data about the attributes...their names, their types etc.
