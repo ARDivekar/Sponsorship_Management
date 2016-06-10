@@ -45,7 +45,7 @@
 			$_POST[QueryFieldNames::SponsID] = $_SESSION[SessionEnums::UserLoginID];
 			$_POST[QueryFieldNames::SponsTransType] = TransType::Deposit;
 			$_POST[QueryFieldNames::SponsSector] = $_SESSION[SessionEnums::UserSector];
-			$_POST[QueryFieldNames::SponsDateAssigned] = get_current_date();
+			$_POST[QueryFieldNames::SponsDateAssigned] = getCurrentDate();
 		}
 
 
