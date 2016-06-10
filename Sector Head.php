@@ -17,14 +17,12 @@
 		/*Resume old session:*/
 		session_start();
 
-		if(empty($_SESSION['loginID']))
+		include_once('library_functions.php');
+
+		if(empty($_SESSION[SessionEnums::UserLoginID]))
 			header("Location: login.php");
 
-		require('DBconnect.php');
-		require('library_functions.php');
-
-		$SponsID=$_SESSION['loginID']; //get SponsID from previous session
-		$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
+		$SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
 
 
 	?>
@@ -36,8 +34,7 @@
 		<!-- I have put this stuff in the nav tag cause i wanted it to appear on the left without disturbing the page layout-->
 		<!-- You have to write a php code which displays the deals done in that sector-->
 		
-			<?php 
-			require('DBconnect.php'); //this is needed in every function that uses mySQL
+			<?php
 			$SponsSector=get_person_sector($SponsID);
 			$Sector_details=get_sector_details($SponsSector);
 			echo "<table class=\"sponsrepnav\" style=\"width:100%\" >";

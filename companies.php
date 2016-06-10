@@ -98,7 +98,8 @@
 
 	<!-- Navigation -->
 	<?php
-		include("./UserNavBar.php");
+		include_once("./UserNavBar.php");
+		include_once("library_functions.php");
 	?>
 
 	<div id="page-wrapper">
@@ -129,8 +130,9 @@
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
+								$db = new SponsorshipDB();
 //								$result = mysql_query("SELECT * FROM committeemember;");
-								$result = mysql_query("SELECT * FROM company;");
+								$result = $db->select("SELECT * FROM company;");
 								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 
