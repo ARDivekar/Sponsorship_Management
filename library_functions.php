@@ -490,8 +490,48 @@
 		echo "<hr>";
 	}
 
+	function makeRandomHexString($length = 6){
+		//Source: http://stackoverflow.com/questions/5438760/generate-random-5-characters-string
+		$rand = substr(md5(microtime()),rand(0,26),$length);
+		return $rand;
+	}
 
-	function get_current_date(){ //returns date in MySQL format.
+
+	function makeIncrementalString($len = 5){ //Note: incremental means easier to guess; If you're using this as a salt or a verification token, don't. A salt (now) of "WCWyb" means 5 seconds from now it's "WCWyg")
+
+		//Source: http://stackoverflow.com/questions/5438760/generate-random-5-characters-string
+		$charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+		$base = strlen($charset);
+		$result = '';
+
+		$now = explode(' ', microtime())[1];
+		while ($now >= $base){
+			$i = $now % $base;
+			$result = $charset[$i] . $result;
+			$now /= $base;
+		}
+		return substr($result, -5);
+	}
+
+
+
+	function makeRandomString($length = 5, $alphanumeric=true, $lowerCase=false){ //takes from 36-character alphabet & number charset.
+		$charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		if($alphanumeric)
+			$charset .= "0123456789";
+		if($lowerCase)
+			$charset .= "abcdefghijklmnopqrstuvwxyz";
+
+		$charsetLen = strlen($charset);
+		$out = "";
+		for($i=0; $i<$length; $i++)
+			$out .= substr($charset, mt_rand(0,$charsetLen-1), 1);
+		return $out;
+	}
+
+
+
+	function getCurrentDate(){ //returns date in MySQL format.
 		return date("Y-m-d H:i:s");
 	}
 
@@ -1629,6 +1669,7 @@
 			return true;
 		}
 
+
 		public static function surroundWith($string, $surrounder="'", $unlessWordIs="NULL"){
 
 			$out = trim(
@@ -1767,10 +1808,14 @@
 
 	echo_2d_array(SQLTables::$DBTableStructure, "DB Structure");
 
+	echo "<hr>.makeRandomHexString();
+	echo "<hr>.makeRandomString(50);
+
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
 	$db = new SponsorshipDB();
 	SQLTables::setDBStructure();	//set all the table columns for easy access.
+
 
 ?>
