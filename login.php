@@ -97,7 +97,7 @@ if(isset($_POST[QueryFieldNames::Submit])){ //Check if the form has been submitt
 					Branch
 				FROM SponsLogin INNER JOIN CommitteeMember ON (SponsLogin.SponsID = CommitteeMember.ID)
 				WHERE SponsLogin.SponsID=$SponsID and (SponsLogin.Password=\"$SponsPassword\" or SponsLogin.Password='
-				".md5($SponsPassword)."');";
+				".getSecureHash($algo="sha1", $string=$SponsPassword, $salt=$SponsID)."');";
 			// echo $login_query;
 
 			$SponsLogin = $db->select($login_query);

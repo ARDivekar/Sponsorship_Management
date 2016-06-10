@@ -46,6 +46,14 @@
 			$_POST[QueryFieldNames::SponsTransType] = TransType::Deposit;
 			$_POST[QueryFieldNames::SponsSector] = $_SESSION[SessionEnums::UserSector];
 			$_POST[QueryFieldNames::SponsDateAssigned] = getCurrentDate();
+
+			$unhashedPassword = extractValueFromPOST(QueryFieldNames::SponsPassword);
+			if($unhashedPassword != NULL)
+				$_POST[QueryFieldNames::SponsPassword] = getSecureHash(	//takes about 1 second to run by default.
+															$algo="sha1",
+															$string=$unhashedPassword,
+															$salt = extractValueFromPOST(QueryFieldNames::SponsOthersID)
+														);
 		}
 
 
@@ -198,87 +206,29 @@
 
 
 		function makeInsert($tableName){
+			if(!SQLTables::isValidValue($tableName))
+				return NULL;
+
 			$q = new SQLQuery();
 
-			$tableFields = [];
-			$tableFieldValues = [];
-
-
-			//enter all required fields:
-			foreach(QueryFieldNames::$requiredFields[$tableName][QueryTypes::Insert] as $reqQueryFormFieldName){
-				$reqQueryFormFieldNameDB = QueryFieldNames::$mapToDBFieldNames[$reqQueryFormFieldName];
-				if( !in_array($reqQueryFormFieldNameDB, SQLTables::$DBTableStructure[$tableName]) )
-					continue;
-
-				array_push($tableFields, $reqQueryFormFieldNameDB);
-				array_push($tableFieldValues, extractValueFromPOST($reqQueryFormFieldName));
+			$queryVals = [];
+			foreach(SQLTables::$DBTableStructure[$tableName] as $dbField){
+				$val = extractValueFromPOST(QueryFieldNames::mapDBToQueryForm($tableName)[$dbField]);
+				array_push($queryVals, $val ? $val : "NULL");
 			}
 
-
-			foreach(QueryFieldNames::$TableToFieldNameOrdering[$tableName] as $possibleFieldName){
-				if($possibleFieldName == NULL || $possibleFieldName == "")
-					continue;
-
-				if(in_array($possibleFieldName, QueryFieldNames::$requiredFields[$tableName]))  //we have already added required fields.
-					continue;
-
-				/* $possibleFieldName is now NOT a required field, but one of the others that comes in from the
-				query form shown to the user via the frontend. It may not necessarily be filled out; it may not
-				even be from the table we are trying to insert into. Both these cases must be taken care of.
-				*/
-				$possibleFieldVal = extractValueFromPOST($possibleFieldName);
-				if(!$possibleFieldVal) //not set, which is okay as the field was not required.
-					continue;
-
-				if(!in_array($possibleFieldName, QueryFieldNames::$mapToDBFieldNames))
-					continue;
-				$possibleFieldNameDB = QueryFieldNames::$mapToDBFieldNames[$possibleFieldName];
-
-				if( !in_array($possibleFieldNameDB, SQLTables::$DBTableStructure[$tableName]) ) /*extra fields like SponsSector and SponsFestival appear in the query form presented to the user but are not in the database table; these are for checking purposes. e.g. to make sure the CSO trying to insert a SponsRep is passing values only for CommitteeMembers in his Festival. They is not dealt with here.*/
-					continue;
-
-				//Now, the field exists in the DBTableStructure and has valid values, so we should insert it into the database.
-				array_push($tableFields, $possibleFieldNameDB);
-
-				//For system-generated variables, use the system-generated values.
-				if( array_key_exists($possibleFieldName, QueryFieldNames::$systemGenerated) )
-					array_push($tableFieldValues, QueryFieldNames::$systemGenerated[$possibleFieldName]);
-				//Otherwise, use the value from $_POST
-				else array_push($tableFieldValues, $possibleFieldVal);
-
-
-			}
-
-//			foreach( QueryFieldNames::$TableToFieldNameOrdering[$this->tableName] as $queryFieldName){
-//				$queryFieldValue = extractValueFromPOST($queryFieldName);
-//				if($queryFieldValue){
-//					$dbFieldName = QueryFieldNames::$mapToDBFieldNames[$queryFieldName];
-//					if(in_array($dbFieldName, SQLTables::$DBTableStructure[$this->tableName])){
-//						array_push($tableFields, $dbFieldName);
-//						array_push($tableFieldValues, $queryFieldValue);
-//					}
-//				}
-//			}
-
-			$q->setInsertQuery($tableName, $tableFields,[$tableFieldValues]);
-			echo "<hr>".$q->getQuery()."<hr>";
+			$q->setInsertQuery($tableName, SQLTables::$DBTableStructure[$tableName], [$queryVals]);
+			return $q;
 		}
 
 		function getCSOSponsRepSQLQuery(){
 			/*For reference:
 				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
+			echo $this->makeInsert(SQLTables::CommitteeMember)->getQuery();
+			echo $this->makeInsert(SQLTables::SponsLogin)->getQuery();
+			echo $this->makeInsert(SQLTables::SponsRep)->getQuery();
 
-			$q = new SQLQuery();
-
-			$queryVals = [];
-			foreach(SQLTables::$DBTableStructure[SQLTables::CommitteeMember] as $dbField){
-				$val = extractValueFromPOST(QueryFieldNames::mapDBToQueryForm(SQLTables::CommitteeMember)[$dbField]);
-				array_push($queryVals, $val ? $val : "NULL");
-			}
-
-			$q->setInsertQuery(SQLTables::CommitteeMember, SQLTables::$DBTableStructure[SQLTables::CommitteeMember], [$queryVals]);
-			echo $q->getQuery();
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
