@@ -1452,7 +1452,6 @@
 		var $queryType = NULL; //must be in the QueryTypes enum
 		var $tableName = NULL;
 		var $tableFields = NULL;
-		var $necessaryFields = NULL;
 		var $whereClause = NULL;
 
 		var $tableInsertFieldValues = NULL; //a 2-D array;
@@ -1474,7 +1473,7 @@
 				$this->whereClause = $whereClause;
 		}
 
-		public function setInsertQuery($tableName=NULL, $tableFields=NULL, $tableInsertFieldValues, $whereClause=NULL, $necessaryFields=NULL){
+		public function setInsertQuery($tableName=NULL, $tableFields=NULL, $tableInsertFieldValues, $whereClause=NULL){
 			//$tableInsertFieldValues MUST be a 2-D array, with each row having same length as $this->tableFields.
 
 			$this->queryType = QueryTypes::Insert;
@@ -1484,27 +1483,24 @@
 				$this->tableFields = $tableFields;
 			$this->tableInsertFieldValues = $tableInsertFieldValues;
 			$this->whereClause = $whereClause;
-			$this->necessaryFields = $necessaryFields;
 		}
 
-		public function setUpdateQuery($tableName=NULL, $tableUpdateFieldValues, $whereClause=NULL, $necessaryFields=NULL){
+		public function setUpdateQuery($tableName=NULL, $tableUpdateFieldValues, $whereClause=NULL){
 			$this->queryType = QueryTypes::Modify;
 			if($tableName)
 				$this->tableName = $tableName;
 
 			$this->tableUpdateFieldValues = $tableUpdateFieldValues;
 			$this->whereClause = $whereClause;
-			$this->necessaryFields = $necessaryFields;
 		}
 
 
-		public function setDeleteQuery($tableName=NULL, $whereClause=NULL, $necessaryFields=NULL){
+		public function setDeleteQuery($tableName=NULL, $whereClause=NULL){
 			$this->queryType = QueryTypes::Delete;
 			if($tableName)
 				$this->tableName = $tableName;
 
 			$this->whereClause = $whereClause;
-			$this->necessaryFields = $necessaryFields;
 		}
 
 
@@ -1539,23 +1535,12 @@
 
 				case QueryTypes::View :
 					$res = $db->select($this->getQuery());
+					return $res;
 					break;
 			}
 			return NULL;
 		}
 
-		private function checkNecessaryFields(){
-			if($this->tableFields){
-				if($this->necessaryFields == NULL || $this->necessaryFields == [])
-					return true;
-				foreach($this->necessaryFields as $necessaryField){
-					if(!in_array($necessaryField, $this->tableFields))
-						return false;
-				}
-				return true;
-			}
-			return false;
-		}
 
 		private static function convertArrayToCommaSeparatedTuple($array, $surrounder="'", $parens=true){
 			$out = " ";
@@ -1573,9 +1558,11 @@
 
 
 		private function generateSelectQuery(){
-			if($this->checkNecessaryFields()){
-				$out = "SELECT ";
+			$out = "SELECT ";
 
+			if($this->tableFields == "*")
+				$out .= " * ";
+			else{
 				$len = count($this->tableFields);
 				/* Allowed values for the tableFields array:
 				 * ["ID", "Name", "Company"]
@@ -1597,102 +1584,96 @@
 					if($i != $len-1)
 						$out .= ", ";
 				}
-
-				$out .=  "FROM $this->tableName ";
-				if($this->whereClause)
-					$out .= " WHERE ".$this->whereClause;
-
-				if($this->checkForSQLInjection($out)){
-					return NULL;
-				}
-
-				$out .= ";";
-				return $out;
 			}
-			return NULL;
+
+
+			$out .=  "FROM $this->tableName ";
+			if($this->whereClause)
+				$out .= " WHERE ".$this->whereClause;
+
+			if($this->checkForSQLInjection($out)){
+				return NULL;
+			}
+
+			$out .= ";";
+			return $out;
+
 		}
 
 
 
 
 		private function generateInsertQuery(){
-			if($this->checkNecessaryFields()){
-				$out = "";
-				$out .= self::convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`");
-				$out .= " VALUES \n";
+			$out = "";
+			$out .= self::convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`");
+			$out .= " VALUES \n";
 
-				$len = count($this->tableInsertFieldValues);
-				for($i=0; $i<$len; $i++){
-					$row = $this->tableInsertFieldValues[$i];
-					if(count($row) != count($this->tableFields)){
-						echo "<br>Length of ".self::convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`")." and ". $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'")." are different.";
-						return NULL;
-					}
-
-					if($i != $len-1)
-						 $out .= $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'").",\n";
-					else $out .= $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'")."\n";
-				}
-
-				if($this->checkForSQLInjection($out)){
+			$len = count($this->tableInsertFieldValues);
+			for($i=0; $i<$len; $i++){
+				$row = $this->tableInsertFieldValues[$i];
+				if(count($row) != count($this->tableFields)){
+					echo "<br>Length of ".self::convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`")." and ". $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'")." are different.";
 					return NULL;
 				}
 
-				$out = "INSERT INTO $this->tableName " . $out;
-				$out .= ";";
-				return $out;
+				if($i != $len-1)
+					 $out .= $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'").",\n";
+				else $out .= $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'")."\n";
 			}
-			return NULL;
+
+			if($this->checkForSQLInjection($out)){
+				return NULL;
+			}
+
+			$out = "INSERT INTO $this->tableName " . $out;
+			$out .= ";";
+			return $out;
+
 		}
 
 
 		private function generateUpdateQuery(){
-			if($this->checkNecessaryFields()){
-				$out = "";
-				$out .= " SET ";
-				$len = count($this->tableUpdateFieldValues);
-				for($i=0; $i < $len; $i++){
-					$row = $this->tableUpdateFieldValues[$i];
-					if(count($row)!=2)
-						return NULL;
-					$out .= " " . self::surroundWith($row[0], $surrounder=" ") ." = ". self::surroundWith($row[1], $surrounder="'") ." ";
-
-					if($i != $len-1)
-						$out .= ", ";
-				}
-
-				if($this->whereClause)
-					$out .= " WHERE ".$this->whereClause;
-
-				if($this->checkForSQLInjection($out)){
+			$out = "";
+			$out .= " SET ";
+			$len = count($this->tableUpdateFieldValues);
+			for($i=0; $i < $len; $i++){
+				$row = $this->tableUpdateFieldValues[$i];
+				if(count($row)!=2)
 					return NULL;
-				}
+				$out .= " " . self::surroundWith($row[0], $surrounder=" ") ." = ". self::surroundWith($row[1], $surrounder="'") ." ";
 
-				$out = "UPDATE $this->tableName " . $out;
-				$out .= ";";
-				return $out;
+				if($i != $len-1)
+					$out .= ", ";
 			}
-			return NULL;
+
+			if($this->whereClause)
+				$out .= " WHERE ".$this->whereClause;
+
+			if($this->checkForSQLInjection($out)){
+				return NULL;
+			}
+
+			$out = "UPDATE $this->tableName " . $out;
+			$out .= ";";
+			return $out;
 		}
 
 
 
 		private function generateDeleteQuery(){
-			if($this->checkNecessaryFields()){
-				$out = "";
+			$out = "";
 
-				if($this->whereClause)
-					$out .= " WHERE ".$this->whereClause;
+			if($this->whereClause)
+				$out .= " WHERE ".$this->whereClause;
 
-				if($this->checkForSQLInjection($out)){
-					return NULL;
-				}
-
-				$out = "DELETE FROM $this->tableName " . $out;
-				$out .= ";";
-				return $out;
+			if($this->checkForSQLInjection($out)){
+				return NULL;
 			}
-			return NULL;
+
+			$out = "DELETE FROM $this->tableName " . $out;
+			$out .= ";";
+			return $out;
+
 		}
 
 
@@ -1872,10 +1853,6 @@
 
 	$db = new SponsorshipDB();
 	SQLTables::setDBStructure();	//set all the table columns for easy access.
-
-
-
-
 
 
 ?>
