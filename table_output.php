@@ -41,6 +41,7 @@
 				$db = new SponsorshipDB();
 
 				$q = $this->getOutputQuery();
+				echo "<hr>".$q->getQuery()."<hr>";
 				if(!$q)
 					return false;
 
@@ -69,11 +70,16 @@
 			return new SQLQuery();
 		}
 
-		function getWhereClauseIfFieldInDBStrucutre($whereArray){
+		function getWhereClauseIfFieldInDBStrucutre($tableNamesList=NULL, $whereArray){
+			if(!$tableNamesList)
+				$tableNamesList = [$this->tableName];
+
 			$existingWhereArray = [];
-			foreach($whereArray as $wherePair){
-				if (in_array($wherePair[0], SQLTables::$DBTableStructure[$this->tableName]))
-					array_push($existingWhereArray, $wherePair);
+			foreach($tableNamesList as $tableName){
+				foreach($whereArray as $wherePair){
+					if (in_array($wherePair[0], SQLTables::$DBTableStructure[$tableName]))
+						array_push($existingWhereArray, [$tableName.".".$wherePair[0], $wherePair[1]]);
+				}
 			}
 			return SQLQuery::getWhereEquality($existingWhereArray);
 		}
@@ -81,6 +87,7 @@
 
 		function getCSOQuery(){
 			$CSOSelectQuery = new SQLQuery();
+			$tableNamesList = [];
 			switch($this->tableName){
 				case SQLTables::Event :
 					break;
@@ -90,47 +97,78 @@
 				case SQLTables::SponsRep :
 					$CSOSelectQuery->setSelectQuery(
 						$tableName = SQLQuery::getInnerJoin(SQLTables::CommitteeMember, "ID", SQLTables::SponsRep, "SponsID"),
-						$tableFields = []
+						$tableFields = [
+							[SQLTables::CommitteeMember.".ID", "ID"], [SQLTables::CommitteeMember.".Name", "Name"],
+							[SQLTables::CommitteeMember.".Role", "Role"], [SQLTables::SponsRep.".Sector", "Sector"],
+							[SQLTables::CommitteeMember.".Mobile", "Mobile"], [SQLTables::CommitteeMember.".Email", "Email"],
+							[SQLTables::CommitteeMember.".Year", "Year"], [SQLTables::CommitteeMember.".Branch", "Branch"],
+						]
 					);
+					$tableNamesList = [SQLTables::CommitteeMember, SQLTables::SponsRep];
 					break;
+
 				case SQLTables::SectorHead :
 					$CSOSelectQuery->setSelectQuery(
 						$tableName = SQLQuery::getInnerJoin(SQLTables::CommitteeMember, "ID", SQLTables::SectorHead, "SponsID"),
-						$tableFields = []
+						$tableFields = [
+							[SQLTables::CommitteeMember.".ID", "ID"], [SQLTables::CommitteeMember.".Name", "Name"],
+							[SQLTables::CommitteeMember.".Role", "Role"], [SQLTables::SponsRep.".Sector", "Sector"],
+							[SQLTables::CommitteeMember.".Mobile", "Mobile"], [SQLTables::CommitteeMember.".Email", "Email"],
+							[SQLTables::CommitteeMember.".Year", "Year"], [SQLTables::CommitteeMember.".Branch", "Branch"],
+						]
 					);
+					$tableNamesList = [SQLTables::CommitteeMember, SQLTables::SectorHead];
 					break;
+
 				case SQLTables::AccountLog :
 					$CSOSelectQuery->setSelectQuery(
 						$tableName = SQLTables::AccountLog,
-						$tableFields = []
+						$tableFields = [
+							[SQLTables::CommitteeMember.".ID", "ID"], [SQLTables::CommitteeMember.".Name", "Name"],
+							[SQLTables::CommitteeMember.".Role", "Role"], [SQLTables::SponsRep.".Sector", "Sector"],
+							[SQLTables::CommitteeMember.".Mobile", "Mobile"], [SQLTables::CommitteeMember.".Email", "Email"],
+							[SQLTables::CommitteeMember.".Year", "Year"], [SQLTables::CommitteeMember.".Branch", "Branch"],
+						]
 					);
+					$tableNamesList = [SQLTables::CommitteeMember, SQLTables::AccountLog]
 					break;
+
 				case SQLTables::Company :
 					$CSOSelectQuery->setSelectQuery(
 						$tableName = SQLTables::Company,
 						$tableFields = []
 					);
+					$tableNamesList = [SQLTables::Company];
 					break;
+
 				case SQLTables::CompanyExec :
 					$CSOSelectQuery->setSelectQuery(
 						$tableName = SQLTables::CompanyExec,
 						$tableFields = []
 					);
+					$tableNamesList = [SQLTables::Company, SQLTables::CompanyExec]
 					break;
+
 				case SQLTables::Meeting :
 					$CSOSelectQuery->setSelectQuery(
 						$tableName = SQLTables::Meeting,
 						$tableFields = []
 					);
+					$tableNamesList = [SQLTables::Company, SQLTables::CompanyExec, SQLTables::Meeting]
 					break;
+
 				default:
 					return NULL;
 			}
 
-			$CSOSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre([
-				["Organization", 	$_SESSION[SessionEnums::UserOrganization]],
-				["EventName", 		$_SESSION[SessionEnums::UserFestival]],
-			]);
+			$CSOSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre(
+				$tableNamesList, $whereArray = [
+					["Organization", 	$_SESSION[SessionEnums::UserOrganization]],
+					["EventName", 		$_SESSION[SessionEnums::UserFestival]],
+				]
+			);
+
+
 			return $CSOSelectQuery;
 		}
 
@@ -173,6 +211,8 @@
 			$_SESSION[SessionEnums::UserAccessLevel],
 			extractValueFromGET(QueryFormSessionEnums::TableName)
 	);
+
+	$t->retrieveOutputTable();
 
 
 ?>
