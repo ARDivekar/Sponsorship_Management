@@ -127,7 +127,7 @@
 
 			$q->setSelectQuery($tableName, $tableFields="*", $whereClause);
 
-			echo "<hr>".$q->getQuery()."<hr>";
+//			echo "<hr>".$q->getQuery()."<hr>";
 
 			if( count($db->select($q->getQuery())) > 0 )
 				return true;
@@ -174,18 +174,22 @@
 						break;
 				}
 
-				/*
-				$sqlStringsToExecute = [];
-				foreach($sqlQueriesToExecute as $queryObj)
-					array_push($sqlStringsToExecute, $queryObj->getQuery());
 
-				if($db->performTransaction($sqlStringsToExecute))
+				$sqlStringsToExecute = [];
+				foreach($sqlQueriesToExecute as $queryObj){
+					array_push($sqlStringsToExecute, $queryObj->getQuery());
+				}
+
+				if($db->performTransaction($sqlStringsToExecute)){
+//					echo "<hr>Successfully executed queries:";
+//					foreach($sqlQueriesToExecute as $query)
+//						echo "<br> $query";
 					return true;
+				}
 
 				echo "<hr>Could not execute queries:";
 				foreach($sqlQueriesToExecute as $query)
 					echo "<br> $query";
-				*/
 
 
 			}
@@ -264,7 +268,7 @@
 		function makeMultipleInsertQueryObjs($tablesList){
 			$queryObjs = [];
 			foreach($tablesList as $tableName){
-				array_push($queryObjs, $this->makeInsert($tableName)->getQuery());
+				array_push($queryObjs, $this->makeInsert($tableName));
 			}
 
 			return $queryObjs;
@@ -317,9 +321,9 @@
 
 				// Make:
 				if($queryType == QueryTypes::Modify)
-					array_push($queryObjs, $this->makeUpdate($tableName,$tableRequiredWhereClause)->getQuery());
+					array_push($queryObjs, $this->makeUpdate($tableName,$tableRequiredWhereClause));
 				else if($queryType == QueryTypes::Delete)
-					array_push($queryObjs, $this->makeDelete($tableName,$tableRequiredWhereClause)->getQuery());
+					array_push($queryObjs, $this->makeDelete($tableName,$tableRequiredWhereClause));
 				else return NULL;
 
 			}
@@ -342,28 +346,22 @@
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
-					echo_1d_array(
-						$this->makeMultipleInsertQueryObjs([SQLTables::CommitteeMember, SQLTables::SponsLogin, $this->tableName])
-					);
+					return $this->makeMultipleInsertQueryObjs([SQLTables::CommitteeMember, SQLTables::SponsLogin, $this->tableName]);
 					break;
 
 				case QueryTypes::Modify :
 					if($this->checkIfFieldIsPresent([QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST))
 						return NULL;
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 
 				case QueryTypes::Delete :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					$this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 			}
@@ -385,21 +383,17 @@
 					if($this->checkIfFieldIsPresent(
 							[QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST)
 					) return NULL;
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 
 
 				case QueryTypes::Delete :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 
@@ -418,24 +412,18 @@
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
-					echo_1d_array(
-						$this->makeMultipleInsertQueryObjs([$this->tableName])
-					);
+					return $this->makeMultipleInsertQueryObjs([$this->tableName]);
 					break;
 				case QueryTypes::Modify :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [$this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 				case QueryTypes::Delete :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [$this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 			}
@@ -449,24 +437,18 @@
 			*/
 			switch($this->queryType){
 				case QueryTypes::Insert :
-					echo_1d_array(
-						$this->makeMultipleInsertQueryObjs([$this->tableName])
-					);
+					return $this->makeMultipleInsertQueryObjs([$this->tableName]);
 					break;
 				case QueryTypes::Modify :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [$this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 				case QueryTypes::Delete :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [$this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 			}
@@ -483,24 +465,18 @@
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
-					echo_1d_array(
-						$this->makeMultipleInsertQueryObjs([$this->tableName])
-					);
+					return $this->makeMultipleInsertQueryObjs([$this->tableName]);
 					break;
 				case QueryTypes::Modify :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [$this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 				case QueryTypes::Delete :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [$this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 			}
@@ -516,24 +492,18 @@
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
-					echo_1d_array(
-						$this->makeMultipleInsertQueryObjs([$this->tableName])
-					);
+					return $this->makeMultipleInsertQueryObjs([$this->tableName]);
 					break;
 				case QueryTypes::Modify :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [$this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 				case QueryTypes::Delete :
-					echo_1d_array(
-						$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [$this->tableName],
 							$queryType = $this->queryType
-						)
 					);
 					break;
 			}
