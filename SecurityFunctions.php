@@ -21,6 +21,17 @@
 	}
 
 
+	function makeRandomIntString($length = 6){ //takes from 36-character alphabet & number charset.
+		$charset = "0123456789";
+
+		$charsetLen = strlen($charset);
+		$out = "";
+		for($i=0; $i<$length; $i++)
+			$out .= substr($charset, mt_rand(0,$charsetLen-1), 1);
+		return $out;
+	}
+
+
 	function makeRandomHexString($length = 6){
 		//Source: http://stackoverflow.com/questions/5438760/generate-random-5-characters-string
 		$rand = substr(md5(microtime()),rand(0,26),$length);
