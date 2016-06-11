@@ -38,8 +38,13 @@
 
 
 		function QueryExecute($userType, $tableName, $queryType){
-			if($queryType == QueryTypes::View)
-				header("Location: table_output.php");
+			if($queryType == QueryTypes::View){
+				header("Location: table_output.php?"
+				   .QueryFormSessionEnums::QueryType."=".QueryTypes::View
+				   ."&"
+				   .QueryFormSessionEnums::TableName."=".$tableName
+				 );
+			}
 			$this->userType = $userType;
 			$this->tableName = $tableName;
 			$this->queryType = $queryType;

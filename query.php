@@ -363,7 +363,11 @@
 			}
 			else {
 				if($queryType == QueryTypes::View){
-					header("Location: view_table.php");
+					header("Location: table_output.php?"
+						   .QueryFormSessionEnums::QueryType."=".QueryTypes::View
+						   ."&"
+						   .QueryFormSessionEnums::TableName."=".$tableName
+				  	 );
 				}
 				else $this->queryType = $queryType;
 			}
