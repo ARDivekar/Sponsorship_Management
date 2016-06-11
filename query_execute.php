@@ -51,8 +51,16 @@
 			$_POST[QueryFieldNames::SponsDepartment] = $_SESSION[SessionEnums::UserDepartment];
 			$_POST[QueryFieldNames::SponsID] = $_SESSION[SessionEnums::UserLoginID];
 			$_POST[QueryFieldNames::SponsTransType] = TransType::Deposit;
-			$_POST[QueryFieldNames::SponsSector] = $_SESSION[SessionEnums::UserSector];
+
+			if(!extractValueFromPOST(QueryFieldNames::SponsSector) || $_SESSION[SessionEnums::UserAccessLevel] != UserTypes::CSO)
+				$_POST[QueryFieldNames::SponsSector] = $_SESSION[SessionEnums::UserSector];
 			$_POST[QueryFieldNames::SponsDateAssigned] = getCurrentDate();
+
+			if(!extractValueFromPOST(QueryFieldNames::SponsAccountLogEntryID))
+				$_POST[QueryFieldNames::SponsAccountLogEntryID] = "ACC-".makeRandomString();
+
+			if(!extractValueFromPOST(QueryFieldNames::SponsMeetingEntryID))
+				$_POST[QueryFieldNames::SponsMeetingEntryID] = "MEET-".makeRandomString();
 
 			$unhashedPassword = extractValueFromPOST(QueryFieldNames::SponsPassword);
 			if($unhashedPassword != NULL)
@@ -127,6 +135,20 @@
 			return false;
 		}
 
+
+		function checkRequiredExistsInDBDefaultWhere($tablesList){
+			foreach($tablesList as $tableName){
+				if (!SQLTables::isValidValue($tableName)){
+					throw new Exception();
+				}
+
+				$tableRequiredWhereClause = $this->getWhereClauseRequiredInDB($tableName);
+				if (!$this->checkRequiredExistsInDB($tableName, $tableRequiredWhereClause)){
+					return false;
+				}
+			}
+			return true;
+		}
 
 
 
@@ -360,8 +382,9 @@
 				case QueryTypes::Insert :
 					break;
 				case QueryTypes::Modify :
-					if($this->checkIfFieldIsPresent([QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST))
-						return NULL;
+					if($this->checkIfFieldIsPresent(
+							[QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST)
+					) return NULL;
 					echo_1d_array(
 						$this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
@@ -385,16 +408,35 @@
 
 		}
 
+
 		function getCSOAccountLogSQLQuery(){
 			/*For reference:
 				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
+			if(!$this->checkRequiredExistsInDBDefaultWhere([SQLTables::Company, SQLTables::CommitteeMember]))
+				return NULL;
+
 			switch($this->queryType){
 				case QueryTypes::Insert :
+					echo_1d_array(
+						$this->makeMultipleInsertQueryObjs([$this->tableName])
+					);
 					break;
 				case QueryTypes::Modify :
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 				case QueryTypes::Delete :
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 			}
 			return NULL;
@@ -407,10 +449,25 @@
 			*/
 			switch($this->queryType){
 				case QueryTypes::Insert :
+					echo_1d_array(
+						$this->makeMultipleInsertQueryObjs([$this->tableName])
+					);
 					break;
 				case QueryTypes::Modify :
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 				case QueryTypes::Delete :
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 			}
 			return NULL;
@@ -421,12 +478,30 @@
 			/*For reference:
 				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
+			if(!$this->checkRequiredExistsInDBDefaultWhere([SQLTables::Company]))
+				return NULL;
+
 			switch($this->queryType){
 				case QueryTypes::Insert :
+					echo_1d_array(
+						$this->makeMultipleInsertQueryObjs([$this->tableName])
+					);
 					break;
 				case QueryTypes::Modify :
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 				case QueryTypes::Delete :
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 			}
 			return NULL;
@@ -436,12 +511,30 @@
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
 			*/
+			if(!$this->checkRequiredExistsInDBDefaultWhere([SQLTables::CompanyExec]))
+				return NULL;
+
 			switch($this->queryType){
 				case QueryTypes::Insert :
+					echo_1d_array(
+						$this->makeMultipleInsertQueryObjs([$this->tableName])
+					);
 					break;
 				case QueryTypes::Modify :
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 				case QueryTypes::Delete :
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 			}
 			return NULL;
@@ -480,31 +573,51 @@
 
 
 		function getSectorHeadEventSQLQuery(){
-
+			/*For reference:
+				SQLTables::Event => [],	//empty means no queries allowed
+			*/
 		}
 
 		function getSectorHeadSponsRepSQLQuery(){
-
+			/*For reference:
+				SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
+			*/
+			return $this->getCSOSponsRepSQLQuery();
 		}
 
 		function getSectorHeadSectorHeadSQLQuery(){
-
+			/*For reference:
+				SQLTables::SectorHead => [],
+			*/
+			return NULL;
 		}
 
 		function getSectorHeadAccountLogSQLQuery(){
-
+			/*For reference:
+				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//Can only insert, modify, delete, and view for own sector
+			*/
+			return $this->getCSOAccountLogSQLQuery();
 		}
 
 		function getSectorHeadCompanySQLQuery(){
-
+			/*For reference:
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return $this->getCSOCompanySQLQuery();
 		}
 
 		function getSectorHeadCompanyExecSQLQuery(){
-
+			/*For reference:
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return $this->getCSOCompanyExecSQLQuery();
 		}
 
 		function getSectorHeadMeetingSQLQuery(){
-
+			/*For reference:
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
+			*/
+			return $this->getCSOMeetingSQLQuery();
 		}
 
 
@@ -541,31 +654,52 @@
 
 
 		function getSponsRepEventSQLQuery(){
-
+			/*For reference:
+				SQLTables::Event => [QueryTypes::View],		//Can only view own details.
+			*/
+			return NULL;
 		}
 
 		function getSponsRepSponsRepSQLQuery(){
-
+			/*For reference:
+				SQLTables::SponsRep => [QueryTypes::View],
+			*/
+			return NULL;
 		}
 
 		function getSponsRepSectorHeadSQLQuery(){
-
+			/*For reference:
+				SQLTables::SectorHead => [],
+			*/
+			return NULL;
 		}
 
 		function getSponsRepAccountLogSQLQuery(){
-
+			/*For reference:
+				SQLTables::AccountLog => [QueryTypes::View],	//can only view own sponsorships
+			*/
+			return NULL;
 		}
 
 		function getSponsRepCompanySQLQuery(){
-
+			/*For reference:
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return $this->getCSOCompanySQLQuery();
 		}
 
 		function getSponsRepCompanyExecSQLQuery(){
-
+			/*For reference:
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return $this->getCSOCompanyExecSQLQuery();
 		}
 
 		function getSponsRepMeetingSQLQuery(){
-
+			/*For reference:
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
+			*/
+			return $this->getCSOMeetingSQLQuery();
 		}
 
 
