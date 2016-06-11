@@ -530,40 +530,46 @@
 	}
 
 
-	function getSecureHash($algo="sha1", $string, $salt=""){
+	function generatePasswordHash($password){
+		/* 	The salt used MUST be unique for each user, but can be known to everyone (in that it can
+		be seen if the database is comprimised. It should be system-generated).
+			The purpose of a salt is that it makes lookup-table & rainbow table attacks more difficult
+		as it blows up the size of the table exponentially. See these links for	explanations of salts
+		and salting:
+			http://security.stackexchange.com/q/51959
+			http://crypto.stackexchange.com/a/2010
+			http://stackoverflow.com/a/401684/4900327
+		*/
+
+		//Source for below: http://stackoverflow.com/a/14992543/4900327
+		$hashAndSalt = password_hash($password, PASSWORD_BCRYPT, array("cost" => 11)); // "cost" as in computational cost, increasing CPU time exponentially, read https://github.com/ircmaxell/password_compat
+
+		return $hashAndSalt; // Insert $hashAndSalt into database against user
+
+	}
+
+	function checkPasswordHash($enteredPassword, $hashAndSaltFromDB){
+		//Source for below: http://stackoverflow.com/a/14992543/4900327
+		// Fetch hash+salt from database, place in $hashAndSalt variable and then to verify $enteredPassword:
+		if (password_verify($enteredPassword, $hashAndSaltFromDB)){
+			return true;
+		}
+		return false;
+	}
+
+
+
+	function getHash($algo="sha1", $string){	//DO NOT USE FOR PASSWORDS
 
 		$algo = strtolower(trim($algo));
 
-//		echo "<hr>Unhashed password = $string <br> Salt = $salt <hr>";
-
-		$hash = $string.strval($salt);
-		/* 	The salt used MUST be unique for each user, but can be known to everyone.
-			The user's username/ID is a sufficient salt.
-			The purpose of a salt is that it makes lookup-table attacks more difficult
-		as it blows up the size of the table exponentially. See these links for
-		explanations of salts and salting:
-			http://security.stackexchange.com/q/51959
-			http://crypto.stackexchange.com/a/2010
-		*/
-
-		for($i=0; $i<1000000; $i++){
-			/* IMP! Don't change 1000000 to anything else or it won't work in the future!
-			With 1000000, it takes about 1 second to hash & salt a password on my i7 laptop
-			with 8GB RAM, running Windows 10.*/
-
-			$hash = $hash.strval($salt);	//hash it again
-
-			if ($algo == "sha1"){
-				$hash = sha1($hash, false); 	//FALSE returns the hash as a string of hex numbers.
-			}
-
-			if ($algo == "md5"){
-				$hash = md5($hash, false);		//FALSE returns the hash as a string of hex numbers.
-			}
+		if ($algo == "sha1"){
+			return sha1($string, false); 	//FALSE returns the hash as a string of hex numbers.
 		}
 
-		return $hash;
-
+		if ($algo == "md5"){
+			return md5($string, false);		//FALSE returns the hash as a string of hex numbers.
+		}
 	}
 
 
@@ -1853,15 +1859,6 @@
 
 
 
-	$pass = "lol";
-	$numHashes = 1000000;
-	$timeStart = microtime(TRUE);
-	echo "<hr>";
-	$hashedPassword = getSecureHash($algo="sha1", $string=$pass, $salt="123");
-	$timeEnd = microtime(TRUE);
-	echo "Hashing the password '$pass', $numHashes times, took ". 1000*($timeEnd-$timeStart)." milliseconds";
-	echo "<hr>";
-
 
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
@@ -1869,6 +1866,14 @@
 	$db = new SponsorshipDB();
 	SQLTables::setDBStructure();	//set all the table columns for easy access.
 
+
+	$unhashedPassword = "lol";
+	$timeStart = microtime(TRUE);
+	echo "<hr>";
+	echo checkPasswordHash($unhashedPassword, generatePasswordHash($unhashedPassword)) ? "true, password works!" : "false, unauthorized";
+	$timeEnd = microtime(TRUE);
+	echo "<br>Hashing the password '$unhashedPassword' took ". 1000*($timeEnd-$timeStart)." milliseconds";
+	echo "<hr>";
 
 
 

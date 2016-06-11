@@ -49,11 +49,8 @@
 
 			$unhashedPassword = extractValueFromPOST(QueryFieldNames::SponsPassword);
 			if($unhashedPassword != NULL)
-				$_POST[QueryFieldNames::SponsPassword] = getSecureHash(	//takes about 1 second to run by default.
-															$algo="sha1",
-															$string=$unhashedPassword,
-															$salt = extractValueFromPOST(QueryFieldNames::SponsOthersID)
-														);
+				$_POST[QueryFieldNames::SponsPassword] = generatePasswordHash($unhashedPassword);
+
 		}
 
 
