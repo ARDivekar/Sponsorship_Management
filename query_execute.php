@@ -86,24 +86,33 @@
 
 
 
+		function getWhereClauseRequiredInDB($tableName){
+			$queryType = $this->queryType;
 
-		function checkExistsInDBFromPOST($tableName, $whereClauseExtractFromPOST){
+			$whereClauseArray = [];
+			foreach(SQLTables::$DBTableStructure[$tableName] as $dbTableField){
+				$possibleQueryFieldName = QueryFieldNames::mapDBToQueryForm($tableName)[$dbTableField];
+				if(in_array($possibleQueryFieldName, QueryFieldNames::$requiredFields[$tableName][$queryType])){
+					$valFromPOST = extractValueFromPOST($possibleQueryFieldName);
+					if($valFromPOST)
+						array_push($whereClauseArray, [$dbTableField, $valFromPOST]);
+				}
+			}
+			return SQLQuery::getWhereEquality($whereClauseArray);
+		}
+
+
+
+		function checkRequiredExistsInDB($tableName, $whereClause){
 			if(!SQLTables::isValidValue($tableName))
 				throw new Exception();
 
 			$db = new SponsorshipDB();
 			$q = new SQLQuery();
 
-			$whereClauseArray = [];
-			foreach($whereClauseExtractFromPOST as $wherePair){
-				$dbField = $wherePair[0];
-				$fieldInPOST = $wherePair[1];
-				array_push($whereClauseArray, [$dbField, extractValueFromPOST($fieldInPOST)]);
-			}
+			$q->setSelectQuery($tableName, $tableFields="*", $whereClause);
 
-			$q->setSelectQuery($tableName, $tableFields="*", $whereClause = SQLQuery::getWhereEquality($whereClauseArray));
-
-//			echo "<hr>".$q->getQuery()."<hr>";
+			echo "<hr>".$q->getQuery()."<hr>";
 
 			if( count($db->select($q->getQuery())) > 0 )
 				return true;
@@ -242,6 +251,29 @@
 			return $q;
 		}
 
+		function checkExistsAndMakeMultipleQueryObjs($tablesList, $queryType){
+			$queryObjs = [];
+
+			foreach($tablesList as $tableName){
+				$tableRequiredWhereClause = $this->getWhereClauseRequiredInDB($tableName);
+
+				// Check:
+				if(!$this->checkRequiredExistsInDB($tableName, $tableRequiredWhereClause))
+					return NULL;
+
+				// Make:
+				if($queryType == QueryTypes::Modify)
+					array_push($queryObjs, $this->makeUpdate($tableName,$tableRequiredWhereClause)->getQuery());
+				else if($queryType == QueryTypes::Delete)
+					array_push($queryObjs, $this->makeDelete($tableName,$tableRequiredWhereClause)->getQuery());
+				else return NULL;
+
+			}
+
+			return $queryObjs;
+
+		}
+
 
 		function makeDelete($tableName, $whereClause=NULL){
 			if(!SQLTables::isValidValue($tableName))
@@ -274,33 +306,39 @@
 					if($this->checkIfFieldIsPresent([QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST))
 						return NULL;
 
-					echo_1d_array([
-						$this->makeUpdate(
-							SQLTables::CommitteeMember,
-							SQLQuery::getWhereEquality([["ID", extractValueFromPOST(QueryFieldNames::SponsOthersID)]])
-						)->getQuery(),
-						$this->makeUpdate(
-							$this->tableName,
-							SQLQuery::getWhereEquality([["ID", extractValueFromPOST(QueryFieldNames::SponsOthersID)]])
-						)->getQuery()
-				  	]);
+
+//					$committeeMemberWhereClause = $this->getWhereClauseRequiredInDB(SQLTables::CommitteeMember);
+//					$tableNameWhereClause = $this->getWhereClauseRequiredInDB($this->tableName);
+//
+//					if(	!$this->checkRequiredExistsInDB(SQLTables::CommitteeMember, $committeeMemberWhereClause) ||
+//						!$this->checkRequiredExistsInDB($this->tableName, $tableNameWhereClause))
+//						return NULL;
+//
+//					echo_1d_array([
+//						$this->makeUpdate( SQLTables::CommitteeMember, $committeeMemberWhereClause )->getQuery(),
+//						$this->makeUpdate($this->tableName, $tableNameWhereClause)->getQuery()
+//				  	]);
+					
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
+							$queryType = $this->queryType
+						)
+					);
+
 					break;
 
 				case QueryTypes::Delete :
-					if(!$this->checkExistsInDBFromPOST(
-							$tableName = SQLTables::CommitteeMember,
-							$whereClauseExtractFromPOST = [
-								["ID", QueryFieldNames::SponsOthersID],
-								["Name", QueryFieldNames::SponsName],
-							]
-						)
-					)
+					$committeeMemberWhereClause = $this->getWhereClauseRequiredInDB(SQLTables::CommitteeMember);
+					$tableNameWhereClause = $this->getWhereClauseRequiredInDB($this->tableName);
+
+					if(	!$this->checkRequiredExistsInDB(SQLTables::CommitteeMember, $committeeMemberWhereClause) ||
+						!$this->checkRequiredExistsInDB($this->tableName, $tableNameWhereClause))
 						return NULL;
+
 					echo_1d_array([
-						$this->makeDelete(
-							SQLTables::CommitteeMember,
-							SQLQuery::getWhereEquality([["ID", extractValueFromPOST(QueryFieldNames::SponsOthersID)]])
-						)->getQuery(),
+						$this->makeDelete(SQLTables::CommitteeMember, $committeeMemberWhereClause)->getQuery(),
+						$this->makeDelete($this->tableName, $tableNameWhereClause)->getQuery(),
 				  	]);
 					break;
 			}
