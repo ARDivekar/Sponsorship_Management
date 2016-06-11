@@ -1,5 +1,6 @@
 <?php
 
+	include_once "DBconnect.php";
 
 	function get_person_name($SponsID){
 		$db = new SponsorshipDB();
