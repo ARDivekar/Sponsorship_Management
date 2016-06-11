@@ -1859,6 +1859,13 @@
 
 
 
+	$unhashedPassword = "lol";
+	$timeStart = microtime(TRUE);
+	echo "<hr>";
+	echo checkPasswordHash($unhashedPassword, generatePasswordHash($unhashedPassword)) ? "true, password works!" : "false, unauthorized";
+	$timeEnd = microtime(TRUE);
+	echo "<br>Hashing the password '$unhashedPassword' took ". 1000*($timeEnd-$timeStart)." milliseconds";
+	echo "<hr>";
 
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
@@ -1867,13 +1874,7 @@
 	SQLTables::setDBStructure();	//set all the table columns for easy access.
 
 
-	$unhashedPassword = "lol";
-	$timeStart = microtime(TRUE);
-	echo "<hr>";
-	echo checkPasswordHash($unhashedPassword, generatePasswordHash($unhashedPassword)) ? "true, password works!" : "false, unauthorized";
-	$timeEnd = microtime(TRUE);
-	echo "<br>Hashing the password '$unhashedPassword' took ". 1000*($timeEnd-$timeStart)." milliseconds";
-	echo "<hr>";
+
 
 
 
