@@ -204,7 +204,7 @@
 
 				case QueryFieldNames::SponsAccountLogEntryID :
 					return new InputField(
-						$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $readonly = false,
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $readonly = false,
 						$inputCSSClass = NULL, $labelText = "Account Transaction ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
 					break;
@@ -222,7 +222,7 @@
 				case QueryFieldNames::SponsCompanySponsoredOthers :
 					return new SelectField(
 						$options = [
-							new OptionField("Select an option","Select an option",true,true),
+							new OptionField("","Select an option",true,true),	//Note: valud of this must be "", as per: http://stackoverflow.com/a/6049333/4900327
 							new OptionField(CompanySponsoredOthers::Yes, CompanySponsoredOthers::Yes),
 							new OptionField(CompanySponsoredOthers::No, CompanySponsoredOthers::No)
 						],
@@ -288,7 +288,7 @@
 				case QueryFieldNames::SponsMeetingType :
 					return new SelectField(
 						$options = [
-							new OptionField("Select a Meeting type","Select a Meeting type",true,true),
+							new OptionField("","Select a Meeting type",true,true),	//Note: valud of this must be "", as per: http://stackoverflow.com/a/6049333/4900327
 							new OptionField(MeetingTypes::Call, MeetingTypes::Call),
 							new OptionField(MeetingTypes::Email, MeetingTypes::Email),
 							new OptionField(MeetingTypes::FaceToFace, MeetingTypes::FaceToFace)
@@ -308,7 +308,7 @@
 
 				case QueryFieldNames::SponsMeetingEntryID :
 					return new InputField(
-						$inputType = InputTypes::number, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
 						$readonly = false, $inputCSSClass = NULL,
 						$labelText = "Meeting ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
