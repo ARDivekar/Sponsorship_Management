@@ -1,4 +1,10 @@
 <?php
+	//Source on version comparison: http://php.net/manual/en/function.version-compare.php#43452
+	if (version_compare(phpversion(), "5.5.0", "<") && version_compare(phpversion(), "5.3.7", ">=")) {
+		include_once "./ExternalLibraries/password.php";  // Source: https://github.com/ircmaxell/password_compat
+	}
+
+
 
 	function makeRandomString($length = 5, $alphanumeric=true, $lowerCase=false){ //takes from 36-character alphabet & number charset.
 		$charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
