@@ -384,10 +384,10 @@
 
 
 	echo SQLQuery::getUnion(["SponsID", ["Sector", "My Sector"]],"SponsRep", NULL, "SectorHead", NULL);
-	echo SQLQuery::getUnion(["SponsID", ["Sector", "My Sector"]],"SponsRep", NULL, "SectorHead", NULL, "SponsOfficer");
+	echo SQLQuery::getUnion("*","SponsRep", NULL, "SectorHead", NULL, "SponsOfficer");
 
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
-
+	
 
 ?>
