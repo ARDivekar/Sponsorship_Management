@@ -19,6 +19,8 @@
 
 		include_once('DBconnect.php');
 		include_once('library_functions.php');
+		include_once "SponsDBFunctions.php";
+		include_once "SponsEnums.php";
 		$SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
 
 

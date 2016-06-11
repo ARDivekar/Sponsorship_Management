@@ -1,5 +1,7 @@
 <?php
 
+	include_once "BasicEnum.php";
+
 	function select_single_column_from_table($column_name, $table_name, $where_params=NULL){
 		$out_list = [];
 

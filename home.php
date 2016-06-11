@@ -1,6 +1,7 @@
 <?php
     /*Resume old session:*/
     include_once('library_functions.php');
+	include_once "SponsEnums.php";
     session_start();
 
 //    if (empty($_SESSION[SessionEnums::UserLoginID]))

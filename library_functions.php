@@ -1,10 +1,4 @@
 <?php
-	if(!isset($_SESSION[SessionEnums::UserLoginID]))
-		session_start();
-
-	include_once "DBconnect.php";
-
-
 
 
 	function echo_1d_array($array, $arrayName = "1D-Array"){
@@ -58,7 +52,7 @@
 	}
 
 
-	
+
 	function print_table($result){ //array of attributes and corresponding sql result we get from querying the attributes
 		echo '<div align="center">';
 		echo '<table align="center" style=\"width:100%\" class="output_table">';

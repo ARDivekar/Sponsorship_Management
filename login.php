@@ -12,6 +12,7 @@
 		include_once "FormAndFieldClasses.php";
 		include_once "SecurityFunctions.php";
 		include_once "SponsEnums.php";
+		include_once "SponsDBFunctions.php";
 	
 	echo "<h1>Sponsorship Department, VJTI</h1>"
 	?>

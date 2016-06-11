@@ -1,6 +1,7 @@
 <?php
 	include_once "DBconnect.php";
 	include_once "library_functions.php";
+	include_once "BasicEnum.php";
 
 	abstract class FormMethod extends BasicEnum{
 		const GET = "GET";
