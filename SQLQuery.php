@@ -240,9 +240,6 @@
 			//Source: http://stackoverflow.com/questions/1555434/php-wrap-a-string-in-double-quotes
 			return $surrounder . $out . $surrounder; //This removes __all__ kinds of nested single and double quotes from around a word.
 
-			//	$a = new SQLQuery();
-			//	echo $a->surroundWithSingleQuotes("\"'Hello'\"");
-			//	echo $a->surroundWithSingleQuotes("'\"Hello\"'");
 		}
 
 		public static function getWhereEquality($whereArray, $joiner="AND"){ //an array of arrays in which each sub-array has two values which must be equal. One must be a field in the database, at that must come first.
@@ -293,6 +290,11 @@
 
 
 	/*##------------------------------------------------TESTS------------------------------------------------##
+
+	$a = new SQLQuery();
+	echo $a->surroundWithSingleQuotes("\"'Hello'\"");
+	echo $a->surroundWithSingleQuotes("'\"Hello\"'");
+
 
 	$a = new SQLQuery();
 	$a->setInsertQuery("Committeemember",["ID", "Name"],[["lol","lol"],["lol2","lol3"]]);
