@@ -1,5 +1,7 @@
 <?php
 	include_once "library_functions.php";
+	include_once "Authorization.php";
+
 	/*Resume old session:*/
 	if(!isset($_SESSION[SessionEnums::UserLoginID]))
 		session_start();
@@ -16,6 +18,11 @@
 		header("Location: home.php");
 	}
 
+
+
+	include_once "DBconnect.php";
+	include_once "SQLQuery.php";
+	include_once "SecurityFunctions.php";
 
 
 
@@ -565,17 +572,11 @@
 
 	}
 
-	/*
-	foreach($_POST as $key => $value){
-		echo "<br>".$key." : ".$value;
-	}
-	echo "<hr>";
-	*/
 
 	$e = new QueryExecute($_SESSION[SessionEnums::UserAccessLevel], $_SESSION[QueryFormSessionEnums::TableName], $_SESSION[QueryFormSessionEnums::QueryType]);
 	$e->setSystemGenerated();
 	$e->executeQuery();
-//	echo $e->getInsert();
+
 
 
 

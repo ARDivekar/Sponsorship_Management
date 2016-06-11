@@ -9,6 +9,9 @@
 		include_once "DBconnect.php";
 		$db = new SponsorshipDB();
 		include_once "library_functions.php";
+		include_once "FormAndFieldClasses.php";
+		include_once "SecurityFunctions.php";
+		include_once "SponsEnums.php";
 	
 	echo "<h1>Sponsorship Department, VJTI</h1>"
 	?>

@@ -246,6 +246,20 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 	foreach( $db->getTableColumns("CommitteeMember") as $col)
 		echo "<br>".$col;
 
+	$db = new SponsorshipDB();
+	$x = $db->query("INSERT INTO committeemember
+		(ID, Organization, EventName, Name, Department, Role, Mobile, Email, Year, Branch)
+		VALUES
+		(".mt_rand(10,1000).", 'Technovanza', 'Technovanza','Lol', 'LOL', 'CSO', '989', NULL, 2, 'Comps');
+		"
+	);
+
+
+	echo $x."<hr>";
+	$x = $db->query("UPDATE committeemember SET Name = 'AAAA' WHERE Name = 'Hi';");
+	echo $x;
+
+
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
 

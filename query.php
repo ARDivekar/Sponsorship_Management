@@ -14,7 +14,8 @@
 <?php
 	/*Resume old session:*/
 	session_start();
-	include_once('library_functions.php');
+	include_once "library_functions.php";
+	include_once "Authorization.php";
 
 	if (!isset($_GET['Submit']) && !isset($_GET['submit'])) {
 		header("Location: home.php");
@@ -27,6 +28,11 @@
 		)){
 		header("Location: home.php");
 	}
+
+
+	include_once "SponsEnums.php";
+	include_once "FormAndFieldClasses.php";
+
 
 	$_SESSION[QueryFormSessionEnums::TableName] = extractValueFromGET(QueryFormSessionEnums::TableName);
 	$_SESSION[QueryFormSessionEnums::QueryType]= extractValueFromGET(QueryFormSessionEnums::QueryType);
