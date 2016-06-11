@@ -472,6 +472,9 @@
 
 
 	function echo_1d_array($array, $arrayName = "1D-Array"){
+		if(!$array)
+			return;
+
 		echo "<hr>$arrayName: ";
 		foreach($array as $key=>$value)
 			echo "<br>$key => $value";
@@ -480,6 +483,9 @@
 
 
 	function echo_2d_array($array, $arrayName = "2D-Array"){
+		if(!$array)
+			return;
+
 		echo "<hr>$arrayName: ";
 		foreach($array as $key1=>$value1){
 			echo "<br><br><br>$key1 => ";

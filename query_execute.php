@@ -232,6 +232,18 @@
 		}
 
 
+		function makeMultipleInsertQueryObjs($tablesList){
+			$queryObjs = [];
+			foreach($tablesList as $tableName){
+				array_push($queryObjs, $this->makeInsert($tableName)->getQuery());
+			}
+
+			return $queryObjs;
+		}
+
+
+
+
 
 		function makeUpdate($tableName, $whereClause=NULL){
 			if(!SQLTables::isValidValue($tableName))
@@ -251,7 +263,20 @@
 			return $q;
 		}
 
-		function checkExistsAndMakeMultipleQueryObjs($tablesList, $queryType){
+
+		function makeDelete($tableName, $whereClause=NULL){
+			if(!SQLTables::isValidValue($tableName))
+				return NULL;
+
+			$q = new SQLQuery();
+
+			$q->setDeleteQuery($tableName, $whereClause);
+			return $q;
+
+		}
+
+
+		function checkExistsAndMakeMultipleQueryObjs($tablesList, $queryType){	//used for Update and Delete Queries.
 			$queryObjs = [];
 
 			foreach($tablesList as $tableName){
@@ -275,16 +300,9 @@
 		}
 
 
-		function makeDelete($tableName, $whereClause=NULL){
-			if(!SQLTables::isValidValue($tableName))
-				return NULL;
 
-			$q = new SQLQuery();
 
-			$q->setDeleteQuery($tableName, $whereClause);
-			return $q;
 
-		}
 
 
 		function getCSOSponsRepSQLQuery(){
@@ -295,55 +313,34 @@
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
-					echo_1d_array([
-						$this->makeInsert(SQLTables::CommitteeMember)->getQuery(),
-						$this->makeInsert(SQLTables::SponsLogin)->getQuery(),
-						$this->makeInsert($this->tableName)->getQuery()
-					]);
+					echo_1d_array(
+						$this->makeMultipleInsertQueryObjs([SQLTables::CommitteeMember, SQLTables::SponsLogin, $this->tableName])
+					);
 					break;
 
 				case QueryTypes::Modify :
 					if($this->checkIfFieldIsPresent([QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST))
 						return NULL;
-
-
-//					$committeeMemberWhereClause = $this->getWhereClauseRequiredInDB(SQLTables::CommitteeMember);
-//					$tableNameWhereClause = $this->getWhereClauseRequiredInDB($this->tableName);
-//
-//					if(	!$this->checkRequiredExistsInDB(SQLTables::CommitteeMember, $committeeMemberWhereClause) ||
-//						!$this->checkRequiredExistsInDB($this->tableName, $tableNameWhereClause))
-//						return NULL;
-//
-//					echo_1d_array([
-//						$this->makeUpdate( SQLTables::CommitteeMember, $committeeMemberWhereClause )->getQuery(),
-//						$this->makeUpdate($this->tableName, $tableNameWhereClause)->getQuery()
-//				  	]);
-					
 					echo_1d_array(
 						$this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
 							$queryType = $this->queryType
 						)
 					);
-
 					break;
 
 				case QueryTypes::Delete :
-					$committeeMemberWhereClause = $this->getWhereClauseRequiredInDB(SQLTables::CommitteeMember);
-					$tableNameWhereClause = $this->getWhereClauseRequiredInDB($this->tableName);
-
-					if(	!$this->checkRequiredExistsInDB(SQLTables::CommitteeMember, $committeeMemberWhereClause) ||
-						!$this->checkRequiredExistsInDB($this->tableName, $tableNameWhereClause))
-						return NULL;
-
-					echo_1d_array([
-						$this->makeDelete(SQLTables::CommitteeMember, $committeeMemberWhereClause)->getQuery(),
-						$this->makeDelete($this->tableName, $tableNameWhereClause)->getQuery(),
-				  	]);
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
+							$queryType = $this->queryType
+						)
+					);
 					break;
 			}
 			return NULL;
 		}
+
 
 
 		function getCSOSectorHeadSQLQuery(){
@@ -354,10 +351,28 @@
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
+					break;
 				case QueryTypes::Modify :
+					if($this->checkIfFieldIsPresent([QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST))
+						return NULL;
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
+							$queryType = $this->queryType
+						)
+					);
+					break;
+
+
 				case QueryTypes::Delete :
-					return $this->getCSOSponsRepSQLQuery();
-				break;
+					echo_1d_array(
+						$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
+							$queryType = $this->queryType
+						)
+					);
+					break;
+
 			}
 			return NULL;
 
