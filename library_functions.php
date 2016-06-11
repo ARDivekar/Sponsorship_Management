@@ -1520,27 +1520,7 @@
 			}
 			return NULL;
 		}
-
-		public function executeQuery(){
-			$db = new SponsorshipDB();
-			switch($this->queryType){
-				case QueryTypes::Insert :
-				case QueryTypes::Modify :
-				case QueryTypes::Delete :
-					$res = $db->query($this->getQuery());
-					if($res === FALSE){
-						return false;
-					} else return true;
-					break;
-
-				case QueryTypes::View :
-					$res = $db->select($this->getQuery());
-					return $res;
-					break;
-			}
-			return NULL;
-		}
-
+		
 
 		private static function convertArrayToCommaSeparatedTuple($array, $surrounder="'", $parens=true){
 			$out = " ";
