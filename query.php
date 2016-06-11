@@ -293,7 +293,7 @@
 							new OptionField(MeetingTypes::Email, MeetingTypes::Email),
 							new OptionField(MeetingTypes::FaceToFace, MeetingTypes::FaceToFace)
 						],
-						$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL
+						$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL, $required = false
 					);
 					break;
 
