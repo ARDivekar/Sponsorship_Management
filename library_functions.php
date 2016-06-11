@@ -1080,7 +1080,6 @@
 
 
 
-
 			SQLTables::Company => [
 				QueryTypes::Insert => [
 					QueryFieldNames::SponsFestival,
@@ -1101,6 +1100,8 @@
 				]
 
 			],
+
+
 
 			SQLTables::CompanyExec => [
 				QueryTypes::Insert => [
@@ -1125,6 +1126,7 @@
 				]
 
 			],
+
 
 			SQLTables::Meeting => [
 				QueryTypes::Insert => [
@@ -1152,6 +1154,8 @@
 				]
 			],
 
+
+
 			SQLTables::CommitteeMember => [
 				QueryTypes::Insert => [
 					QueryFieldNames::SponsFestival,
@@ -1173,7 +1177,8 @@
 					QueryFieldNames::SponsFestival,
 					QueryFieldNames::SponsSector,
 					QueryFieldNames::SponsRole,
-					QueryFieldNames::SponsOthersID
+					QueryFieldNames::SponsOthersID,
+					QueryFieldNames::SponsName
 				]
 			],
 
@@ -1199,12 +1204,13 @@
 					QueryFieldNames::SponsFestival,
 					QueryFieldNames::SponsSector,
 					QueryFieldNames::SponsRole,
-					QueryFieldNames::SponsOthersID
+					QueryFieldNames::SponsOthersID,
+					QueryFieldNames::SponsName
 				]
 			],
 
 
-			SQLTables::SectorHead => [ //identical to SponsRep
+			SQLTables::SectorHead => [ //mostly identical to SponsRep
 				QueryTypes::Insert => [
 					QueryFieldNames::SponsFestival,
 					QueryFieldNames::SponsSector,
@@ -1221,7 +1227,8 @@
 
 				QueryTypes::Delete => [
 					QueryFieldNames::SponsFestival,
-					QueryFieldNames::SponsOthersID
+					QueryFieldNames::SponsOthersID,
+					QueryFieldNames::SponsName
 				]
 			],
 
@@ -1520,7 +1527,7 @@
 			}
 			return NULL;
 		}
-		
+
 
 		private static function convertArrayToCommaSeparatedTuple($array, $surrounder="'", $parens=true){
 			$out = " ";
@@ -1833,6 +1840,5 @@
 
 	$db = new SponsorshipDB();
 	SQLTables::setDBStructure();	//set all the table columns for easy access.
-
 
 ?>
