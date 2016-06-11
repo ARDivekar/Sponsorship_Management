@@ -209,7 +209,7 @@
 		var $name = NULL;
 		var $readonly = NULL;
 		var $value = NULL;
-		var $inputCSSClass = NULL;
+		var $inputCSSClass = "form-control";
 		var $labelText = NULL;
 		var $labelCSSClass = NULL;
 		var $inputDataListID = NULL;
@@ -217,7 +217,7 @@
 		var $required = NULL; //required="required"
 
 
-		function InputField($inputType, $name, $value = "", $readonly = false, $inputCSSClass = NULL, $labelText = NULL, $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = NULL){
+		function InputField($inputType, $name, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = NULL, $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = NULL){
 
 			if (!InputTypes::isValidValue($inputType)){
 				echo "Invalid type passed to constructor of class InputField.";
@@ -1195,15 +1195,15 @@
 		$formName = "SponsRepInsert", $formAction = "view_table.php", $formMethod = FormMethod::POST,
 		$fields = array(
 			new InputField(
-				$inputType = InputTypes::text, $name = "TransType", $value = TransType::Deposit, $readonly = true, $inputCSSClass = NULL,
+				$inputType = InputTypes::text, $name = "TransType", $value = TransType::Deposit, $readonly = true, $inputCSSClass = "form-control",
 				$labelText = "Transaction Type", $labelCSSClass = NULL
 			),
 			new InputField(
-				$inputType = InputTypes::text, $name = "CMPName", $value = "", $readonly = false, $inputCSSClass = NULL, $labelText = "Company Name",
+				$inputType = InputTypes::text, $name = "CMPName", $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Company Name",
 				$labelCSSClass = NULL
 			),
 			new InputField(
-				$inputType = InputTypes::text, $name = "Amount", $value = "", $readonly = false, $inputCSSClass = NULL, $labelText = "Amount",
+				$inputType = InputTypes::text, $name = "Amount", $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Amount",
 				$labelCSSClass = NULL
 			),
 			new SelectField(
@@ -1224,7 +1224,7 @@
 
 
 	echo new InputField(
-		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $readonly = false, $inputCSSClass = NULL,
+		$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value ="", $readonly = false, $inputCSSClass = "form-control",
 		$labelText = "Company Sector", $labelCSSClass = NULL, $inputDataListID="SectorsInDB", $inputDataList=select_single_column_from_table("CMPName", "Company"), $required=true
 	);
 

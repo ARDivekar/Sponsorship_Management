@@ -54,7 +54,7 @@
 				case QueryFieldNames::SponsFestival :
 					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-						$readonly = true, $inputCSSClass = form-control,
+						$readonly = true, $inputCSSClass = "form-control",
 						$labelText = "Festival", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
 					break;
@@ -63,7 +63,7 @@
 					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector,
 						$value = ($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? "" : $_SESSION[SessionEnums::UserSector] ),
-						$readonly = ($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? false : true ), $inputCSSClass = form-control,
+						$readonly = ($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? false : true ), $inputCSSClass = "form-control",
 						$labelText = "Sector", $labelCSSClass = NULL,
 						$inputDataListID="SectorInDB",
 						$inputDataList=select_single_column_from_table("Sector", "Company")
@@ -73,7 +73,7 @@
 
 				case QueryFieldNames::SponsID :
 					return new InputField(
-						$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = form-control,
+						$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = "form-control",
 						$labelText = "My ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
 					break;
@@ -81,7 +81,7 @@
 
 				case QueryFieldNames::SponsOthersID :
 					return new InputField(
-						$inputType = InputTypes::number, $name = QueryFieldNames::SponsOthersID, $value = "", $readonly = false, $inputCSSClass = form-control,
+						$inputType = InputTypes::number, $name = QueryFieldNames::SponsOthersID, $value = "", $readonly = false, $inputCSSClass = "form-control",
 						$labelText = "Person's ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
 					break;
@@ -89,7 +89,7 @@
 
 				case QueryFieldNames::SponsName :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Name",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Name",
 						$labelCSSClass = NULL, $inputDataListID="NameInDB",
 						$inputDataList=select_single_column_from_table("Name", "CommitteeMember")
 					);
@@ -98,7 +98,7 @@
 
 				case QueryFieldNames::SponsPassword :
 					return new InputField(
-						$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Password",
+						$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Password",
 						$labelCSSClass = NULL
 					);
 					break;
@@ -106,7 +106,7 @@
 
 				case QueryFieldNames::SponsRePassword :
 					return new InputField(
-						$inputType = InputTypes::password, $name = QueryFieldNames::SponsRePassword, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Re-enter Password",
+						$inputType = InputTypes::password, $name = QueryFieldNames::SponsRePassword, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Re-enter Password",
 						$labelCSSClass = NULL
 					);
 					break;
@@ -114,7 +114,7 @@
 
 				case QueryFieldNames::SponsEmail :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Email",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Email",
 						$labelCSSClass = NULL, $inputDataListID="EmailInDB", $inputDataList=select_single_column_from_table("Email", "CommitteeMember")
 					);
 					break;
@@ -122,7 +122,7 @@
 
 				case QueryFieldNames::SponsMobile :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Mobile",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Mobile",
 						$labelCSSClass = NULL, $inputDataListID="MobileInDB", $inputDataList=select_single_column_from_table("Mobile", "CommitteeMember")
 					);
 					break;
@@ -130,14 +130,14 @@
 
 				case QueryFieldNames::SponsYear :
 					return new InputField(
-					$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Year", $labelCSSClass = NULL, $inputDataListID="YearEnum", $inputDataList=["1","2","3","4"]
+					$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Year", $labelCSSClass = NULL, $inputDataListID="YearEnum", $inputDataList=["1","2","3","4"]
 					);
 					break;
 
 
 				case QueryFieldNames::SponsBranch :
 					return new InputField(
-					$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Branch",
+					$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Branch",
 					$labelCSSClass = NULL, $inputDataListID="BranchInDB", $inputDataList=select_single_column_from_table("Branch", "CommitteeMember")
 					);
 					break;
@@ -145,7 +145,7 @@
 
 				case QueryFieldNames::SponsCompany :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 						$labelText = "Company Name", $labelCSSClass = NULL, $inputDataListID="CompanyInDB",
 						$inputDataList= ($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? select_single_column_from_table("CMPName", "Company") : select_single_column_from_table("CMPName", "Company", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
 					);
@@ -155,14 +155,14 @@
 				case QueryFieldNames::SponsTransType :
 					return new InputField(
 						$inputType = InputTypes::text, $name = QueryFieldNames::SponsTransType, $value = TransType::Deposit, $readonly = true,
-						$inputCSSClass = form-control, $labelText = "Transaction Type", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
+						$inputCSSClass = "form-control", $labelText = "Transaction Type", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
 					break;
 
 
 				case QueryFieldNames::SponsDate :
 					return new InputField(
-						$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = "", $readonly = false, $inputCSSClass = form-control,
+						$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = "", $readonly = false, $inputCSSClass = "form-control",
 						$labelText = "Date", $labelCSSClass = NULL, $inputDataListID="TodaysDate",
 						$inputDataList=[date('Y-m-d', time())]
 					);
@@ -171,7 +171,7 @@
 
 				case QueryFieldNames::SponsTime :
 					return new InputField(
-						$inputType = InputTypes::time, $name = QueryFieldNames::SponsTime, $value = "", $readonly = false, $inputCSSClass = form-control,
+						$inputType = InputTypes::time, $name = QueryFieldNames::SponsTime, $value = "", $readonly = false, $inputCSSClass = "form-control",
 						$labelText = "Time", $labelCSSClass = NULL
 					);
 					break;
@@ -180,7 +180,7 @@
 				case QueryFieldNames::SponsAmount :
 					return new InputField(
 						$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $readonly = false,
-						$inputCSSClass = form-control, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
+						$inputCSSClass = "form-control", $labelText = "Amount (Rs.)", $labelCSSClass = NULL
 					);
 					break;
 
@@ -188,14 +188,14 @@
 				case QueryFieldNames::SponsAccountLogEntryID :
 					return new InputField(
 						$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $readonly = false,
-						$inputCSSClass = form-control, $labelText = "Account Transaction ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
+						$inputCSSClass = "form-control", $labelText = "Account Transaction ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
 					break;
 
 
 				case QueryFieldNames::SponsCompanyStatus :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = "", $readonly = false, $inputCSSClass = form-control,
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = "", $readonly = false, $inputCSSClass = "form-control",
 						$labelText = "Company's status", $labelCSSClass = NULL, $inputDataListID="CompanyStatusEnum",
 						$inputDataList=CompanyStatus::getConstants()
 					);
@@ -216,7 +216,7 @@
 
 				case QueryFieldNames::SponsCompanyAddress :
 					return new InputField(
-						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Company Address",
+						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Company Address",
 						$labelCSSClass = NULL, $inputDataListID="CompanyAddressInDB",
 						$inputDataList= ($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? select_single_column_from_table("CMPAddress", "Company") : select_single_column_from_table("CMPAddress", "Company", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
 					);
@@ -225,7 +225,7 @@
 
 				case QueryFieldNames::SponsCompanyExec :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = form-control,
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = "form-control",
 						$labelText = "Company Exec. Name", $labelCSSClass = NULL, $inputDataListID="CompanyExecInDB",
 						$inputDataList= ($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? select_single_column_from_table("CEName", "CompanyExec") : select_single_column_from_table("CEName", "Company INNER JOIN CompanyExec ON (Company.CMPName = CompanyExec.CMPName)", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
 					);
@@ -234,7 +234,7 @@
 
 				case QueryFieldNames::SponsCompanyExecMobile :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecMobile, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Mobile",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecMobile, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Mobile",
 						$labelCSSClass = NULL, $inputDataListID="CompanyExecMobileInDB",
 						$inputDataList=($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? select_single_column_from_table("CEMobile", "CompanyExec") : select_single_column_from_table("CEMobile", "Company INNER JOIN CompanyExec ON (Company.CMPName = CompanyExec.CMPName)", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
 					);
@@ -243,7 +243,7 @@
 
 				case QueryFieldNames::SponsCompanyExecEmail :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecEmail, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Email",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecEmail, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Email",
 						$labelCSSClass = NULL, $inputDataListID="CompanyExecEmailInDB",
 						$inputDataList=($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO ? select_single_column_from_table("CEEmail", "CompanyExec") : select_single_column_from_table("CEEmail", "Company INNER JOIN CompanyExec ON (Company.CMPName = CompanyExec.CMPName)", "Sector = \"".$_SESSION[SessionEnums::UserSector]."\""))
 					);
@@ -252,7 +252,7 @@
 
 				case QueryFieldNames::SponsCompanyExecPosition :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $readonly = false, $inputCSSClass = form-control,
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $readonly = false, $inputCSSClass = "form-control",
 						$labelText = "Exec. Position", $labelCSSClass = NULL, $inputDataListID="CompanyExecPositionInDB",
 						$inputDataList= select_single_column_from_table("CEPosition", "CompanyExec")
 					);
@@ -261,7 +261,7 @@
 
 				case QueryFieldNames::SponsMeetingAddress :
 					return new InputField(
-						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Meeting Address",
+						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Meeting Address",
 						$labelCSSClass = NULL, $inputDataListID="CompanyExecPositionInDB",
 						$inputDataList = ["VJTI"]
 					);
@@ -283,7 +283,7 @@
 
 				case QueryFieldNames::SponsMeetingOutcome :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $readonly = false, $inputCSSClass = form-control, $labelText = "Meeting Outcome",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $readonly = false, $inputCSSClass = "form-control", $labelText = "Meeting Outcome",
 						$labelCSSClass = NULL, $inputDataListID="MeetingOutcomeEnum", $inputDataList= MeetingOutcomes::getConstants()
 					);
 					break;
@@ -292,7 +292,7 @@
 				case QueryFieldNames::SponsMeetingEntryID :
 					return new InputField(
 						$inputType = InputTypes::number, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
-						$readonly = false, $inputCSSClass = form-control,
+						$readonly = false, $inputCSSClass = "form-control",
 						$labelText = "Meeting ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
 					break;
@@ -300,7 +300,7 @@
 
 				case QueryFieldNames::Submit :
 					return new InputField(
-						$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
+						$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms btn btn-primary"
 					);
 					break;
 
@@ -439,7 +439,7 @@
 				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
 			*/
 			$SponsRepRole = new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Role", $labelCSSClass = NULL
 							);
 			switch($this->queryType){
@@ -463,47 +463,47 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Sector", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Role", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Reg. ID of SponsRep", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $disabled = false, $inputCSSClass = form-control, $labelText = "Name",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $disabled = false, $inputCSSClass = "form-control", $labelText = "Name",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Password",
+								$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Password",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::password, $name = QueryFieldNames::SponsRePassword, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Re-enter Password",
+								$inputType = InputTypes::password, $name = QueryFieldNames::SponsRePassword, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Re-enter Password",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Email",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Email",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Mobile",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Mobile",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Year",
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Year",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Branch",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Branch",
 								$labelCSSClass = NULL
 							),
 							new InputField(
@@ -534,39 +534,39 @@
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival], $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival], $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Sector", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Role", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Name",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Name",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Email",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Email",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Mobile",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Mobile",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Year",
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsYear, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Year",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Branch",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsBranch, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Branch",
 								$labelCSSClass = NULL
 							),
 							new InputField(
@@ -590,19 +590,19 @@
 							PredefinedQueryInputFields::get(QueryFieldNames::Submit)
 							/*
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival], $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival], $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsRole, $value = UserTypes::SponsRep, $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Role", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Name",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsName, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Name",
 								$labelCSSClass = NULL
 							),
 							new InputField(
@@ -660,22 +660,22 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control, $labelText = "Festival", $labelCSSClass = NULL
+								$readonly = true, $inputCSSClass = "form-control", $labelText = "Festival", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsTransType, $value = TransType::Deposit, $readonly = true,
-								$inputCSSClass = form-control, $labelText = "Transaction Type", $labelCSSClass = NULL
+								$inputCSSClass = "form-control", $labelText = "Transaction Type", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = date('Y-m-d', time()), $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = date('Y-m-d', time()), $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Date of Transaction", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $readonly = false,
-								$inputCSSClass = form-control, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
+								$inputCSSClass = "form-control", $labelText = "Amount (Rs.)", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
@@ -700,22 +700,22 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control, $labelText = "Festival", $labelCSSClass = NULL
+								$readonly = true, $inputCSSClass = "form-control", $labelText = "Festival", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $readonly = false,
-								$inputCSSClass = form-control, $labelText = "ID of transaction", $labelCSSClass = NULL
+								$inputCSSClass = "form-control", $labelText = "ID of transaction", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::date, $name = QueryFieldNames::SponsDate, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Date of Transaction", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAmount, $value = "", $readonly = false,
-								$inputCSSClass = form-control, $labelText = "Amount (Rs.)", $labelCSSClass = NULL
+								$inputCSSClass = "form-control", $labelText = "Amount (Rs.)", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
@@ -734,12 +734,12 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control, $labelText = "Festival", $labelCSSClass = NULL
+								$readonly = true, $inputCSSClass = "form-control", $labelText = "Festival", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $readonly = false,
-								$inputCSSClass = form-control, $labelText = "ID of transaction", $labelCSSClass = NULL
+								$inputCSSClass = "form-control", $labelText = "ID of transaction", $labelCSSClass = NULL
 							), new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							), new InputField(
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
@@ -772,23 +772,23 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Sector", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Status", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Company Address",
+								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Company Address",
 								$labelCSSClass = NULL
 							),
 							new SelectField(
@@ -824,23 +824,23 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Sector", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyStatus, $value = CompanyStatus::NotCalled, $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Status", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Company Address",
+								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsCompanyAddress, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Company Address",
 								$labelCSSClass = NULL
 							),
 							new SelectField(
@@ -871,11 +871,11 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -912,28 +912,28 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Exec. Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Exec. Email", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Exec. Mobile", $labelCSSClass = NULL
 							),
 
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Exec. Position", $labelCSSClass = NULL
 							),
 
@@ -961,28 +961,28 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Exec. Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsEmail, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Exec. Email", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMobile, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Exec. Mobile", $labelCSSClass = NULL
 							),
 
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExecPosition, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Exec. Position", $labelCSSClass = NULL
 							),
 
@@ -1008,15 +1008,15 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value = $_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Exec. Name", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -1057,19 +1057,19 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Exec. Name", $labelCSSClass = NULL
 							),
 							new SelectField(
@@ -1081,11 +1081,11 @@
 								$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL
 							),
 							new InputField(
-								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Meeting Address",
+								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Meeting Address",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $readonly = true, $inputCSSClass = form-control, $labelText = "Meeting Outcome",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $readonly = true, $inputCSSClass = "form-control", $labelText = "Meeting Outcome",
 								$labelCSSClass = NULL
 							),
 							new InputField(
@@ -1117,24 +1117,24 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							),
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
-								$readonly = false, $inputCSSClass = form-control,
+								$readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Meeting ID", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompany, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Name", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = form-control,
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsCompanyExec, $value = "", $readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Company Exec. Name", $labelCSSClass = NULL
 							),
 							new SelectField(
@@ -1146,11 +1146,11 @@
 								$name = QueryFieldNames::SponsMeetingType, $selectCSSClass=NULL, $labelText="Meeting type", $labelCSSClass=NULL
 							),
 							new InputField(
-								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $readonly = false, $inputCSSClass = form-control, $labelText = "Meeting Address",
+								$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingAddress, $value = "", $readonly = false, $inputCSSClass = "form-control", $labelText = "Meeting Address",
 								$labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $readonly = true, $inputCSSClass = form-control, $labelText = "Meeting Outcome",
+								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $readonly = true, $inputCSSClass = "form-control", $labelText = "Meeting Outcome",
 								$labelCSSClass = NULL
 							),
 							new InputField(
@@ -1174,16 +1174,16 @@
 							/*
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsFestival, $value =$_SESSION[SessionEnums::UserFestival],
-								$readonly = true, $inputCSSClass = form-control,
+								$readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Festival", $labelCSSClass = NULL
 							),
 							new InputField(
-								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = form-control,
+								$inputType = InputTypes::number, $name = QueryFieldNames::SponsID, $value = $_SESSION[SessionEnums::UserLoginID], $readonly = true, $inputCSSClass = "form-control",
 								$labelText = "Reg. ID", $labelCSSClass = NULL
 							),
 							new InputField(
 								$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
-								$readonly = false, $inputCSSClass = form-control,
+								$readonly = false, $inputCSSClass = "form-control",
 								$labelText = "Meeting ID", $labelCSSClass = NULL
 							),
 							new InputField(
@@ -1258,7 +1258,7 @@
 					PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)
 					/*
 					new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $readonly = true, $inputCSSClass = form-control,
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $readonly = true, $inputCSSClass = "form-control",
 						$labelText = "Sector", $labelCSSClass = NULL
 					)
 					*/
@@ -1283,7 +1283,7 @@
 					PredefinedQueryInputFields::get(QueryFieldNames::SponsSector)
 					/*
 					new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $readonly = true, $inputCSSClass = form-control,
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsSector, $value = $_SESSION[SessionEnums::UserSector], $readonly = true, $inputCSSClass = "form-control",
 						$labelText = "Sector", $labelCSSClass = NULL
 					)
 					*/

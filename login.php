@@ -24,16 +24,16 @@
 		$formName = "SponsRepInsert", $formAction = "login.php", $formMethod = FormMethod::POST,
 		$fields = array(
 			new InputField(
-				$inputType = InputTypes::text, $name = SessionEnums::UserLoginID, $value = "", $disabled = false, $inputCSSClass = NULL,
+				$inputType = InputTypes::text, $name = SessionEnums::UserLoginID, $value = "", $disabled = false, $inputCSSClass = "form-control",
 				$labelText = "Reg. ID", $labelCSSClass = NULL
 			),
 			new InputField(
-				$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $disabled = false, $inputCSSClass = NULL,
+				$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $disabled = false, $inputCSSClass = "form-control",
 				$labelText = "Password", $labelCSSClass = NULL
 			),
 
 			new InputField(
-				$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = "Login", $disabled = false, $inputCSSClass = "query_forms login_button"
+				$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = "Login", $disabled = false, $inputCSSClass = "query_forms btn btn-primary"
 			)
 		),
 		$formCSSClass="query_forms",
