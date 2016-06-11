@@ -145,7 +145,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			$rows = array();
 			$result = self::query($query);
 			if($result === false ) {
-				return false;
+				return NULL;
 			}
 			while ($row = $result -> fetch_assoc()) {
 				$rows[] = $row;
