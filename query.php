@@ -537,8 +537,6 @@
 							$SponsRepRole,
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsOthersID),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsName),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsPassword),
-							PredefinedQueryInputFields::get(QueryFieldNames::SponsRePassword),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsEmail),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsMobile),
 							PredefinedQueryInputFields::get(QueryFieldNames::SponsYear),

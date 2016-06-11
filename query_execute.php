@@ -4,7 +4,7 @@
 	if(!isset($_SESSION[SessionEnums::UserLoginID]))
 		session_start();
 
-	if(!isset($_POST[QueryFieldNames::Submit])){ //can only be set from submitting a form from query.php
+	if(!extractValueFromPOST(QueryFieldNames::Submit)){ //can only be set from submitting a form from query.php
 		header("Location: home.php");
 	}
 
@@ -66,11 +66,20 @@
 			return true;
 		}
 
-		function checkValue($tableName, $fieldName, $value){
-			$db = new SponsorshipDB();
-			$selectQuery = new SQLQuery();
-			if(count($db->select("SELECT $fieldName FROM $tableName WHERE $fieldName='$value';")) != 0)
-				return true;
+		function checkIfFieldIsPresent($fieldNamesList, $formMethod=FormMethod::POST){
+			if($formMethod==FormMethod::POST){
+				foreach($fieldNamesList as $fieldName)
+					if(extractValueFromPOST($fieldName))
+						return true;
+			}
+
+			else if($formMethod==FormMethod::GET){
+				foreach($fieldNamesList as $fieldName)
+					if(extractValueFromGET($fieldName))
+						return true;
+			}
+
+
 			return false;
 		}
 
@@ -78,36 +87,31 @@
 
 
 
-/*
-		function getInsert(){
+		function checkExistsInDBFromPOST($tableName, $whereClauseExtractFromPOST){
+			if(!SQLTables::isValidValue($tableName))
+				throw new Exception();
+
+			$db = new SponsorshipDB();
 			$q = new SQLQuery();
-			$insertFields = [];
-			$insertFieldValues = [[]];
-			if($this->checkRequiredFields()){
-				foreach( QueryFieldNames::$TableToFieldNameOrdering[$this->tableName] as $possibleField){
-					if($possibleField==QueryFieldNames::Submit)
-						continue;
 
-					$sysGenVal = QueryFieldNames::systemGenerated($possibleField);
-					if($sysGenVal){
-						array_push($insertFields, QueryFieldNamesToSQLTableFields::$map[$possibleField]);
-						array_push($insertFieldValues[0], $sysGenVal);
-					}
-					else{
-						$val = extractValueFromPOST($possibleField);
-						if($val){
-							array_push($insertFields, QueryFieldNamesToSQLTableFields::$map[$possibleField]);
-							array_push($insertFieldValues[0], $val);
-						}
-					}
-
-				}
-				$q->setInsertQuery($this->tableName, $insertFields, $insertFieldValues);
-				return $q->getQuery();
+			$whereClauseArray = [];
+			foreach($whereClauseExtractFromPOST as $wherePair){
+				$dbField = $wherePair[0];
+				$fieldInPOST = $wherePair[1];
+				array_push($whereClauseArray, [$dbField, extractValueFromPOST($fieldInPOST)]);
 			}
-			return NULL;
+
+			$q->setSelectQuery($tableName, $tableFields="*", $whereClause = SQLQuery::getWhereEquality($whereClauseArray));
+
+//			echo "<hr>".$q->getQuery()."<hr>";
+
+			if( count($db->select($q->getQuery())) > 0 )
+				return true;
+
+			return false;
 		}
-*/
+
+
 
 
 		function executeQuery(){
@@ -134,8 +138,8 @@
 
 				/*
 				$sqlStringsToExecute = [];
-				foreach($sqlQueriesToExecute as $tableName => $queryObj)
-					$sqlStringsToExecute[$tableName] = $queryObj->getQuery();
+				foreach($sqlQueriesToExecute as $queryObj)
+					array_push($sqlStringsToExecute, $queryObj->getQuery());
 
 				if($db->performTransaction($sqlStringsToExecute))
 					return true;
@@ -208,32 +212,96 @@
 
 			$q = new SQLQuery();
 
-			$queryVals = [];
+			$insertQueryVals = [];
 			foreach(SQLTables::$DBTableStructure[$tableName] as $dbField){
 				$val = extractValueFromPOST(QueryFieldNames::mapDBToQueryForm($tableName)[$dbField]);
-				array_push($queryVals, $val ? $val : "NULL");
+				array_push($insertQueryVals, $val ? $val : "NULL");
 			}
 
-			$q->setInsertQuery($tableName, SQLTables::$DBTableStructure[$tableName], [$queryVals]);
+			$q->setInsertQuery($tableName, SQLTables::$DBTableStructure[$tableName], [$insertQueryVals]);
 			return $q;
 		}
+
+
+
+		function makeUpdate($tableName, $whereClause=NULL){
+			if(!SQLTables::isValidValue($tableName))
+				return NULL;
+
+			$q = new SQLQuery();
+
+			$updateQueryVals = [];
+			foreach(SQLTables::$DBTableStructure[$tableName] as $dbField){
+				$val = extractValueFromPOST(QueryFieldNames::mapDBToQueryForm($tableName)[$dbField]);
+				if($val){
+					array_push($updateQueryVals, [$dbField, $val] );
+				}
+			}
+
+			$q->setUpdateQuery($tableName, $tableUpdateFieldValues = $updateQueryVals, $whereClause = $whereClause);
+			return $q;
+		}
+
+
+		function makeDelete($tableName, $whereClause=NULL){
+			if(!SQLTables::isValidValue($tableName))
+				return NULL;
+
+			$q = new SQLQuery();
+
+			$q->setDeleteQuery($tableName, $whereClause);
+			return $q;
+
+		}
+
 
 		function getCSOSponsRepSQLQuery(){
 			/*For reference:
 				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				However, CSO cannot modify password.
 			*/
-			echo $this->makeInsert(SQLTables::CommitteeMember)->getQuery();
-			echo $this->makeInsert(SQLTables::SponsLogin)->getQuery();
-			echo $this->makeInsert(SQLTables::SponsRep)->getQuery();
-
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
+					echo_1d_array([
+						$this->makeInsert(SQLTables::CommitteeMember)->getQuery(),
+						$this->makeInsert(SQLTables::SponsLogin)->getQuery(),
+						$this->makeInsert($this->tableName)->getQuery()
+					]);
+					break;
 
-					break;
 				case QueryTypes::Modify :
+					if($this->checkIfFieldIsPresent([QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST))
+						return NULL;
+
+					echo_1d_array([
+						$this->makeUpdate(
+							SQLTables::CommitteeMember,
+							SQLQuery::getWhereEquality([["ID", extractValueFromPOST(QueryFieldNames::SponsOthersID)]])
+						)->getQuery(),
+						$this->makeUpdate(
+							$this->tableName,
+							SQLQuery::getWhereEquality([["ID", extractValueFromPOST(QueryFieldNames::SponsOthersID)]])
+						)->getQuery()
+				  	]);
 					break;
+
 				case QueryTypes::Delete :
+					if(!$this->checkExistsInDBFromPOST(
+							$tableName = SQLTables::CommitteeMember,
+							$whereClauseExtractFromPOST = [
+								["ID", QueryFieldNames::SponsOthersID],
+								["Name", QueryFieldNames::SponsName],
+							]
+						)
+					)
+						return NULL;
+					echo_1d_array([
+						$this->makeDelete(
+							SQLTables::CommitteeMember,
+							SQLQuery::getWhereEquality([["ID", extractValueFromPOST(QueryFieldNames::SponsOthersID)]])
+						)->getQuery(),
+				  	]);
 					break;
 			}
 			return NULL;
@@ -243,15 +311,15 @@
 		function getCSOSectorHeadSQLQuery(){
 			/*For reference:
 				SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				However, CSO cannot modify password.
 			*/
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
-					break;
 				case QueryTypes::Modify :
-					break;
 				case QueryTypes::Delete :
-					break;
+					return $this->getCSOSponsRepSQLQuery();
+				break;
 			}
 			return NULL;
 
