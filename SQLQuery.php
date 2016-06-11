@@ -90,13 +90,21 @@
 		}
 
 
-		private function generateSelectQuery(){
+		private function generateSelectQuery($tableFields=NULL, $tableName=NULL, $whereClause=NULL, $semicoloon=true){
+			if(!$tableFields)
+				$tableFields = $this->tableFields;
+			if(!$tableName)
+				$tableName = $this->tableName;
+			if(!$whereClause)
+				$whereClause = $this->whereClause;
+
+
 			$out = "SELECT ";
 
-			if($this->tableFields == "*")
+			if($tableFields == "*")
 				$out .= " * ";
 			else{
-				$len = count($this->tableFields);
+				$len = count($tableFields);
 				/* Allowed values for the tableFields array:
 				 * ["ID", "Name", "Company"]
 				 * [["ID"], ["Name"], ["Company"]]
@@ -105,7 +113,7 @@
 				 * ["ID", ["Name"], ["Company", "Company I work for"]]
 				 * */
 				for($i=0; $i < $len ; $i++){
-					$field = $this->tableFields[$i];
+					$field = $tableFields[$i];
 					if(!is_array($field))
 						$out .= " $field ";
 					else if(count($field) == 1)
@@ -120,15 +128,16 @@
 			}
 
 
-			$out .=  "FROM $this->tableName ";
-			if($this->whereClause)
-				$out .= " WHERE ".$this->whereClause;
+			$out .=  "FROM $tableName ";
+			if($whereClause)
+				$out .= " WHERE ".$whereClause;
 
 			if($this->checkForSQLInjection($out)){
 				return NULL;
 			}
 
-			$out .= ";";
+			if($semicoloon)
+				$out .= ";";
 			return $out;
 
 		}
@@ -275,6 +284,23 @@
 			return NULL;
 		}
 
+
+
+		public static function getUnion($tableFields, $table1, $where1=NULL, $table2, $where2=NULL, $alias=NULL){
+			$q = new SQLQuery();
+			if($tableFields && $table1 && $table2){
+				$out = "(".$q->generateSelectQuery($tableFields, $table1, $where1, $semicolon=false).")";
+				$out .= " UNION ";
+				$out .= "(".$q->generateSelectQuery($tableFields, $table2, $where2, $semicolon=false).")";
+				if($alias)
+					$out = "( ".$out." ) AS ".$alias." ";
+				return $out;
+			}
+
+			return NULL;
+
+		}
+
 		public static function convertEmptyToNULLString($field){
 			if($field == NULL || $field == "" ||$field == []){
 				return "NULL";
@@ -357,5 +383,11 @@
 
 
 
+	echo SQLQuery::getUnion(["SponsID", ["Sector", "My Sector"]],"SponsRep", NULL, "SectorHead", NULL);
+	echo SQLQuery::getUnion(["SponsID", ["Sector", "My Sector"]],"SponsRep", NULL, "SectorHead", NULL, "SponsOfficer");
+
+
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
+
+
 ?>
