@@ -5,7 +5,10 @@
 	<?php
 		include_once "UserNavBarImports.php";
 		include_once "SponsEnums.php";
-		include_once "table_output.php"
+		include_once "table_output.php";
+
+		if($_SESSION[SessionEnums::UserAccessLevel] != UserTypes::CSO)
+			header("Location: homepage.php");
 
 	?>
 	<title>Meetings</title>

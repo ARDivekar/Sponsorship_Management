@@ -60,6 +60,7 @@
 						break;
 				}
 			}
+
 			return new SQLQuery();
 		}
 
@@ -225,8 +226,11 @@
 	$t = new TableOutput(UserTypes::CSO, SQLTables::AccountLog);
 	echo $t->getWhereClauseIfFieldInDBStrucutre([["SponsID", "123"], ["Amount", 5000], ["Title", "Loi"], ["Bible", "Loi"]]);
 
+	$t = new TableOutput(UserTypes::SectorHead, SQLTables::SectorHead);
+	echo $t->getOutputQuery();
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
+
 
 
 

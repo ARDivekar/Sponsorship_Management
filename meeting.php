@@ -92,6 +92,52 @@
     </script>
 	*/
 	?>
+	<?php
+		$db = new SponsorshipDB();
+
+		$meetingLatestQuery = new SQLQuery();
+		$meetingLatestQuery->setSelectQuery(
+			$tableName = SQLTables::Meeting,
+			$tableFields = "*",
+			$whereClause = SQLQuery::getWhereEquality([["SponsID", $_SESSION[SessionEnums::UserLoginID]]]),
+			$groupByClause = NULL,
+			$orderByClause = " Date DESC, Time DESC"
+		);
+
+		$meetingLatestResult = $db->select($meetingLatestQuery->getQuery());
+		$latestMeeting = NULL;
+		$latestMeetingRedirect = NULL;
+		if(count($meetingLatestResult)>0){
+			$latestMeeting = $meetingLatestResult[0];
+
+			$httpBuildArray = [
+				QueryFormSessionEnums::TableName => SQLTables::Meeting,
+				QueryFormSessionEnums::QueryType => QueryTypes::Modify,
+				QueryFieldNames::Submit => "true"
+			];
+			foreach(QueryFieldNames::mapDBToQueryForm(SQLTables::Meeting) as $meetingDBField => $meetingQueryField){
+				if($meetingQueryField == QueryFieldNames::SponsMeetingOutcome)
+					continue;
+				$httpBuildArray[$meetingQueryField] = $latestMeeting[$meetingDBField];
+			}
+			$latestMeetingRedirect = "./query.php?".http_build_query($httpBuildArray);
+		}
+
+
+
+
+
+	?>
+
+	<script type="text/javascript">
+		function latestMeetingRedirect(){
+			var meetingOutcomeTextarea = document.getElementById("meetingOutcomeTextarea");
+			url = "<?php echo $latestMeetingRedirect?>"+"&Outcome="+meetingOutcomeTextarea.value;
+			console.log(url);
+			window.location = url;
+			return false;
+		}
+	</script>
 
 </head>
 
@@ -117,21 +163,28 @@
 			<a href="query.php?submit=true&QueryType=Insert&TableName=Meeting"><h4><i class="glyphicon glyphicon-plus"></i> Add Meeting</h4></a>
 			</div>
 			<div class="col-md-3 col-md-offset-3">
-				<button class="btn btn-warning" data-toggle="collapse" data-target="#meetingOutcome">Add Outcome of Latest Meeting</button>
+				<?php
+					if($latestMeeting)
+						echo '<button class="btn btn-warning" data-toggle="collapse" data-target="#meetingOutcome">Add Outcome of Latest Meeting</button>';
+				?>
 			</div>
 		</div>
 		<br />
+		<?php
+			if($latestMeeting)
+				echo '
 		<div id="meetingOutcome" class="collapse row">
 			<div class="col-md-offset-8">
 				<div class="col-xs-12">
 					<form>
-						<textarea class="form-control"></textarea>
+						<textarea placeholder="Enter meeting outcome..." class="form-control" id="meetingOutcomeTextarea"></textarea>
 						<br />
-						<button type="submit" class="btn btn-success">Submit</button>
+						<button type="submit" class="btn btn-success" onclick="return latestMeetingRedirect()">Submit</button>
 					</form>
 				</div>
 			</div>
-		</div>
+		</div>';
+		?>
 		<br />
 
 		<!-- /.row -->
@@ -146,16 +199,15 @@
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
-
-								$db = new SponsorshipDB();
-
 								$t = new TableOutput(
 									$_SESSION[SessionEnums::UserAccessLevel],
 									SQLTables::Meeting
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$meetingQuery = $t->getOutputQuery();
+								$meetingOutputResult = $db->select($meetingQuery);
+
+								echo make_simple_table($meetingOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 
 						</div>
