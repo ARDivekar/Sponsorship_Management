@@ -55,6 +55,10 @@
 		const CompanyExec = "CompanyExec";
 		const Meeting = "Meeting";
 
+		//Views:
+		const SponsOfficer = "SponsOfficer";
+		const SponsWorker = "SponsWorker";
+
 		static $DBTableStructure = [
 		];
 
@@ -71,15 +75,16 @@
 			SQLTables::$DBTableStructure[SQLTables::Company] = $db->getTableColumns(SQLTables::Company);
 			SQLTables::$DBTableStructure[SQLTables::CompanyExec] = $db->getTableColumns(SQLTables::CompanyExec);
 			SQLTables::$DBTableStructure[SQLTables::Meeting] = $db->getTableColumns(SQLTables::Meeting);
+
+			SQLTables::$DBTableStructure[SQLTables::SponsOfficer] = $db->getTableColumns(SQLTables::SponsOfficer);
+			SQLTables::$DBTableStructure[SQLTables::SponsWorker] = $db->getTableColumns(SQLTables::SponsWorker);
+
 		}
 
 	}
 
-	
-	abstract class SQLViews extends BasicEnum{
-		const SponsOfficer = "SponsOfficer";
-		const SponsWorker = "SponsWorker";
-	}
+
+
 
 
 
@@ -610,6 +615,7 @@
 
 	SQLTables::setDBStructure();	//set all the table columns for easy access.
 	echo_1d_array(SQLTables::$DBTableStructure[SQLTables::AccountLog], SQLTables::AccountLog);
+	echo_1d_array(SQLTables::$DBTableStructure[SQLTables::SponsOfficer], SQLTables::SponsOfficer);
 
 
 	QueryFieldNames::setSystemGenerated();		//set all system generated variables for later use.

@@ -85,9 +85,18 @@
 		}
 
 
+		static $tableNamesList = [
+			SQLTables::SponsRep => [SQLTables::CommitteeMember, SQLTables::SponsRep],
+			SQLTables::SectorHead => [SQLTables::CommitteeMember, SQLTables::SectorHead],
+			SQLTables::AccountLog => [SQLTables::AccountLog, SQLTables::SponsOfficer],
+			SQLTables::Company => [SQLTables::Company],
+			SQLTables::CompanyExec => [SQLTables::Company, SQLTables::CompanyExec],
+			SQLTables::Meeting => [SQLTables::Company, SQLTables::CompanyExec, SQLTables::Meeting]
+		];
+
+
 		function getCSOQuery(){
 			$CSOSelectQuery = new SQLQuery();
-			$tableNamesList = [];
 			switch($this->tableName){
 				case SQLTables::Event :
 					break;
@@ -104,7 +113,6 @@
 							[SQLTables::CommitteeMember.".Year", "Year"], [SQLTables::CommitteeMember.".Branch", "Branch"],
 						]
 					);
-					$tableNamesList = [SQLTables::CommitteeMember, SQLTables::SponsRep];
 					break;
 
 				case SQLTables::SectorHead :
@@ -117,21 +125,19 @@
 							[SQLTables::CommitteeMember.".Year", "Year"], [SQLTables::CommitteeMember.".Branch", "Branch"],
 						]
 					);
-					$tableNamesList = [SQLTables::CommitteeMember, SQLTables::SectorHead];
 					break;
 
 				case SQLTables::AccountLog :
 					$CSOSelectQuery->setSelectQuery(
-						$tableName = SQLQuery::getInnerJoin(SQLTables::AccountLog, "SponsID", SQLViews::SponsOfficer, "SponsID"),
+						$tableName = SQLQuery::getInnerJoin(SQLTables::AccountLog, "SponsID", SQLTables::SponsOfficer, "SponsID"),
 						$tableFields = [
 							[SQLTables::AccountLog.".ID", "Entry ID"], [SQLQuery::format(SQLTables::AccountLog.".Amount"), "Amount (Rs.)"],
-							[SQLTables::AccountLog.".Title", "Company"], [SQLViews::SponsOfficer.".Sector", "Sector"],
+							[SQLTables::AccountLog.".Title", "Company"], [SQLTables::SponsOfficer.".Sector", "Sector"],
 							[SQLTables::AccountLog.".Date", "Entry Date"],
-							[SQLViews::SponsOfficer.".SponsID", "SponsID"], [SQLViews::SponsOfficer.".Name", "Name"],
-							[SQLViews::SponsOfficer.".Role", "Role"]
+							[SQLTables::SponsOfficer.".SponsID", "SponsID"], [SQLTables::SponsOfficer.".Name", "Name"],
+							[SQLTables::SponsOfficer.".Role", "Role"]
 						]
 					);
-					$tableNamesList = [SQLTables::AccountLog];
 					break;
 
 				case SQLTables::Company :
@@ -139,7 +145,6 @@
 						$tableName = SQLTables::Company,
 						$tableFields = []
 					);
-					$tableNamesList = [SQLTables::Company];
 					break;
 
 				case SQLTables::CompanyExec :
@@ -147,7 +152,6 @@
 						$tableName = SQLTables::CompanyExec,
 						$tableFields = []
 					);
-					$tableNamesList = [SQLTables::Company, SQLTables::CompanyExec];
 					break;
 
 				case SQLTables::Meeting :
@@ -155,7 +159,6 @@
 						$tableName = SQLTables::Meeting,
 						$tableFields = []
 					);
-					$tableNamesList = [SQLTables::Company, SQLTables::CompanyExec, SQLTables::Meeting];
 					break;
 
 				default:
@@ -163,7 +166,8 @@
 			}
 
 			$CSOSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre(
-				$tableNamesList, $whereArray = [
+				$tableNamesList = self::$tableNamesList[$this->tableName],
+				$whereArray = [
 					["Organization", 	$_SESSION[SessionEnums::UserOrganization]],
 					["EventName", 		$_SESSION[SessionEnums::UserFestival]],
 				]
@@ -176,7 +180,9 @@
 
 		function getSectorHeadQuery(){
 			$SectorHeadSelectQuery = $this->getCSOQuery();
-			$SectorHeadSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre([
+			$SectorHeadSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre(
+				$tableNamesList = self::$tableNamesList[$this->tableName],
+				$whereArray = [
 				["Organization", 	$_SESSION[SessionEnums::UserOrganization]],
 				["EventName", 		$_SESSION[SessionEnums::UserFestival]],
 				["Sector",	 		$_SESSION[SessionEnums::UserSector]]
@@ -187,11 +193,12 @@
 
 		function getSponsRepQuery(){
 			$SponsRepSelectQuery = $this->getCSOQuery();
-			$SponsRepSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre([
+			$SponsRepSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre(
+				$tableNamesList = self::$tableNamesList[$this->tableName],
+				$whereArray = [
 				["Organization", 	$_SESSION[SessionEnums::UserOrganization]],
 				["EventName", 		$_SESSION[SessionEnums::UserFestival]],
 				["Sector",	 		$_SESSION[SessionEnums::UserSector]],
-				["ID",		 		$_SESSION[SessionEnums::UserLoginID]],
 				["SponsID",	 		$_SESSION[SessionEnums::UserLoginID]]
 			]);
 			return $SponsRepSelectQuery;
