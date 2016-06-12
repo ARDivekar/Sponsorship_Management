@@ -227,12 +227,12 @@
 		</div>
 
 		<div class="row">
-			<div class="col-lg-8">
+			<div class="col-lg-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<i class="fa fa-bar-chart-o fa-fw"></i>&nbsp;&nbsp;Money Progress
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" style="overflow-x:scroll;">
 						<div id="money-progress"></div>
 						<script>
 							
@@ -252,12 +252,12 @@
 				</div>
 			</div>
 
-			<div class="col-lg-4">
+			<div class="col-lg-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<i class="fa fa-calendar"></i>&nbsp;&nbsp;Meetings Scheduled
+						<i class="fa fa-calendar"></i>&nbsp;&nbsp;5 Most Recent Meetings Scheduled
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" style="overflow-x:scroll;">
 						<?php
 							if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO){
 								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company', c.Name as 'Name' FROM `meeting` m 
@@ -265,7 +265,7 @@
 								UNION 
 								SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', 
 								CMPName as 'Company', c.Name as 'Name' FROM `meeting` m INNER JOIN `sectorhead` s ON (m.SponsID=s.SponsID) INNER JOIN 
-								`committeemember` c ON (c.ID=s.SponsID) LIMIT 5";
+								`committeemember` c ON (c.ID=s.SponsID)  ORDER BY Date DESC, TIME DESC LIMIT 5";
 								$LatestMeetings = $db->select($query);
 							}
 							else if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::SectorHead){
@@ -274,12 +274,12 @@
 								WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' UNION 
 								SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', 
 								CMPName as 'Company', c.Name as 'Name' FROM `meeting` m INNER JOIN `sectorhead` s ON (m.SponsID=s.SponsID) INNER JOIN 
-								`committeemember` c ON (c.ID=s.SponsID) WHERE s.Sector='" +  $_SESSION[SessionEnums::UserSector] + "' LIMIT 5";
+								`committeemember` c ON (c.ID=s.SponsID) WHERE s.Sector='" +  $_SESSION[SessionEnums::UserSector] + "'  ORDER BY Date DESC, TIME DESC LIMIT 5";
 								$LatestMeetings = $db->select($query);
 							}
 							else{
 								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company' FROM `meeting` m 
-								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' LIMIT 5";
+								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' ORDER BY Date DESC, TIME DESC LIMIT 5";
 								$LatestMeetings = $db->select($query);
 							} 
 
