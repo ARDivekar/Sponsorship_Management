@@ -259,30 +259,36 @@
 					</div>
 					<div class="panel-body" style="overflow-x:scroll;">
 						<?php
-							if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO){
-								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company', c.Name as 'Name' FROM `meeting` m 
-								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) INNER JOIN `committeemember` c ON (c.ID=s.SponsID) 
-								UNION 
-								SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', 
-								CMPName as 'Company', c.Name as 'Name' FROM `meeting` m INNER JOIN `sectorhead` s ON (m.SponsID=s.SponsID) INNER JOIN 
-								`committeemember` c ON (c.ID=s.SponsID)  ORDER BY Date DESC, TIME DESC LIMIT 5";
-								$LatestMeetings = $db->select($query);
-							}
-							else if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::SectorHead){
-								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company', c.Name as 'Name' FROM `meeting` m 
-								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) INNER JOIN `committeemember` c ON (c.ID=s.SponsID) 
-								WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' UNION 
-								SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', 
-								CMPName as 'Company', c.Name as 'Name' FROM `meeting` m INNER JOIN `sectorhead` s ON (m.SponsID=s.SponsID) INNER JOIN 
-								`committeemember` c ON (c.ID=s.SponsID) WHERE s.Sector='" +  $_SESSION[SessionEnums::UserSector] + "'  ORDER BY Date DESC, TIME DESC LIMIT 5";
-								$LatestMeetings = $db->select($query);
-							}
-							else{
-								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company' FROM `meeting` m 
-								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' ORDER BY Date DESC, TIME DESC LIMIT 5";
-								$LatestMeetings = $db->select($query);
-							} 
 
+							$query = new SQLQuery();
+							$query->setSelectQuery(
+								$tableName = SQLQuery::getInnerJoin(SQLTables::SponsOfficer, "SponsID", SQLTables::Meeting, "SponsID"),
+								$tableFields = [
+									[SQLTables::Meeting.".Date", "Date"], [SQLTables::Meeting.".Time", "Time"],
+									[SQLTables::Meeting.".CMPName", "Company"], [SQLTables::SponsOfficer.".Name", "Name"]
+								],
+								$whereClause = NULL,
+								$groupByClause = NULL,
+								$orderByClause = "Date DESC, Time DESC",
+								$maxNumRows = 5
+							);
+
+							switch($_SESSION[SessionEnums::UserAccessLevel]){
+								case UserTypes::CSO :
+									break;
+								case UserTypes::SectorHead :
+									$query->whereClause = SQLQuery::getWhereEquality(
+											[[SQLTables::SponsOfficer . ".Sector", $_SESSION[SessionEnums::UserSector]]]
+									);
+									break;
+								case UserTypes::SponsRep :
+									$query->whereClause = SQLQuery::getWhereEquality(
+											[[SQLTables::SponsOfficer . ".Sector", $_SESSION[SessionEnums::UserSector]]]
+									);
+									break;
+							}
+
+							$LatestMeetings = $db->select($query->getQuery());
 							echo make_simple_table($LatestMeetings, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 						
 						?>
