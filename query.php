@@ -2430,7 +2430,7 @@
 						<label>SponsID:</label><input type="text" class="form-control" name="SponsIDForm">
 						<br>
 						<br>
-						<input class="query_forms btn btn-primary" type="submit" name="submit"	>Delete SponsRep</input>
+						<input class="query_forms btn btn-primary" type="submit" name="f"	>Delete SponsRep</input>
 						
 					</form>
 				</div>';
