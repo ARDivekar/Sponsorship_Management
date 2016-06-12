@@ -6,6 +6,7 @@
 		var $tableName = NULL;
 		var $tableFields = NULL;
 		var $whereClause = NULL;
+		var $groupByClause = NULL;
 
 		var $tableInsertFieldValues = NULL; //a 2-D array;
 		var $tableUpdateFieldValues = NULL; //a 2-D array;
@@ -16,7 +17,7 @@
 			$this->tableFields = $tableFields;
 		}
 
-		public function setSelectQuery($tableName=NULL, $tableFields=NULL, $whereClause=NULL){
+		public function setSelectQuery($tableName=NULL, $tableFields=NULL, $whereClause=NULL, $groupByClause=NULL){
 			$this->queryType = QueryTypes::View;
 			if($tableName)
 				$this->tableName = $tableName;
@@ -24,6 +25,8 @@
 				$this->tableFields = $tableFields;
 			if($whereClause)
 				$this->whereClause = $whereClause;
+			if($groupByClause)
+				$this->groupByClause = $groupByClause;
 		}
 
 		public function setInsertQuery($tableName=NULL, $tableFields=NULL, $tableInsertFieldValues, $whereClause=NULL){
@@ -90,13 +93,15 @@
 		}
 
 
-		private function generateSelectQuery($tableFields=NULL, $tableName=NULL, $whereClause=NULL, $semicoloon=true){
+		private function generateSelectQuery($tableFields=NULL, $tableName=NULL, $whereClause=NULL, $groupByClause=NULL, $semicoloon=true){
 			if(!$tableFields)
 				$tableFields = $this->tableFields;
 			if(!$tableName)
 				$tableName = $this->tableName;
 			if(!$whereClause)
 				$whereClause = $this->whereClause;
+			if(!$groupByClause)
+				$groupByClause = $this->groupByClause;
 
 
 			$out = "SELECT ";
@@ -131,6 +136,9 @@
 			$out .=  "FROM $tableName ";
 			if($whereClause)
 				$out .= " WHERE ".$whereClause;
+
+			if($groupByClause)
+				$out .= " GROUP BY ".$groupByClause;
 
 			if($this->checkForSQLInjection($out)){
 				return NULL;
@@ -289,9 +297,9 @@
 		public static function getUnion($tableFields, $table1, $where1=NULL, $table2, $where2=NULL, $alias=NULL){
 			$q = new SQLQuery();
 			if($tableFields && $table1 && $table2){
-				$out = "(".$q->generateSelectQuery($tableFields, $table1, $where1, $semicolon=false).")";
+				$out = "(".$q->generateSelectQuery($tableFields, $table1, $where1, NULL, $semicolon=false).")";
 				$out .= " UNION ";
-				$out .= "(".$q->generateSelectQuery($tableFields, $table2, $where2, $semicolon=false).")";
+				$out .= "(".$q->generateSelectQuery($tableFields, $table2, $where2, NULL, $semicolon=false).")";
 				if($alias)
 					$out = "( ".$out." ) AS ".$alias." ";
 				return $out;
