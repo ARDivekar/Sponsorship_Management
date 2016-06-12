@@ -13,9 +13,10 @@
 		include_once "SecurityFunctions.php";
 		include_once "SponsEnums.php";
 		include_once "SponsDBFunctions.php";
-	
-	echo "<h1>Sponsorship Department, VJTI</h1>"
+		include_once "UserNavBarImports.php"
 	?>
+	<h1>Sponsorship Department, VJTI</h1>
+	
 </header>
 	
 
@@ -37,7 +38,7 @@
 			),
 
 			new InputField(
-				$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = "Login", $disabled = false, $inputCSSClass = "query_forms login_button"
+				$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = "Login", $disabled = false, $inputCSSClass = "query_forms btn btn-primary"
 			)
 		),
 		$formCSSClass="query_forms",
@@ -136,7 +137,7 @@ if(isset($_POST[QueryFieldNames::Submit])){ //Check if the form has been submitt
 					$possibleSector = get_person_sector($SponsID);
 					$_SESSION[SessionEnums::UserSector] = $_SESSION[SessionEnums::UserAccessLevel]==UserTypes::CSO ? QueryFieldNames::CSOSector : $possibleSector;
 
-					header("Location: home.php");
+					header("Location: homepage.php");
 
 
 				}
