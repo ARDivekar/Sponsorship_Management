@@ -41,6 +41,10 @@
 
 <style>
 
+  .nav{
+    font-size: 110%;
+  }
+
 .btn {
 	width: 100%; !important
 }

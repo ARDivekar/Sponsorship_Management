@@ -75,7 +75,7 @@
 
 				if($_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep)
                 echo '
-				<li>'.($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO? '<a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>Sector Heads</a>' : '<a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>My Details</a>').'
+				<li>'.($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO? '<a href="sectorhead.php"><i class="fa fa-user fa-fw"></i> Sector Heads</a>' : '<a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>My Details</a>').'
                 </li>';
 				?>
                 <li>
@@ -83,13 +83,13 @@
 						<?php
 							switch($_SESSION[SessionEnums::UserAccessLevel]){
 								case UserTypes::CSO:
-									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-users fa-fw\"></i>Sponsorship Representatives</a>";
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-users fa-fw\"></i> Sponsorship Representatives</a>";
 									break;
 								case UserTypes::SectorHead:
-									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-users fa-fw\"></i>Sponsorship Representatives</a>";
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-users fa-fw\"></i> Sponsorship Representatives</a>";
 									break;
 								case UserTypes::SponsRep:
-									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-user fa-fw\"></i>My Details</a>";
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-user fa-fw\"></i> My Details</a>";
 									break;
 							}
 						?>
