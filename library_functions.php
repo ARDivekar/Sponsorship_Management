@@ -52,6 +52,14 @@
 	}
 
 
+	function extractValueFromSESSION($valueName){
+		if(array_key_exists($valueName, $_SESSION) && $_SESSION[$valueName]!=NULL && $_SESSION[$valueName]!="" && strtolower($_SESSION[$valueName]) != 'null'){
+			return $_SESSION[$valueName];
+		}
+		return NULL;
+	}
+
+
 
 	function print_table($result){ //array of attributes and corresponding sql result we get from querying the attributes
 		echo '<div align="center">';
@@ -77,7 +85,7 @@
 	}
 
 
-	function print_simple_table($result, $table_classes=NULL, $table_id=NULL){
+	function make_simple_table($result, $table_classes=NULL, $table_id=NULL){
 		$out = "<table ";
 		if ($table_classes){
 			$out .= "class =\"";
@@ -116,7 +124,6 @@
 		}
 
 		$out .="</table>";
-		echo $out;
 		return $out;
 	}
 
@@ -154,8 +161,6 @@
 		echo '<button type="submit" name="submit">Search</button>';
 		echo '</form>';
 	}
-
-
 
 
 

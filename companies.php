@@ -133,7 +133,7 @@
 								$db = new SponsorshipDB();
 //								$result = mysql_query("SELECT * FROM committeemember;");
 								$result = $db->select("SELECT * FROM company;");
-								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 
 					</div>

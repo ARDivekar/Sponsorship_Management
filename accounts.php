@@ -129,7 +129,7 @@
 								$db = new SponsorshipDB();
 								$result = $db->select("SELECT ID, Date, Time, MeetingType, CMPName, CEName, Address, Outcome FROM meeting;");
 								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
-								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 
 						</div>
