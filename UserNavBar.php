@@ -63,17 +63,40 @@
                     <a href="meeting.php"><i class="fa fa-calendar fa-fw"></i>Meeting Log</a>
                 </li>
                 <li>
-                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i>Account Log</a>
+                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i><?php echo $_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep ? "Account Log" : "My Sponsorships"?></a>
                 </li>
-                <li id="reports">
+
+				<?php
+					if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO)
+				echo '
+				<li id="reports">
                     <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i>Reports</a>
                 </li>
+
                 <li>
                     <a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>Sector Heads</a>
-                </li>
+                </li>';
+				?>
                 <li>
-                    <a href="sponsrep.php"><i class="fa fa-users fa-fw"></i>Sponsorship Representatives</a>
+                    <a href="sponsrep.php"><i class="fa fa-users fa-fw"></i>
+						<?php
+							switch($_SESSION[SessionEnums::UserAccessLevel]){
+								case UserTypes::CSO:
+									echo "Sponsorship Representatives";
+									break;
+								case UserTypes::SectorHead:
+									echo "Sponsorship Representatives";
+									break;
+								case UserTypes::SponsRep:
+									echo "My details";
+									break;
+							}
+						?>
+
+					</a>
                 </li>
+
+
             </ul>
         </div>
         <!-- /.sidebar-collapse -->
