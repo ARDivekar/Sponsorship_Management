@@ -3,7 +3,10 @@
 
 <head>
 	<?php
-		include('UserNavBarImports.php');
+		include_once "UserNavBarImports.php";
+		include_once "SponsEnums.php";
+		include_once "table_output.php"
+
 	?>
 	<title>Account Log</title>
 
@@ -119,7 +122,7 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Meetings of ___ Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
+						Meetings of <strong><?php echo extractValueFromSESSION(SessionEnums::UserSector); ?></strong> Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
@@ -127,8 +130,13 @@
 
 							<?php
 								$db = new SponsorshipDB();
-								$result = $db->select("SELECT ID, Date, Time, MeetingType, CMPName, CEName, Address, Outcome FROM meeting;");
-								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
+
+								$t = new TableOutput(
+									$_SESSION[SessionEnums::UserAccessLevel],
+									SQLTables::AccountLog
+								);
+
+								$result = $db->select($t->getOutputQuery());
 								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 

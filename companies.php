@@ -3,7 +3,10 @@
 
 <head>
 	<?php
-		include('UserNavBarImports.php');
+		include_once "UserNavBarImports.php";
+		include_once "SponsEnums.php";
+		include_once "table_output.php"
+
 	?>
 	<title>Companies</title>
 
@@ -120,7 +123,7 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Companies of ___ Sector ( For CSO - All)
+						Companies of <strong><?php echo extractValueFromSESSION(SessionEnums::UserSector); ?></strong> Sector
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
@@ -131,8 +134,13 @@
 
 							<?php
 								$db = new SponsorshipDB();
-//								$result = mysql_query("SELECT * FROM committeemember;");
-								$result = $db->select("SELECT * FROM company;");
+
+								$t = new TableOutput(
+									$_SESSION[SessionEnums::UserAccessLevel],
+									SQLTables::Company
+								);
+
+								$result = $db->select($t->getOutputQuery());
 								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 
