@@ -255,7 +255,7 @@
 			<div class="col-lg-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<i class="fa fa-calendar"></i>&nbsp;&nbsp;5 Most Recent Meetings Scheduled
+						<i class="fa fa-calendar"></i>&nbsp;&nbsp;5 Closest Upcoming Meetings
 					</div>
 					<div class="panel-body" style="overflow-x:scroll;">
 						<?php
@@ -269,25 +269,26 @@
 								],
 								$whereClause = NULL,
 								$groupByClause = NULL,
-								$orderByClause = "Date DESC, Time DESC",
+								$orderByClause = "Date ASC, Time ASC",
 								$maxNumRows = 5
 							);
 
 							switch($_SESSION[SessionEnums::UserAccessLevel]){
 								case UserTypes::CSO :
+									$query->whereClause = "Date>=CURDATE()";
 									break;
 								case UserTypes::SectorHead :
 									$query->whereClause = SQLQuery::getWhereEquality(
 											[[SQLTables::SponsOfficer . ".Sector", $_SESSION[SessionEnums::UserSector]]]
-									);
+									). " AND Date>=CURDATE()";;
 									break;
 								case UserTypes::SponsRep :
 									$query->whereClause = SQLQuery::getWhereEquality(
 											[[SQLTables::SponsOfficer . ".Sector", $_SESSION[SessionEnums::UserSector]]]
-									);
+									). " AND Date>=CURDATE()";
 									break;
 							}
-
+//							echo $query->getQuery();
 							$LatestMeetings = $db->select($query->getQuery());
 							echo make_simple_table($LatestMeetings, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 						
