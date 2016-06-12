@@ -70,7 +70,7 @@
 					if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO)
 				echo '
 				<li id="reports">
-                    <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i> Reports</a>
+                    <a href="CSOreports.php"><i class="fa fa-line-chart fa-fw"></i> Reports</a>
                 </li>';
 
 				if($_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep)
@@ -80,7 +80,7 @@
                 </li>';
 				?>
                 <li>
-                    <a href="sponsrep.php"><i class="fa fa-users fa-fw"></i> 
+                    <a href="sponsrep.php"><i class="fa fa-users fa-fw"></i>
 						<?php
 							switch($_SESSION[SessionEnums::UserAccessLevel]){
 								case UserTypes::CSO:

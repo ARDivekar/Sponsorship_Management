@@ -1,14 +1,16 @@
 <?php
+    include_once "../library_functions.php";
+	include_once "../SponsEnums.php";
 
-    session_start();
-    if (empty($_SESSION['loginID']))
-        header("Location: login.php");
+	if(!isset($_SESSION[SessionEnums::UserLoginID]))
+		session_start();
+	if(!$_SESSION[SessionEnums::UserLoginID])
+		header("Location: ../login.php");
 
-    require('../library_functions.php');
-    $SponsID=$_SESSION['loginID']; //get SponsID from previous session
-    $SponsAccessLevel = get_access_level($SponsID);
-    if($SponsAccessLevel!="CSO")
-        header('Location: ../home.php');
+
+    if($_SESSION[SessionEnums::UserAccessLevel] != UserTypes::CSO)
+		header("Location: ../homepage.php");
+
     // echo "$SponsID = ".$SponsID;
     // echo "$SponsAccessLevel = ".$SponsAccessLevel;
     /*
