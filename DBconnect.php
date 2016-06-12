@@ -60,32 +60,32 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 		function set($config = NULL){
 			if($config){
 				if(array_key_exists("hostname", $config))
-					SponsorshipDB::$hostname = $config["hostname"];
-				else SponsorshipDB::$hostname = NULL;
+					self::$hostname = $config["hostname"];
+				else self::$hostname = NULL;
 
 				if(array_key_exists("username", $config))
-					SponsorshipDB::$username = $config["username"];
-				else SponsorshipDB::$username = NULL;
+					self::$username = $config["username"];
+				else self::$username = NULL;
 
 				if(array_key_exists("password", $config))
-					SponsorshipDB::$password = $config["password"];
-				else SponsorshipDB::$password = NULL;
+					self::$password = $config["password"];
+				else self::$password = NULL;
 
 				if(array_key_exists("dbname", $config))
-					SponsorshipDB::$dbname = $config["dbname"];
-				else SponsorshipDB::$dbname = NULL;
+					self::$dbname = $config["dbname"];
+				else self::$dbname = NULL;
 			}
 
-			if(SponsorshipDB::$hostname && SponsorshipDB::$username && SponsorshipDB::$dbname){	//password is allowed to be an empty string
-				SponsorshipDB::$validConnectionDetails = true;
+			if(self::$hostname && self::$username && self::$dbname){	//password is allowed to be an empty string
+				self::$validConnectionDetails = true;
 				$this->resetConnection(); //try to reset the connection
-			} else SponsorshipDB::$validConnectionDetails = false;
+			} else self::$validConnectionDetails = false;
 
 		}
 
 		private function resetConnection(){ //this code must be swapped when changing PHP database handlers
-			if(SponsorshipDB::$validConnectionDetails){
-				self::$connection = new mysqli(SponsorshipDB::$hostname, SponsorshipDB::$username, SponsorshipDB::$password, SponsorshipDB::$dbname);
+			if(self::$validConnectionDetails){
+				self::$connection = new mysqli(self::$hostname, self::$username, self::$password, self::$dbname);
 				return true;
 			} else self::$connection = NULL;
 			return false;
@@ -128,7 +128,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 				return FALSE;
 			}
 
-			$result = SponsorshipDB::$connection->query($query);
+			$result = self::$connection->query($query);
 
 			return $result; //From: http://php.net/manual/en/mysqli.query.php ...
 			//Returns FALSE on failure. For successful SELECT, SHOW, DESCRIBE or EXPLAIN queries mysqli_query() will return a mysqli_result object. For other successful queries mysqli_query() will return TRUE.
@@ -143,9 +143,9 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 
 		public function select($query) {
 			$rows = array();
-			$result = $this -> query($query);
-			if($result === false) {
-				return false;
+			$result = self::query($query);
+			if($result === false ) {
+				return NULL;
 			}
 			while ($row = $result -> fetch_assoc()) {
 				$rows[] = $row;
@@ -159,7 +159,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 		 * @return string Database error message
 		 */
 		public function error() {
-			return SponsorshipDB::$connection->error;
+			return self::$connection->error;
 		}
 
 		/**
@@ -169,8 +169,66 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 		 * @return string The quoted and escaped string
 		 */
 		public function quote($value) {
-			return "'" . SponsorshipDB::$connection->real_escape_string($value) . "'";
+			return "'" . self::$connection->real_escape_string($value) . "'";
 		}
+
+		public function getTableColumns($tableName){
+			$tableCols = [];
+
+			$structure = self::select("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".self::$dbname."' AND TABLE_NAME = '$tableName';");
+
+			if(!$structure)
+				return NULL;
+
+			foreach($structure as $column){
+				array_push($tableCols, $column["COLUMN_NAME"]);
+			}
+
+			return $tableCols;
+
+
+		}
+
+		public function startTransaction(){
+			if(!self::$connection)
+				return false;
+			self::$connection->autocommit(FALSE);
+			return true;
+		}
+
+		public function rollbackTransaction(){
+			if(!self::$connection)
+				return false;
+			self::$connection->rollback();
+			self::$connection->autocommit(TRUE);
+			return true;
+		}
+
+
+		public function endTransaction(){
+			if(!self::$connection)
+				return false;
+			self::$connection->commit();
+			self::$connection->autocommit(TRUE);
+			return true;
+		}
+
+
+		public function performTransaction($queryList){
+			if(!self::$connection)
+				return false;
+
+			$this->startTransaction();
+			foreach($queryList as $query){
+				if($this->query($query) === FALSE){
+					$this->rollbackTransaction();
+					return false;
+				}
+			}
+			$this->endTransaction();
+			return true;
+		}
+
 	}
 
 	$db = new SponsorshipDB([
@@ -180,6 +238,29 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 		"dbname" =>"sponsorshipmanagement"
 		 ]);
 
+
+
+	/*##------------------------------------------------TESTS------------------------------------------------##
+
+	echo "<hr>CommitteeMember:<br>";
+	foreach( $db->getTableColumns("CommitteeMember") as $col)
+		echo "<br>".$col;
+
+	$db = new SponsorshipDB();
+	$x = $db->query("INSERT INTO committeemember
+		(ID, Organization, EventName, Name, Department, Role, Mobile, Email, Year, Branch)
+		VALUES
+		(".mt_rand(10,1000).", 'Technovanza', 'Technovanza','Lol', 'LOL', 'CSO', '989', NULL, 2, 'Comps');
+		"
+	);
+
+
+	echo $x."<hr>";
+	$x = $db->query("UPDATE committeemember SET Name = 'AAAA' WHERE Name = 'Hi';");
+	echo $x;
+
+
+	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
 
 ?>

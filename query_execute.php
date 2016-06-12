@@ -1,9 +1,12 @@
 <?php
 	include_once "library_functions.php";
+	include_once "Authorization.php";
+
 	/*Resume old session:*/
-	session_start();
-/*
-	if(!isset($_POST[QueryFieldNames::Submit])){ //can only be set from submitting a form at query.php
+	if(!isset($_SESSION[SessionEnums::UserLoginID]))
+		session_start();
+
+	if(!extractValueFromPOST(QueryFieldNames::Submit)){ //can only be set from submitting a form from query.php
 		header("Location: home.php");
 	}
 
@@ -15,146 +18,679 @@
 		header("Location: home.php");
 	}
 
-*/
-	class SQLQuery{
-		var $queryType = NULL; //must be in the QueryTypes enum
+
+
+	include_once "DBconnect.php";
+	include_once "SQLQuery.php";
+	include_once "SecurityFunctions.php";
+
+
+
+
+
+	class QueryExecute{
+
+		var $userType = NULL;
 		var $tableName = NULL;
+		var $queryType = NULL;
+
 		var $tableFields = NULL;
-		var $necessaryFields = NULL;
-		var $whereClause = NULL;
-
-		var $tableInsertFieldValues = NULL; //a 2-D array;
 
 
-		function SQLQuery($tableName=NULL, $tableFields=NULL){
+		function QueryExecute($userType, $tableName, $queryType){
+			if($queryType == QueryTypes::View){
+				header("Location: table_output.php?"
+				   .QueryFormSessionEnums::QueryType."=".QueryTypes::View
+				   ."&"
+				   .QueryFormSessionEnums::TableName."=".$tableName
+				 );
+			}
+			$this->userType = $userType;
 			$this->tableName = $tableName;
-			$this->tableFields = $tableFields;
+			$this->queryType = $queryType;
 		}
 
-		public function setSelectQuery($selectQuery){
+		function setSystemGenerated (){ //fields that should use the $_SESSION values, and not those passed in the $_POST.
+			$_POST[QueryFieldNames::SponsOrganization] = $_SESSION[SessionEnums::UserOrganization];
+			$_POST[QueryFieldNames::SponsFestival] = $_SESSION[SessionEnums::UserFestival];
+			$_POST[QueryFieldNames::SponsDepartment] = $_SESSION[SessionEnums::UserDepartment];
+			$_POST[QueryFieldNames::SponsID] = $_SESSION[SessionEnums::UserLoginID];
+			$_POST[QueryFieldNames::SponsTransType] = TransType::Deposit;
+
+			if(!extractValueFromPOST(QueryFieldNames::SponsSector) || $_SESSION[SessionEnums::UserAccessLevel] != UserTypes::CSO)
+				$_POST[QueryFieldNames::SponsSector] = $_SESSION[SessionEnums::UserSector];
+			$_POST[QueryFieldNames::SponsDateAssigned] = getCurrentDate();
+
+			if(!extractValueFromPOST(QueryFieldNames::SponsAccountLogEntryID))
+				$_POST[QueryFieldNames::SponsAccountLogEntryID] = "ACC-".makeRandomString();
+
+			if(!extractValueFromPOST(QueryFieldNames::SponsMeetingEntryID))
+				$_POST[QueryFieldNames::SponsMeetingEntryID] = "MEET-".makeRandomString();
+
+			$unhashedPassword = extractValueFromPOST(QueryFieldNames::SponsPassword);
+			if($unhashedPassword != NULL)
+				$_POST[QueryFieldNames::SponsPassword] = generatePasswordHash($unhashedPassword);
 
 		}
 
-		public function setInsertQuery($tableName=NULL, $tableFields=NULL, $tableInsertFieldValues, $whereClause=NULL, $necessaryFields=NULL){
-			//$tableInsertFieldValues MUST be a 2-D array, with each row having same length as $this->tableFields.
 
-			$this->queryType = QueryTypes::Insert;
-			if($tableName)
-				$this->tableName = $tableName;
-			if($tableFields)
-				$this->tableFields = $tableFields;
-			$this->tableInsertFieldValues = $tableInsertFieldValues;
-			$this->whereClause = $whereClause;
-			$this->necessaryFields = $necessaryFields;
-		}
-
-		public function getQuery(){
-			switch($this->queryType){
-				case QueryTypes::Insert :
-					return $this->generateInsertQuery();
-					break;
-				case QueryTypes::Modify :
-					break;
-				case QueryTypes::Delete :
-
-					break;
-			}
-			return NULL;
-		}
-
-		public function executeQuery(){
-			$db = new SponsorshipDB();
-			switch($this->queryType){
-				case QueryTypes::Insert :
-				case QueryTypes::Modify :
-				case QueryTypes::Delete :
-					$res = $db->query($this->getQuery());
-					if($res === FALSE){
+		function checkRequiredFields(){
+			foreach( QueryFieldNames::$requiredFields[$this->tableName][$this->queryType] as $requiredField ){
+				if(! ($this->userType == UserTypes::CSO && $requiredField == QueryFieldNames::SponsSector)){
+					if(!isset($_POST[$requiredField])){
+						echo "required field(s) : $requiredField are not set";
 						return false;
-					} else return true;
-					break;
-
-				case QueryTypes::View :
-					$res = $db->select($this->getQuery());
-					break;
-			}
-			return NULL;
-		}
-
-		private function checkNecessaryFields(){
-			if($this->tableFields){
-				if($this->necessaryFields == NULL || $this->necessaryFields == [])
-					return true;
-				foreach($this->necessaryFields as $necessaryField){
-					if(!in_array($necessaryField, $this->tableFields))
-						return false;
-				}
-				return true;
-			}
-			return false;
-		}
-
-		private function convertArrayToCommaSeparatedTuple($array, $surrounder="'"){
-			$out = " (";
-			for($i=0; $i<count($array) - 1; $i++){
-				$out .= $this->surroundWith($array[$i], $surrounder).", ";
-			}
-			$out .= $this->surroundWith($array[$i], $surrounder);
-			$out .= ") ";
-			return $out;
-		}
-
-		private function generateInsertQuery(){
-			if($this->checkNecessaryFields()){
-				$out = "";
-				$out .= $this->convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`");
-				$out .= " VALUES \n";
-
-				$len = count($this->tableInsertFieldValues);
-				for($i=0; $i<$len; $i++){
-					$row = $this->tableInsertFieldValues[$i];
-					if(count($row) != count($this->tableFields)){
-						echo "<br>Length of ".$this->convertArrayToCommaSeparatedTuple($this->tableFields, $surrounder="`")." and ". $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'")." are different.";
-						return NULL;
 					}
+				}
+			}
+			return true;
+		}
 
-					if($i != $len-1)
-						 $out .= $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'").",\n";
-					else $out .= $this->convertArrayToCommaSeparatedTuple($row, $surrounder="'")."\n";
+		function checkIfFieldIsPresent($fieldNamesList, $formMethod=FormMethod::POST){
+			if($formMethod==FormMethod::POST){
+				foreach($fieldNamesList as $fieldName)
+					if(extractValueFromPOST($fieldName))
+						return true;
+			}
+
+			else if($formMethod==FormMethod::GET){
+				foreach($fieldNamesList as $fieldName)
+					if(extractValueFromGET($fieldName))
+						return true;
+			}
+
+
+			return false;
+		}
+
+
+
+
+		function getWhereClauseRequiredInDB($tableName){
+			$queryType = $this->queryType;
+
+			$whereClauseArray = [];
+			foreach(SQLTables::$DBTableStructure[$tableName] as $dbTableField){
+				$possibleQueryFieldName = QueryFieldNames::mapDBToQueryForm($tableName)[$dbTableField];
+				if(in_array($possibleQueryFieldName, QueryFieldNames::$requiredFields[$tableName][$queryType])){
+					$valFromPOST = extractValueFromPOST($possibleQueryFieldName);
+					if($valFromPOST)
+						array_push($whereClauseArray, [$dbTableField, $valFromPOST]);
+				}
+			}
+			return SQLQuery::getWhereEquality($whereClauseArray);
+		}
+
+
+
+		function checkRequiredExistsInDB($tableName, $whereClause){
+			if(!SQLTables::isValidValue($tableName))
+				throw new Exception();
+
+			$db = new SponsorshipDB();
+			$q = new SQLQuery();
+
+			$q->setSelectQuery($tableName, $tableFields="*", $whereClause);
+
+//			echo "<hr>".$q->getQuery()."<hr>";
+
+			if( count($db->select($q->getQuery())) > 0 )
+				return true;
+
+			return false;
+		}
+
+
+		function checkRequiredExistsInDBDefaultWhere($tablesList){
+			foreach($tablesList as $tableName){
+				if (!SQLTables::isValidValue($tableName)){
+					throw new Exception();
 				}
 
-				if($this->checkForSQLInjection($out)){
-					echo "NO SQL INJECTION ALLOWED";
-					return NULL;
+				$tableRequiredWhereClause = $this->getWhereClauseRequiredInDB($tableName);
+				if (!$this->checkRequiredExistsInDB($tableName, $tableRequiredWhereClause)){
+					return false;
+				}
+			}
+			return true;
+		}
+
+
+
+		function executeQuery(){
+			if (Authorization::checkValidAuthorization($this->userType, $this->tableName, $this->queryType)){
+				//user is authorized to run this query
+
+				if(!$this->checkRequiredFields())
+					return false;
+
+				$db = new SponsorshipDB();
+				$sqlQueriesToExecute = [];
+
+				switch ($this->userType){
+					case UserTypes::CSO:
+						$sqlQueriesToExecute = $this->getCSOQuery();
+						break;
+					case UserTypes::SectorHead:
+						$sqlQueriesToExecute = $this->getSectorHeadQuery();
+						break;
+					case UserTypes::SponsRep:
+						$sqlQueriesToExecute = $this->getSponsRepQuery();
+						break;
 				}
 
-				$out = "INSERT INTO $this->tableName " . $out;
-				$out .= ";";
-				return $out;
+
+				$sqlStringsToExecute = [];
+				foreach($sqlQueriesToExecute as $queryObj){
+					array_push($sqlStringsToExecute, $queryObj->getQuery());
+				}
+
+				if($db->performTransaction($sqlStringsToExecute)){
+//					echo "<hr>Successfully executed queries:";
+//					foreach($sqlQueriesToExecute as $query)
+//						echo "<br> $query";
+					return true;
+				}
+
+				echo "<hr>Could not execute queries:";
+				foreach($sqlQueriesToExecute as $query)
+					echo "<br> $query";
+
+
+			}
+
+			return false;
+		}
+
+
+		function getCSOQuery(){
+			switch($this->tableName){
+				case SQLTables::Event :
+					return $this->getCSOEventSQLQuery();
+					break;
+				case SQLTables::SponsLogin :
+//					return $this->setCSOSponsLoginSQLQuery();
+					break;
+				case SQLTables::SponsRep :
+					return $this->getCSOSponsRepSQLQuery();
+					break;
+				case SQLTables::SectorHead :
+					return $this->getCSOSectorHeadSQLQuery();
+					break;
+				case SQLTables::AccountLog :
+					return $this->getCSOAccountLogSQLQuery();
+					break;
+				case SQLTables::Company :
+					return $this->getCSOCompanySQLQuery();
+					break;
+				case SQLTables::CompanyExec :
+					return $this->getCSOCompanyExecSQLQuery();
+					break;
+				case SQLTables::Meeting :
+					return $this->getCSOMeetingSQLQuery();
+					break;
+			}
+		}
+
+
+
+
+		function getCSOEventSQLQuery(){
+			/*For reference:
+				SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
+			*/
+
+			switch($this->queryType){
+				case QueryTypes::Insert :
+
+					break;
+				case QueryTypes::Modify :
+					break;
+				case QueryTypes::Delete :
+					break;
 			}
 			return NULL;
 		}
 
-		private function checkForSQLInjection($text){
-			return false;
+
+		function makeInsert($tableName){
+			if(!SQLTables::isValidValue($tableName))
+				return NULL;
+
+			$q = new SQLQuery();
+
+			$insertQueryVals = [];
+			foreach(SQLTables::$DBTableStructure[$tableName] as $dbField){
+				$val = extractValueFromPOST(QueryFieldNames::mapDBToQueryForm($tableName)[$dbField]);
+				array_push($insertQueryVals, $val ? $val : "NULL");
+			}
+
+			$q->setInsertQuery($tableName, SQLTables::$DBTableStructure[$tableName], [$insertQueryVals]);
+			return $q;
 		}
 
-		public function surroundWith($string, $surrounder="'"){
-			//Source: http://stackoverflow.com/questions/1555434/php-wrap-a-string-in-double-quotes
-			return $surrounder . trim(
-					trim(trim(trim(trim($string), '"'), "'"), '"')
-			) . $surrounder; //This removes __all__ kinds of nested single and double quotes from around a word.
 
-			//	$a = new SQLQuery();
-			//	echo $a->surroundWithSingleQuotes("\"'Hello'\"");
-			//	echo $a->surroundWithSingleQuotes("'\"Hello\"'");
+		function makeMultipleInsertQueryObjs($tablesList){
+			$queryObjs = [];
+			foreach($tablesList as $tableName){
+				array_push($queryObjs, $this->makeInsert($tableName));
+			}
+
+			return $queryObjs;
 		}
+
+
+
+
+
+		function makeUpdate($tableName, $whereClause=NULL){
+			if(!SQLTables::isValidValue($tableName))
+				return NULL;
+
+			$q = new SQLQuery();
+
+			$updateQueryVals = [];
+			foreach(SQLTables::$DBTableStructure[$tableName] as $dbField){
+				$val = extractValueFromPOST(QueryFieldNames::mapDBToQueryForm($tableName)[$dbField]);
+				if($val){
+					array_push($updateQueryVals, [$dbField, $val] );
+				}
+			}
+
+			$q->setUpdateQuery($tableName, $tableUpdateFieldValues = $updateQueryVals, $whereClause = $whereClause);
+			return $q;
+		}
+
+
+		function makeDelete($tableName, $whereClause=NULL){
+			if(!SQLTables::isValidValue($tableName))
+				return NULL;
+
+			$q = new SQLQuery();
+
+			$q->setDeleteQuery($tableName, $whereClause);
+			return $q;
+
+		}
+
+
+		function checkExistsAndMakeMultipleQueryObjs($tablesList, $queryType){	//used for Update and Delete Queries.
+			$queryObjs = [];
+
+			foreach($tablesList as $tableName){
+				$tableRequiredWhereClause = $this->getWhereClauseRequiredInDB($tableName);
+
+				// Check:
+				if(!$this->checkRequiredExistsInDB($tableName, $tableRequiredWhereClause))
+					return NULL;
+
+				// Make:
+				if($queryType == QueryTypes::Modify)
+					array_push($queryObjs, $this->makeUpdate($tableName,$tableRequiredWhereClause));
+				else if($queryType == QueryTypes::Delete)
+					array_push($queryObjs, $this->makeDelete($tableName,$tableRequiredWhereClause));
+				else return NULL;
+
+			}
+
+			return $queryObjs;
+
+		}
+
+
+
+
+
+
+
+		function getCSOSponsRepSQLQuery(){
+			/*For reference:
+				SQLTables::SponsRep => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				However, CSO cannot modify password.
+			*/
+
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return $this->makeMultipleInsertQueryObjs([SQLTables::CommitteeMember, SQLTables::SponsLogin, $this->tableName]);
+					break;
+
+				case QueryTypes::Modify :
+					if($this->checkIfFieldIsPresent([QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST))
+						return NULL;
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+
+				case QueryTypes::Delete :
+					$this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+			}
+			return NULL;
+		}
+
+
+
+		function getCSOSectorHeadSQLQuery(){
+			/*For reference:
+				SQLTables::SectorHead => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+				However, CSO cannot modify password.
+			*/
+
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					break;
+				case QueryTypes::Modify :
+					if($this->checkIfFieldIsPresent(
+							[QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST)
+					) return NULL;
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+
+
+				case QueryTypes::Delete :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+
+			}
+			return NULL;
+
+		}
+
+
+		function getCSOAccountLogSQLQuery(){
+			/*For reference:
+				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			if(!$this->checkRequiredExistsInDBDefaultWhere([SQLTables::Company, SQLTables::CommitteeMember]))
+				return NULL;
+
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return $this->makeMultipleInsertQueryObjs([$this->tableName]);
+					break;
+				case QueryTypes::Modify :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+				case QueryTypes::Delete :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+			}
+			return NULL;
+		}
+
+
+		function getCSOCompanySQLQuery(){
+			/*For reference:
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return $this->makeMultipleInsertQueryObjs([$this->tableName]);
+					break;
+				case QueryTypes::Modify :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+				case QueryTypes::Delete :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+			}
+			return NULL;
+		}
+
+
+		function getCSOCompanyExecSQLQuery(){
+			/*For reference:
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],
+			*/
+			if(!$this->checkRequiredExistsInDBDefaultWhere([SQLTables::Company]))
+				return NULL;
+
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return $this->makeMultipleInsertQueryObjs([$this->tableName]);
+					break;
+				case QueryTypes::Modify :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+				case QueryTypes::Delete :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+			}
+			return NULL;
+		}
+
+		function getCSOMeetingSQLQuery(){
+			/*For reference:
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
+			*/
+			if(!$this->checkRequiredExistsInDBDefaultWhere([SQLTables::CompanyExec]))
+				return NULL;
+
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					return $this->makeMultipleInsertQueryObjs([$this->tableName]);
+					break;
+				case QueryTypes::Modify :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+				case QueryTypes::Delete :
+					return $this->checkExistsAndMakeMultipleQueryObjs(
+							$tablesList = [$this->tableName],
+							$queryType = $this->queryType
+					);
+					break;
+			}
+			return NULL;
+		}
+
+
+
+		function getSectorHeadQuery(){
+			switch($this->tableName){
+				case SQLTables::Event :
+					return $this->getSectorHeadEventSQLQuery();
+					break;
+				case SQLTables::SponsLogin :
+//					return $this->setSectorHeadSponsLoginSQLQuery();
+					break;
+				case SQLTables::SponsRep :
+					return $this->getSectorHeadSponsRepSQLQuery();
+					break;
+				case SQLTables::SectorHead :
+					return $this->getSectorHeadSectorHeadSQLQuery();
+					break;
+				case SQLTables::AccountLog :
+					return $this->getSectorHeadAccountLogSQLQuery();
+					break;
+				case SQLTables::Company :
+					return $this->getSectorHeadCompanySQLQuery();
+					break;
+				case SQLTables::CompanyExec :
+					return $this->getSectorHeadCompanyExecSQLQuery();
+					break;
+				case SQLTables::Meeting :
+					return $this->getSectorHeadMeetingSQLQuery();
+					break;
+			}
+		}
+
+
+		function getSectorHeadEventSQLQuery(){
+			/*For reference:
+				SQLTables::Event => [],	//empty means no queries allowed
+			*/
+		}
+
+		function getSectorHeadSponsRepSQLQuery(){
+			/*For reference:
+				SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
+			*/
+			return $this->getCSOSponsRepSQLQuery();
+		}
+
+		function getSectorHeadSectorHeadSQLQuery(){
+			/*For reference:
+				SQLTables::SectorHead => [],
+			*/
+			return NULL;
+		}
+
+		function getSectorHeadAccountLogSQLQuery(){
+			/*For reference:
+				SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//Can only insert, modify, delete, and view for own sector
+			*/
+			return $this->getCSOAccountLogSQLQuery();
+		}
+
+		function getSectorHeadCompanySQLQuery(){
+			/*For reference:
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return $this->getCSOCompanySQLQuery();
+		}
+
+		function getSectorHeadCompanyExecSQLQuery(){
+			/*For reference:
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return $this->getCSOCompanyExecSQLQuery();
+		}
+
+		function getSectorHeadMeetingSQLQuery(){
+			/*For reference:
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
+			*/
+			return $this->getCSOMeetingSQLQuery();
+		}
+
+
+
+
+		function getSponsRepQuery(){
+			switch($this->tableName){
+				case SQLTables::Event :
+					return $this->getSponsRepEventSQLQuery();
+					break;
+				case SQLTables::SponsLogin :
+//					return $this->setSponsRepSponsLoginSQLQuery();
+					break;
+				case SQLTables::SponsRep :
+					return $this->getSponsRepSponsRepSQLQuery();
+					break;
+				case SQLTables::SectorHead :
+					return $this->getSponsRepSectorHeadSQLQuery();
+					break;
+				case SQLTables::AccountLog :
+					return $this->getSponsRepAccountLogSQLQuery();
+					break;
+				case SQLTables::Company :
+					return $this->getSponsRepCompanySQLQuery();
+					break;
+				case SQLTables::CompanyExec :
+					return $this->getSponsRepCompanyExecSQLQuery();
+					break;
+				case SQLTables::Meeting :
+					return $this->getSponsRepMeetingSQLQuery();
+					break;
+			}
+		}
+
+
+		function getSponsRepEventSQLQuery(){
+			/*For reference:
+				SQLTables::Event => [QueryTypes::View],		//Can only view own details.
+			*/
+			return NULL;
+		}
+
+		function getSponsRepSponsRepSQLQuery(){
+			/*For reference:
+				SQLTables::SponsRep => [QueryTypes::View],
+			*/
+			return NULL;
+		}
+
+		function getSponsRepSectorHeadSQLQuery(){
+			/*For reference:
+				SQLTables::SectorHead => [],
+			*/
+			return NULL;
+		}
+
+		function getSponsRepAccountLogSQLQuery(){
+			/*For reference:
+				SQLTables::AccountLog => [QueryTypes::View],	//can only view own sponsorships
+			*/
+			return NULL;
+		}
+
+		function getSponsRepCompanySQLQuery(){
+			/*For reference:
+				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return $this->getCSOCompanySQLQuery();
+		}
+
+		function getSponsRepCompanyExecSQLQuery(){
+			/*For reference:
+				SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
+			*/
+			return $this->getCSOCompanyExecSQLQuery();
+		}
+
+		function getSponsRepMeetingSQLQuery(){
+			/*For reference:
+				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
+			*/
+			return $this->getCSOMeetingSQLQuery();
+		}
+
+
 
 	}
 
-//	/*
-	$a = new SQLQuery();
-	$a->setInsertQuery("Committeemember",["ID", "Name"],[["lol","lol"],["lol2","lol3"]]);
-	echo $a->getQuery();
-//	*/
+
+	$e = new QueryExecute($_SESSION[SessionEnums::UserAccessLevel], $_SESSION[QueryFormSessionEnums::TableName], $_SESSION[QueryFormSessionEnums::QueryType]);
+	$e->setSystemGenerated();
+	$e->executeQuery();
+
+
+
+
+
+
+
+
 ?>

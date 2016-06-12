@@ -1,15 +1,11 @@
 <?php
 	/*Resume old session:*/
 	session_start();
-	if (empty($_SESSION['loginID'])){
-		header("Location: login.php");
-	}
 
+	include_once "DBconnect.php";
+	include_once "library_functions.php";
+    include_once "SponsEnums.php";
 
-	require('DBconnect.php');
-	require('library_functions.php');
-
-	$SponsID = $_SESSION['loginID']; //get SponsID from previos session
 ?>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
@@ -28,7 +24,7 @@
 
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                <label><?php echo get_person_name($SponsID); ?></label><i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                <label><?php echo $_SESSION[SessionEnums::UserName]; ?></label><i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-user">
                 <li><a href="home.php"><i class="fa fa-user fa-fw"></i> User Profile</a>

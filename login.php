@@ -9,9 +9,14 @@
 		include_once "DBconnect.php";
 		$db = new SponsorshipDB();
 		include_once "library_functions.php";
-	
-	echo "<h1>Sponsorship Department, VJTI</h1>"
+		include_once "FormAndFieldClasses.php";
+		include_once "SecurityFunctions.php";
+		include_once "SponsEnums.php";
+		include_once "SponsDBFunctions.php";
+		include_once "UserNavBarImports.php"
 	?>
+	<h1>Sponsorship Department, VJTI</h1>
+	
 </header>
 	
 
@@ -33,7 +38,7 @@
 			),
 
 			new InputField(
-				$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = "Login", $disabled = false, $inputCSSClass = "query_forms login_button"
+				$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = "Login", $disabled = false, $inputCSSClass = "query_forms btn btn-primary"
 			)
 		),
 		$formCSSClass="query_forms",
@@ -85,6 +90,7 @@ if(isset($_POST[QueryFieldNames::Submit])){ //Check if the form has been submitt
 		else{
 			$login_query = "
 				SELECT
+					Password,
 					AccessLevel,
 					Organization,
 					EventName,
@@ -96,63 +102,51 @@ if(isset($_POST[QueryFieldNames::Submit])){ //Check if the form has been submitt
 					Year,
 					Branch
 				FROM SponsLogin INNER JOIN CommitteeMember ON (SponsLogin.SponsID = CommitteeMember.ID)
-				WHERE SponsLogin.SponsID=$SponsID and (SponsLogin.Password=\"$SponsPassword\" or SponsLogin.Password='
-				".md5($SponsPassword)."');";
-			// echo $login_query;
+				WHERE SponsLogin.SponsID=$SponsID";
 
 			$SponsLogin = $db->select($login_query);
 
 
-			if(count($SponsLogin) == 1){
-				/*Successful login*/
-				echo '<h3 class="valid_message">Connected Successfully.<br>Redirecting...</h3>';
-				
+			if(count($SponsLogin) == 1){ //if not, we have multiple entries with the same userID in the database.
+				if($SponsLogin[0]["Password"] != $SponsPassword && !checkPasswordHash($SponsPassword, $SponsLogin[0]["Password"])){
+					/* Could not log in:
+					 * exit script and print <invalid login message>
+					 * */
+					exit('<h3 class="valid_message">Login not authorized.<br>Please check ID and Password</h3>');
+				}
 
-				/*starting session:*/ 
-				session_start();
-				
-				$_SESSION[SessionEnums::UserLoginID] = $SponsID; //we need to pass $SponsID between pages, hence we use the $_SESSION associative array. Google it.
-				$_SESSION[SessionEnums::UserAccessLevel] = $SponsLogin[0]["AccessLevel"];
+				else{
+					// Login successful:
+					echo '<h3 class="valid_message">Connected Successfully.<br>Redirecting...</h3>';
 
-				$_SESSION[SessionEnums::UserOrganization] = $SponsLogin[0]["Organization"];
-				$_SESSION[SessionEnums::UserFestival] = $SponsLogin[0]["EventName"];
-				$_SESSION[SessionEnums::UserDepartment] = $SponsLogin[0]["Department"];
-				$_SESSION[SessionEnums::UserName] = $SponsLogin[0]["Name"];
-				$_SESSION[SessionEnums::UserRole] = $SponsLogin[0]["Role"];
-				$_SESSION[SessionEnums::UserEmail] = $SponsLogin[0]["Email"];
-				$_SESSION[SessionEnums::UserMobile] = $SponsLogin[0]["Mobile"];
-				$_SESSION[SessionEnums::UserYear] = $SponsLogin[0]["Year"];
-				$_SESSION[SessionEnums::UserBranch] = $SponsLogin[0]["Branch"];
+					/*starting session:*/
+					session_start();
 
-				$possibleSector = get_person_sector($SponsID);
-				$_SESSION[SessionEnums::UserSector] = $_SESSION[SessionEnums::UserAccessLevel]==UserTypes::CSO ? QueryFieldNames::CSOSector : $possibleSector;
+					$_SESSION[SessionEnums::UserLoginID] = $SponsID; //we need to pass $SponsID between pages, hence we use the $_SESSION associative array. Google it.
+					$_SESSION[SessionEnums::UserAccessLevel] = $SponsLogin[0]["AccessLevel"];
+					$_SESSION[SessionEnums::UserOrganization] = $SponsLogin[0]["Organization"];
+					$_SESSION[SessionEnums::UserFestival] = $SponsLogin[0]["EventName"];
+					$_SESSION[SessionEnums::UserDepartment] = $SponsLogin[0]["Department"];
+					$_SESSION[SessionEnums::UserName] = $SponsLogin[0]["Name"];
+					$_SESSION[SessionEnums::UserRole] = $SponsLogin[0]["Role"];
+					$_SESSION[SessionEnums::UserEmail] = $SponsLogin[0]["Email"];
+					$_SESSION[SessionEnums::UserMobile] = $SponsLogin[0]["Mobile"];
+					$_SESSION[SessionEnums::UserYear] = $SponsLogin[0]["Year"];
+					$_SESSION[SessionEnums::UserBranch] = $SponsLogin[0]["Branch"];
 
-				/*
-				echo "<hr>";
-				echo $_SESSION[SessionEnums::UserLoginID]."<br>";
-				echo $_SESSION[SessionEnums::UserAccessLevel]."<br>";
-				echo $_SESSION[SessionEnums::UserSector]."<br>";
-				echo $_SESSION[SessionEnums::UserOrganization]."<br>";
-				echo $_SESSION[SessionEnums::UserFestival]."<br>";
-				echo $_SESSION[SessionEnums::UserDepartment]."<br>";
-				echo $_SESSION[SessionEnums::UserRole]."<br>";
-				echo $_SESSION[SessionEnums::UserEmail]."<br>";
-				echo $_SESSION[SessionEnums::UserMobile]."<br>";
-				echo $_SESSION[SessionEnums::UserYear]."<br>";
-				echo $_SESSION[SessionEnums::UserBranch]."<br>";
-				*/
+					$possibleSector = get_person_sector($SponsID);
+					$_SESSION[SessionEnums::UserSector] = $_SESSION[SessionEnums::UserAccessLevel]==UserTypes::CSO ? QueryFieldNames::CSOSector : $possibleSector;
+
+					header("Location: homepage.php");
 
 
-				/*redirecting to appropriate page:*/
-				header("Location: home.php");
+				}
+
+
 
 
 			}
-			else{
-				/*exit script and print __invalid login message__ */
-				exit('<h3 class="valid_message">Login not authorized.<br>Please check ID and Password</h3>');
-				
-			}
+
 		}
 	}
 		
