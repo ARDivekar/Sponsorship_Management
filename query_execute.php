@@ -42,7 +42,7 @@
 				header("Location: table_output.php?"
 				   .QueryFormSessionEnums::QueryType."=".QueryTypes::View
 				   ."&"
-				   .QueryFormSessionEnums::TableName."=".$tableName
+				   .TableOutputSessionEnums::TableName."=".$tableName
 				 );
 			}
 			$this->userType = $userType;

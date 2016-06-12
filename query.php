@@ -366,7 +366,7 @@
 					header("Location: table_output.php?"
 						   .QueryFormSessionEnums::QueryType."=".QueryTypes::View
 						   ."&"
-						   .QueryFormSessionEnums::TableName."=".$tableName
+						   .TableOutputSessionEnums::TableName."=".$tableName
 				  	 );
 				}
 				else $this->queryType = $queryType;
