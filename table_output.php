@@ -93,7 +93,7 @@
 			SQLTables::AccountLog => [SQLTables::AccountLog, SQLTables::SponsOfficer],
 			SQLTables::Company => [SQLTables::Company],
 			SQLTables::CompanyExec => [SQLTables::Company, SQLTables::CompanyExec],
-			SQLTables::Meeting => [SQLTables::Company, SQLTables::CompanyExec, SQLTables::Meeting]
+			SQLTables::Meeting => [SQLTables::SponsOfficer, SQLTables::Meeting]
 		];
 
 
@@ -171,10 +171,10 @@
 					$CSOSelectQuery->setSelectQuery(
 						$tableName = SQLQuery::getInnerJoin(SQLTables::Meeting, "SponsID", SQLTables::SponsOfficer, "SponsID"),
 						$tableFields = [
-							[SQLTables::Meeting.".ID", "Entry ID"],
-							[SQLTables::Meeting.".CMPName", "Company Name"], [SQLTables::Meeting.".CEName", "Executive Name"],
+							[SQLTables::Meeting.".ID", "Meeting ID"], [SQLTables::Meeting.".Outcome", "Outcome"],
+							[SQLTables::Meeting.".CMPName", "Company Name"], [SQLTables::SponsOfficer.".Sector", "Company Sector"],
+							[SQLTables::Meeting.".CEName", "Executive Name"],
 							[SQLTables::SponsOfficer.".SponsID", "Meeter ID"], [SQLTables::SponsOfficer.".Name", "Meeter Name"],
-							[SQLTables::Meeting.".Outcome", "Outcome"],
 							[SQLTables::Meeting.".MeetingType", "Meeting Type"], [SQLTables::Meeting.".Date", "Date"],
 							[SQLTables::Meeting.".Time", "Time"], [SQLTables::Meeting.".Address", "Address"]
 						]
