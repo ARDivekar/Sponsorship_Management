@@ -4,6 +4,7 @@
 <head>
 	<?php
 		include_once "SponsEnums.php";
+		include_once "table_output.php";
 
 		if(!isset($_SESSION[SessionEnums::UserLoginID]))
 		session_start();
@@ -229,7 +230,7 @@
 			<div class="col-lg-8">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<i class="fa fa-bar-chart-o fa-fw"></i>Money Progress
+						<i class="fa fa-bar-chart-o fa-fw"></i>&nbsp;&nbsp;Money Progress
 					</div>
 					<div class="panel-body">
 						<div id="money-progress"></div>
@@ -238,10 +239,10 @@
 							new Morris.Line({
 							  element: 'money-progress', 
 							  data: <?php 
-							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'amount', MONTH(Date) as 'month' FROM `accountlog` GROUP BY MONTH(Date)");
+							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'amount', WEEK(Date) as 'week' FROM `accountlog` GROUP BY WEEK(Date)");
 							  echo json_encode($MoneyProgress);
 							  ?>,
-							  xkey: ['month'],
+							  xkey: ['week'],
 							  ykeys: ['amount'],
 							  labels: ['Amount']
 							});
@@ -254,12 +255,36 @@
 			<div class="col-lg-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<i class="fa fa-calender-o fa-fw"></i>Meetings Scheduled
+						<i class="fa fa-calendar"></i>&nbsp;&nbsp;Meetings Scheduled
 					</div>
 					<div class="panel-body">
-						<?php 
-							$LatestMeetings = $db->select("SELECT Date, Time, MeetingType as 'Type', CMPName as 'Company' FROM `meeting` ORDER BY 'Date' LIMIT 5 WHERE ")
+						<?php
+							if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO){
+								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company', c.Name as 'Name' FROM `meeting` m 
+								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) INNER JOIN `committeemember` c ON (c.ID=s.SponsID) 
+								UNION 
+								SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', 
+								CMPName as 'Company', c.Name as 'Name' FROM `meeting` m INNER JOIN `sectorhead` s ON (m.SponsID=s.SponsID) INNER JOIN 
+								`committeemember` c ON (c.ID=s.SponsID) LIMIT 5";
+								$LatestMeetings = $db->select($query);
+							}
+							else if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::SectorHead){
+								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company', c.Name as 'Name' FROM `meeting` m 
+								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) INNER JOIN `committeemember` c ON (c.ID=s.SponsID) 
+								WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' UNION 
+								SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', 
+								CMPName as 'Company', c.Name as 'Name' FROM `meeting` m INNER JOIN `sectorhead` s ON (m.SponsID=s.SponsID) INNER JOIN 
+								`committeemember` c ON (c.ID=s.SponsID) WHERE s.Sector='" +  $_SESSION[SessionEnums::UserSector] + "' LIMIT 5";
+								$LatestMeetings = $db->select($query);
+							}
+							else{
+								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company' FROM `meeting` m 
+								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' LIMIT 5";
+								$LatestMeetings = $db->select($query);
+							} 
 
+							echo make_simple_table($LatestMeetings, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+						
 						?>
 					</div>
 				</div>
