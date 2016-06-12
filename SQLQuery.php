@@ -308,6 +308,14 @@
 			else return $field;
 		}
 
+		public static function format($field, $numFloatingPoints=0){ //adds SQL FORMAT( ) function to add commas between numbers, select number of digits for floating point numbers, etc.
+			if(!$field)
+				return NULL;
+			if(!is_int($numFloatingPoints))
+				return NULL;
+			return " FORMAT($field, $numFloatingPoints) ";
+		}
+
 
 		public function __toString(){
 			return $this->getQuery();
