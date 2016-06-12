@@ -1,11 +1,15 @@
 <?php
 	/*Resume old session:*/
 
+
 	include_once "library_functions.php";
 	include_once "SponsEnums.php";
 
-	if(!extractValueFromSESSION(SessionEnums::UserLoginID))
+	if(!isset($_SESSION[SessionEnums::UserLoginID]))
 		session_start();
+	if(!$_SESSION[SessionEnums::UserLoginID])
+		header("Location: login.php");
+
 
 
 ?>

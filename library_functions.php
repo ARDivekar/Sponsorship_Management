@@ -52,14 +52,6 @@
 	}
 
 
-	function extractValueFromSESSION($valueName){
-		if(array_key_exists($valueName, $_SESSION) && $_SESSION[$valueName]!=NULL && $_SESSION[$valueName]!="" && strtolower($_SESSION[$valueName]) != 'null'){
-			return $_SESSION[$valueName];
-		}
-		return NULL;
-	}
-
-
 
 	function print_table($result){ //array of attributes and corresponding sql result we get from querying the attributes
 		echo '<div align="center">';

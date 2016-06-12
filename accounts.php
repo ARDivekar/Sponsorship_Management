@@ -122,7 +122,7 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Meetings of <strong><?php echo extractValueFromSESSION(SessionEnums::UserSector); ?></strong> Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
+						Meetings of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">

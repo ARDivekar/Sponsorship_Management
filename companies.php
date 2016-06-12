@@ -123,7 +123,7 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Companies of <strong><?php echo extractValueFromSESSION(SessionEnums::UserSector); ?></strong> Sector
+						Companies of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">

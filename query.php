@@ -12,13 +12,20 @@
 <body>
 
 <?php
+	include_once "SponsEnums.php";
+
 	/*Resume old session:*/
-	session_start();
+	if(!isset($_SESSION[SessionEnums::UserLoginID]))
+		session_start();
+	if(!$_SESSION[SessionEnums::UserLoginID])
+		header("Location: login.php");
+
+
 	include_once "library_functions.php";
 	include_once "Authorization.php";
 
 	if (!extractValueFromGET("Submit") && !extractValueFromGET("submit")) {
-		header("Location: home.php");
+		header("Location: homepage.php");
 	}
 
 	if( !Authorization::checkValidAuthorization(
@@ -26,11 +33,9 @@
 			extractValueFromGET(QueryFormSessionEnums::TableName),
 			extractValueFromGET(QueryFormSessionEnums::QueryType)
 		)){
-		header("Location: home.php");
+		header("Location: homepage.php");
 	}
 
-
-	include_once "SponsEnums.php";
 	include_once "FormAndFieldClasses.php";
 
 

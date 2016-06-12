@@ -5,12 +5,18 @@
 	 * Date: 05-06-2016
 	 * Time: 11:52
 	 */
+	include_once "SponsEnums.php";
+
 	/*Resume old session:*/
-	session_start();
+	if(!isset($_SESSION[SessionEnums::UserLoginID]))
+		session_start();
+	if(!$_SESSION[SessionEnums::UserLoginID])
+		header("Location: login.php");
+
 	include_once "library_functions.php";
 	include_once "Authorization.php";
 	include_once "SQLQuery.php";
-	include_once "SponsEnums.php";
+
 
 
 	class TableOutput{
