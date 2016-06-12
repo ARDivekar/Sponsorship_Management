@@ -55,7 +55,7 @@
 
 
 	abstract class PredefinedQueryInputFields extends BasicEnum{
-		const commonInputClass = "user";
+		const commonInputClass = NULL;
 
 		public static function get($queryFieldName){
 			switch($queryFieldName){
@@ -350,6 +350,7 @@
 		var $UnauthorizedMessage = '<div align="center"><h3 align="center" style="padding: 40px; font-size:28px; line-height:50px;" class="invalid_message">Sorry, you are not permitted to run this query.</h3> </div>';
 
 
+		const commonFormClass = "thin-form";
 
 
 
@@ -539,7 +540,7 @@
 							)
 							*/
 						],
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Insert a ".UserTypes::SponsRep,
 						$fieldSeparator = "<br>"
 					);
@@ -601,7 +602,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Modify details of a ".UserTypes::SponsRep,
 						$fieldSeparator = "<br>"
 					);
@@ -638,7 +639,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Completely Remove ".UserTypes::SponsRep,
 						$fieldSeparator = "<br>"
 					);
@@ -708,7 +709,7 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = NULL, $title = "Enter a new transaction into the Festival Account", $fieldSeparator = "<br>"
+						), $formCSSClass = QueryForm::commonFormClass, $title = "Enter a new transaction into the Festival Account", $fieldSeparator = "<br>"
 					);
 					break;
 
@@ -748,7 +749,7 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = NULL, $title = "Enter the values of the modified transaction", $fieldSeparator = "<br>"
+						), $formCSSClass = QueryForm::commonFormClass, $title = "Enter the values of the modified transaction", $fieldSeparator = "<br>"
 					);
 					break;
 				case QueryTypes::Delete :
@@ -773,7 +774,7 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = NULL, $title = "Delete an account transaction", $fieldSeparator = "<br>"
+						), $formCSSClass = QueryForm::commonFormClass, $title = "Delete an account transaction", $fieldSeparator = "<br>"
 					);
 					break;
 			}
@@ -831,7 +832,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Insert a new Company",
 						$fieldSeparator = "<br>"
 
@@ -882,7 +883,7 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Update Company details",
 						$fieldSeparator = "<br>"
 
@@ -911,7 +912,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Remove details of a Company",
 						$fieldSeparator = "<br>"
 					);
@@ -970,7 +971,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Insert a new Company Executive",
 						$fieldSeparator = "<br>"
 					);
@@ -1019,7 +1020,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Edit details of Company Executive",
 						$fieldSeparator = "<br>"
 					);
@@ -1052,7 +1053,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Remove a Company Executive",
 						$fieldSeparator = "<br>"
 					);
@@ -1121,7 +1122,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Enter details of a meeting",
 						$fieldSeparator = "<br>"
 					);
@@ -1186,7 +1187,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Update details of a meeting",
 						$fieldSeparator = "<br>"
 					);
@@ -1219,7 +1220,7 @@
 							)
 							*/
 						),
-						$formCSSClass=NULL,
+						$formCSSClass = QueryForm::commonFormClass,
 						$title = "Delete a meeting",
 						$fieldSeparator = "<br>"
 					);
@@ -1549,7 +1550,7 @@
 	?>;">
 		<div class="container">
 <!--			<div class="col-md-6 col-md-offset-2" style="background-color: white; margin-top: 5%; ">-->
-				<div class="signup col-md-6 col-md-offset-2" style="background-color: white; margin-top: 5%; ">
+				<div class="signup col-md-6 col-md-offset-2" style="background-color: white; margin: 5% 0; ">
 
 				 <?php
 					$r = new QueryForm($_SESSION[SessionEnums::UserAccessLevel], extractValueFromGET(QueryFormSessionEnums::TableName), extractValueFromGET(QueryFormSessionEnums::QueryType));
