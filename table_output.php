@@ -77,6 +77,8 @@
 			$existingWhereArray = [];
 			foreach($tableNamesList as $tableName){
 				foreach($whereArray as $wherePair){
+					if(!$wherePair || count($wherePair)!=2)
+						continue;
 					if (in_array($wherePair[0], SQLTables::$DBTableStructure[$tableName]))
 						array_push($existingWhereArray, [$tableName.".".$wherePair[0], $wherePair[1]]);
 				}
@@ -143,21 +145,39 @@
 				case SQLTables::Company :
 					$CSOSelectQuery->setSelectQuery(
 						$tableName = SQLTables::Company,
-						$tableFields = []
+						$tableFields = [
+							[SQLTables::Company.".CMPName", "Company Name"], [SQLTables::Company.".Sector", "Sector"],
+							[SQLTables::Company.".CMPStatus", "Current Status"],
+							[SQLTables::Company.".PreviouslySponsoredYear", "Last Sponsored"],
+							[SQLTables::Company.".SponsoredOtherOrganization", "Sponsored Other Organizations"],
+							[SQLTables::Company.".CMPAddress", "Address"]
+						]
 					);
 					break;
 
 				case SQLTables::CompanyExec :
 					$CSOSelectQuery->setSelectQuery(
-						$tableName = SQLTables::CompanyExec,
-						$tableFields = []
+						$tableName = SQLQuery::getInnerJoin(SQLTables::CompanyExec, "CMPName", SQLTables::Company, "CMPName"),
+						$tableFields = [
+							[SQLTables::Company.".CMPName", "Company Name"],
+							[SQLTables::Company.".CMPStatus", "Current Status"], [SQLTables::Company.".Sector", "Sector"],
+							[SQLTables::CompanyExec.".CEName", "Executive Name"], [SQLTables::CompanyExec.".CEPosition", "Position"],
+							[SQLTables::CompanyExec.".CEMobile", "Mobile"], [SQLTables::CompanyExec.".CEEmail", "Email"]
+						]
 					);
 					break;
 
 				case SQLTables::Meeting :
 					$CSOSelectQuery->setSelectQuery(
-						$tableName = SQLTables::Meeting,
-						$tableFields = []
+						$tableName = SQLQuery::getInnerJoin(SQLTables::Meeting, "SponsID", SQLTables::SponsOfficer, "SponsID"),
+						$tableFields = [
+							[SQLTables::Meeting.".ID", "Entry ID"],
+							[SQLTables::Meeting.".CMPName", "Company Name"], [SQLTables::Meeting.".CEName", "Executive Name"],
+							[SQLTables::SponsOfficer.".SponsID", "Meeter ID"], [SQLTables::SponsOfficer.".Name", "Meeter Name"],
+							[SQLTables::Meeting.".Outcome", "Outcome"],
+							[SQLTables::Meeting.".MeetingType", "Meeting Type"], [SQLTables::Meeting.".Date", "Date"],
+							[SQLTables::Meeting.".Time", "Time"], [SQLTables::Meeting.".Address", "Address"]
+						]
 					);
 					break;
 
@@ -199,7 +219,7 @@
 				["Organization", 	$_SESSION[SessionEnums::UserOrganization]],
 				["EventName", 		$_SESSION[SessionEnums::UserFestival]],
 				["Sector",	 		$_SESSION[SessionEnums::UserSector]],
-				["SponsID",	 		$_SESSION[SessionEnums::UserLoginID]]
+				$this->tableName == SQLTables::Meeting ? NULL : ["SponsID", $_SESSION[SessionEnums::UserLoginID]]
 			]);
 			return $SponsRepSelectQuery;
 		}
