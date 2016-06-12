@@ -199,7 +199,8 @@
 				$whereArray = [
 				["Organization", 	$_SESSION[SessionEnums::UserOrganization]],
 				["EventName", 		$_SESSION[SessionEnums::UserFestival]],
-				["Sector",	 		$_SESSION[SessionEnums::UserSector]]
+				["Sector",	 		$_SESSION[SessionEnums::UserSector]],
+				$this->tableName == SQLTables::SectorHead ? NULL : ["SponsID", $_SESSION[SessionEnums::UserLoginID]]
 			]);
 			return $SectorHeadSelectQuery;
 		}

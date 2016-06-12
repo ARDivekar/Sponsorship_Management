@@ -71,10 +71,12 @@
 				echo '
 				<li id="reports">
                     <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i>Reports</a>
-                </li>
+                </li>';
 
-                <li>
-                    <a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>Sector Heads</a>
+				if($_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep)
+                echo '
+				<li>
+                    <a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>'.($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO? "Sector Heads" : "My details").'</a>
                 </li>';
 				?>
                 <li>
