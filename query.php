@@ -1601,9 +1601,9 @@
 //
 //		}
 	?>;">
-		<div class="container">
+		<div class="container" style="width:auto; padding-left: 0px; padding-right: 0px;">
 <!--			<div class="col-md-6 col-md-offset-2" style="background-color: white; margin-top: 5%; ">-->
-				<div class="signup col-md-6 col-md-offset-2" style="background-color: white; margin-top: 5%; margin-bottom:5%; ">
+				<div class="signup col-md-6 col-md-offset-3" style="background-color: white; margin-top: 5%; margin-bottom:5%; ">
 
 				 <?php
 					$r = new QueryForm($_SESSION[SessionEnums::UserAccessLevel], extractValueFromGET(QueryFormSessionEnums::TableName), extractValueFromGET(QueryFormSessionEnums::QueryType));
