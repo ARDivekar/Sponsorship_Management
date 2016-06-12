@@ -1513,6 +1513,8 @@
 			});
 		});
 	</script>
+
+	 <link rel="stylesheet" href="ExternalLibraries/CoolForm/style.css">
  </head>
  <body>
 
@@ -1522,18 +1524,40 @@
 	<?php
 		include("./UserNavBar.php");
 	?>
-	<div id="page-wrapper">
+	<div id="page-wrapper" style="background-color:
+	<?php
+		switch(extractValueFromGET(QueryFormSessionEnums::TableName)){
+			case SQLTables::Company :
+				echo "#337ab7";
+				break;
+
+			case SQLTables::AccountLog :
+				echo "#5cb85c";
+				break;
+
+			case SQLTables::Meeting :
+				echo "#f0ad4e";
+				break;
+
+			case SQLTables::CompanyExec :
+				echo "#d9534f";
+				break;
+
+		}
+	?>;">
 		<div class="container">
-			<div class="col-md-6 col-md-offset-2">
-			 <?php 
-				$r = new QueryForm($_SESSION[SessionEnums::UserAccessLevel], extractValueFromGET(QueryFormSessionEnums::TableName), extractValueFromGET(QueryFormSessionEnums::QueryType));
-				//$userType, $tableName, $queryType
-				$r->parseQuery();
-				echo $r;
-				echo "<br><br>";
-			  ?>
-			  <button class="btn-large btn-primary">Submit</button>
-			 </div>
+<!--			<div class="col-md-6 col-md-offset-2" style="background-color: white; margin-top: 5%; ">-->
+				<div class="signup col-md-6 col-md-offset-2" style="background-color: white; margin-top: 5%; ">
+
+				 <?php
+					$r = new QueryForm($_SESSION[SessionEnums::UserAccessLevel], extractValueFromGET(QueryFormSessionEnums::TableName), extractValueFromGET(QueryFormSessionEnums::QueryType));
+					//$userType, $tableName, $queryType
+					$r->parseQuery();
+					echo $r;
+					echo "<br><br>";
+				  ?>
+				</div>
+<!--			 </div>-->
 		</div>
 	</div>
   </html>
