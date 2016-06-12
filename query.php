@@ -1529,24 +1529,24 @@
 	?>
 	<div id="page-wrapper" style="background-color:
 	<?php
-		switch(extractValueFromGET(QueryFormSessionEnums::TableName)){
-			case SQLTables::Company :
-				echo "#337ab7";
-				break;
-
-			case SQLTables::AccountLog :
-				echo "#5cb85c";
-				break;
-
-			case SQLTables::Meeting :
-				echo "#f0ad4e";
-				break;
-
-			case SQLTables::CompanyExec :
-				echo "#d9534f";
-				break;
-
-		}
+//		switch(extractValueFromGET(QueryFormSessionEnums::TableName)){
+//			case SQLTables::Company :
+//				echo "#337ab7";
+//				break;
+//
+//			case SQLTables::AccountLog :
+//				echo "#5cb85c";
+//				break;
+//
+//			case SQLTables::Meeting :
+//				echo "#f0ad4e";
+//				break;
+//
+//			case SQLTables::CompanyExec :
+//				echo "#d9534f";
+//				break;
+//
+//		}
 	?>;">
 		<div class="container">
 <!--			<div class="col-md-6 col-md-offset-2" style="background-color: white; margin-top: 5%; ">-->
