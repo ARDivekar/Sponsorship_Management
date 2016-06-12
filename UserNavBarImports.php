@@ -105,6 +105,10 @@
   text-decoration: none;
 }
 
+.navbar-default .navbar-brand {
+  color: #337ab7; !important
+}
+
 </style>
 
 
