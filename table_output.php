@@ -116,7 +116,7 @@
 						$tableName = SQLQuery::getInnerJoin(SQLTables::CommitteeMember, "ID", SQLTables::SectorHead, "SponsID"),
 						$tableFields = [
 							[SQLTables::CommitteeMember.".ID", "ID"], [SQLTables::CommitteeMember.".Name", "Name"],
-							[SQLTables::CommitteeMember.".Role", "Role"], [SQLTables::SponsRep.".Sector", "Sector"],
+							[SQLTables::CommitteeMember.".Role", "Role"], [SQLTables::SectorHead.".Sector", "Sector"],
 							[SQLTables::CommitteeMember.".Mobile", "Mobile"], [SQLTables::CommitteeMember.".Email", "Email"],
 							[SQLTables::CommitteeMember.".Year", "Year"], [SQLTables::CommitteeMember.".Branch", "Branch"],
 						]
