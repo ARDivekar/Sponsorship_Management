@@ -1,11 +1,12 @@
 <?php
 	/*Resume old session:*/
+
+	include_once "library_functions.php";
+	include_once "SponsEnums.php";
+
 	if(!extractValueFromSESSION(SessionEnums::UserLoginID))
 		session_start();
 
-	include_once "DBconnect.php";
-	include_once "library_functions.php";
-    include_once "SponsEnums.php";
 
 ?>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
