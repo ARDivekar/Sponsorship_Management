@@ -111,7 +111,7 @@
 
 
 			if($this->inputType == InputTypes::textarea){
-				$out .= '></textarea> ';
+				$out .= '>'.$this->value.'</textarea> ';
 			}
 			else{
 				$out .= '/>';

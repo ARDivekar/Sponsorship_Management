@@ -300,7 +300,7 @@
 
 				case QueryFieldNames::SponsMeetingOutcome :
 					return new InputField(
-						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $readonly = false, $inputCSSClass = "form-control", $labelText = "Meeting Outcome",
+						$inputType = InputTypes::textarea, $name = QueryFieldNames::SponsMeetingOutcome, $value = "(Update after meeting)", $readonly = false, $inputCSSClass = "form-control", $labelText = "Meeting Outcome",
 						$labelCSSClass = NULL, $inputDataListID="MeetingOutcomeEnum", $inputDataList= MeetingOutcomes::getConstants()
 					);
 					break;
