@@ -73,7 +73,6 @@
   z-index: -1;
 }
 .card .card-image span.card-title, h2 {
-  position: absolute;
   bottom: 0;
   left: 0;
   padding: 16px;
