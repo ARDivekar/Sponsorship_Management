@@ -1,5 +1,6 @@
 <?php 
     /*Resume old session:*/
+    	header("Location: homepage.php");
         session_start();
 
         require('DBconnect.php');
@@ -7,7 +8,7 @@
         $SponsID=$_SESSION['loginID']; //get SponsID from previos session
         $SponsAccessLevel = get_access_level($SponsID);
         if($SponsAccessLevel=="CSO")    
-            header('Location: CSO_reports.php');
+            header('Location: CSOreports.php');
 
         if($SponsAccessLevel=="SectorHead")
             header('Location: SectorHead_reports.php');

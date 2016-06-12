@@ -108,14 +108,14 @@
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Companies</h1>
+				<h1 class="page-header">Company Executives</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
 
 		<div class="row">
 			<?php
-				echo generate_table_button(SQLTables::Company);
+				echo generate_table_button(SQLTables::CompanyExec);
 			?>
 		</div>
 		<br />
@@ -139,7 +139,7 @@
 
 								$t = new TableOutput(
 									$_SESSION[SessionEnums::UserAccessLevel],
-									SQLTables::Company
+									SQLTables::CompanyExec
 								);
 
 								$result = $db->select($t->getOutputQuery());

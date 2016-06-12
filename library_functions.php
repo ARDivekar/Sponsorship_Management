@@ -1,5 +1,6 @@
 <?php
 
+	include_once "Authorization.php";
 
 	function echo_1d_array($array, $arrayName = "1D-Array"){
 		if(!$array)
@@ -55,7 +56,7 @@
 
 	function print_table($result){ //array of attributes and corresponding sql result we get from querying the attributes
 		echo '<div align="center">';
-		echo '<table align="center" style=\"width:100%\" class="output_table">';
+		echo '<table align="center" class="output_table">';
 		echo "<tr>";
 		$i = 0;
 		//$attributes_info = mysql_fetch_field($result, $i); //gets a lot of data about the attributes...their names, their types etc.
@@ -154,6 +155,68 @@
 		echo '</form>';
 	}
 
+
+	function generate_table_button($tableName){
+		if(!SQLTables::isValidValue($tableName))
+			return NULL;
+
+		$out = "";
+
+		foreach(QueryTypes::getConstants() as $queryType){
+			if ($queryType == QueryTypes::View){
+				continue;
+			}
+
+			if (Authorization::checkValidAuthorization($_SESSION[SessionEnums::UserAccessLevel], $tableName, $queryType)){
+				$CSSClass = "";
+				$linkText = "";
+				switch ($queryType){
+					case QueryTypes::Insert:
+						$CSSClass .= "glyphicon glyphicon-plus";
+						$linkText .= "Add ";
+						break;
+					case QueryTypes::Modify:
+						$CSSClass .= "glyphicon glyphicon-pencil";
+						$linkText .= "Edit ";
+						break;
+					case QueryTypes::Delete:
+						$CSSClass .= "glyphicon glyphicon-remove";
+						$linkText .= "Remove ";
+						break;
+				}
+
+				switch ($tableName){
+					case SQLTables::SectorHead:
+						$linkText .= "a Sector Head";
+						break;
+					case SQLTables::SponsRep:
+						$linkText .= "Sponsorship Representative";
+						break;
+					case SQLTables::Meeting:
+						$linkText .= "a Meeting";
+						break;
+					case SQLTables::AccountLog:
+						$linkText .= "a Transaction";
+						break;
+					case SQLTables::Company:
+						$linkText .= "a Company";
+						break;
+					case SQLTables::CompanyExec:
+						$linkText .= "a Company Executive";
+						break;
+				}
+
+				$out .= '<div class="col-md-6">
+				<a href="query.php?submit=true&QueryType='.$queryType.'&TableName='.$tableName.'"><h4><i class="'.$CSSClass.'"></i>
+				'.$linkText.'</h4></a>
+				</div>';
+
+			}
+		}
+
+		return $out;
+
+	}
 
 
 

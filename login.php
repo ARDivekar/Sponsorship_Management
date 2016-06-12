@@ -13,7 +13,7 @@
 		include_once "SecurityFunctions.php";
 		include_once "SponsEnums.php";
 		include_once "SponsDBFunctions.php";
-		include_once "UserNavBarImports.php"
+		include_once "UserNavBarImports.php";
 	?>
 	<h1>Sponsorship Department, VJTI</h1>
 	
@@ -29,11 +29,11 @@
 		$formName = "SponsRepInsert", $formAction = "login.php", $formMethod = FormMethod::POST,
 		$fields = array(
 			new InputField(
-				$inputType = InputTypes::text, $name = SessionEnums::UserLoginID, $value = "", $disabled = false, $inputCSSClass = NULL,
+				$inputType = InputTypes::text, $name = SessionEnums::UserLoginID, $value = "", $disabled = false, $inputCSSClass = "form-control",
 				$labelText = "Reg. ID", $labelCSSClass = NULL
 			),
 			new InputField(
-				$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $disabled = false, $inputCSSClass = NULL,
+				$inputType = InputTypes::password, $name = QueryFieldNames::SponsPassword, $value = "", $disabled = false, $inputCSSClass = "form-control",
 				$labelText = "Password", $labelCSSClass = NULL
 			),
 
