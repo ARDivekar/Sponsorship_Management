@@ -5,31 +5,23 @@
 	 * Date: 05-06-2016
 	 * Time: 11:52
 	 */
+	include_once "SponsEnums.php";
+
 	/*Resume old session:*/
-	session_start();
+	if(!isset($_SESSION[SessionEnums::UserLoginID]))
+		session_start();
+	if(!$_SESSION[SessionEnums::UserLoginID])
+		header("Location: login.php");
+
 	include_once "library_functions.php";
 	include_once "Authorization.php";
-
-	if (!extractValueFromGET(QueryFormSessionEnums::TableName)) {
-		header("Location: home.php");
-	}
-
-	if( !Authorization::checkValidAuthorization(
-			$_SESSION[SessionEnums::UserAccessLevel],
-			extractValueFromGET(QueryFormSessionEnums::TableName),
-			QueryTypes::View
-		)){
-		header("Location: home.php");
-	}
-
 	include_once "SQLQuery.php";
-	include_once "SponsEnums.php";
+
 
 
 	class TableOutput{
 		var $userType = NULL;
 		var $tableName = NULL;
-		var $tableResult = NULL;
 
 		function TableOutput($userType, $tableName){
 			$this->userType = $userType;
@@ -41,31 +33,32 @@
 				$db = new SponsorshipDB();
 
 				$q = $this->getOutputQuery();
-				echo "<hr>".$q->getQuery()."<hr>";
+//				echo "<hr>".$q->getQuery()."<hr>";
 				if(!$q)
-					return false;
+					return NULL;
 
 				$tableResult = $db->select($q->getQuery());
 				if(count($tableResult)>0){
-					$this->tableResult = $tableResult;
-					return true;
+					return make_simple_table($tableResult);
 				}
 			}
-			return false;
+			return NULL;
 		}
 
 
 		function getOutputQuery(){
-			switch ($this->userType){
-				case UserTypes::CSO:
-					return $this->getCSOQuery();
-					break;
-				case UserTypes::SectorHead:
-					return $this->getSectorHeadQuery();
-					break;
-				case UserTypes::SponsRep:
-					return $this->getSponsRepQuery();
-					break;
+			if (Authorization::checkValidAuthorization($this->userType, $this->tableName, QueryTypes::View)){
+				switch ($this->userType){
+					case UserTypes::CSO:
+						return $this->getCSOQuery();
+						break;
+					case UserTypes::SectorHead:
+						return $this->getSectorHeadQuery();
+						break;
+					case UserTypes::SponsRep:
+						return $this->getSponsRepQuery();
+						break;
+				}
 			}
 			return new SQLQuery();
 		}
@@ -97,7 +90,7 @@
 		];
 
 
-		function getCSOQuery(){
+		private function getCSOQuery(){
 			$CSOSelectQuery = new SQLQuery();
 			switch($this->tableName){
 				case SQLTables::Event :
@@ -198,7 +191,7 @@
 		}
 
 
-		function getSectorHeadQuery(){
+		private function getSectorHeadQuery(){
 			$SectorHeadSelectQuery = $this->getCSOQuery();
 			$SectorHeadSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre(
 				$tableNamesList = self::$tableNamesList[$this->tableName],
@@ -211,7 +204,7 @@
 		}
 
 
-		function getSponsRepQuery(){
+		private function getSponsRepQuery(){
 			$SponsRepSelectQuery = $this->getCSOQuery();
 			$SponsRepSelectQuery->whereClause = $this->getWhereClauseIfFieldInDBStrucutre(
 				$tableNamesList = self::$tableNamesList[$this->tableName],
@@ -235,12 +228,8 @@
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
-	$t = new TableOutput(
-			$_SESSION[SessionEnums::UserAccessLevel],
-			extractValueFromGET(QueryFormSessionEnums::TableName)
-	);
 
-	$t->retrieveOutputTable();
+
 
 
 ?>

@@ -1,10 +1,16 @@
 <?php
 	/*Resume old session:*/
-	session_start();
 
-	include_once "DBconnect.php";
+
 	include_once "library_functions.php";
-    include_once "SponsEnums.php";
+	include_once "SponsEnums.php";
+
+	if(!isset($_SESSION[SessionEnums::UserLoginID]))
+		session_start();
+	if(!$_SESSION[SessionEnums::UserLoginID])
+		header("Location: login.php");
+
+
 
 ?>
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">

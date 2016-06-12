@@ -3,6 +3,13 @@
 
 <head>
 	<?php
+		include_once "SponsEnums.php";
+
+		if(!isset($_SESSION[SessionEnums::UserLoginID]))
+		session_start();
+		if(!$_SESSION[SessionEnums::UserLoginID])
+			header("Location: login.php");
+
 		include('UserNavBarImports.php');
 	?>
 	<title>CSO profile</title>

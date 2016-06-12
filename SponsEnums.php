@@ -130,6 +130,12 @@
 		const TableName = "TableName";
 	}
 
+	abstract class TableOutputSessionEnums extends BasicEnum{
+		const TableName = "TableName";
+		const TableSelectQuery = "TableSelectQuery";
+	}
+
+
 
 
 	abstract class QueryFieldNames extends BasicEnum{
