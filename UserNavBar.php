@@ -1,6 +1,7 @@
 <?php
 	/*Resume old session:*/
-	session_start();
+	if(!extractValueFromSESSION(SessionEnums::UserLoginID))
+		session_start();
 
 	include_once "DBconnect.php";
 	include_once "library_functions.php";
