@@ -78,6 +78,7 @@
 	
 	abstract class SQLViews extends BasicEnum{
 		const SponsOfficer = "SponsOfficer";
+		const SponsWorker = "SponsWorker";
 	}
 
 
