@@ -638,6 +638,20 @@ span.checkbox1 {
     font-family: 'Roboto Condensed', sans-serif;
 }
 
+
+.signup input[type="number"] {
+    font-size: 1em;
+    color: #ccc;
+    padding: 0.5em 0.5em 0.5em 1.2em;
+    width: 100%;
+    border: 1px solid #ccc;
+    outline: none;
+    display: block;
+    margin-bottom: 0.8em;
+    border-radius: 4px;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
 .signup textarea {
     font-size: 1em;
     color: #ccc;
@@ -672,7 +686,7 @@ span.checkbox1 {
     font-size: 1em;
     color: #ccc;
     padding: 0.5em 0.5em 0.5em 1.2em;
-    width: 84%;
+    width: 100%;
     border: 1px solid #ccc;
     outline: none;
     display: block;
@@ -949,7 +963,7 @@ span.checkbox1 {
     }
 
     .signup input[type="password"] {
-        width: 88%;
+        /*width: 88%;*/
     }
 
     .left-forgot input[type="text"] {
@@ -1087,7 +1101,7 @@ span.checkbox1 {
     }
 
     .signup input[type="password"] {
-        width: 86%;
+        /*width: 86%;*/
     }
 
     .small-contact-main input.hola[type="text"] {
@@ -1167,7 +1181,7 @@ span.checkbox1 {
     }
 
     .signup input[type="password"] {
-        width: 84%;
+        /*width: 84%;*/
     }
 }
 
@@ -1209,7 +1223,7 @@ span.checkbox1 {
     }
 
     .signup input[type="password"] {
-        width: 83%;
+        /*width: 83%;*/
     }
 
     .signup input[type="text"] {
@@ -1280,7 +1294,7 @@ span.checkbox1 {
     }
 
     .signup input[type="password"] {
-        width: 86%;
+        /*width: 86%;*/
     }
 
     .small-contact-main input.hola[type="text"] {
@@ -1334,7 +1348,7 @@ span.checkbox1 {
     }
 
     .signup input[type="password"] {
-        width: 84%;
+        /*width: 84%;*/
     }
 
     .johndoe-left {
@@ -1393,7 +1407,7 @@ span.checkbox1 {
     }
 
     .signup input[type="password"] {
-        width: 82%;
+        /*width: 82%;*/
     }
 
     .small-contact-main input.hola[type="text"] {
@@ -1631,7 +1645,7 @@ span.checkbox1 {
 
     .signup input[type="password"] {
         font-size: 0.9em;
-        padding: 0.5em 1em 0.5em 2em;
+        padding: 0.5em 1em 0.5em 1.5em;
         width: 81%;
     }
 
