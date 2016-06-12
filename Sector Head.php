@@ -18,6 +18,8 @@
 		session_start();
 
 		include_once('library_functions.php');
+		include_once "SponsDBFunctions.php";
+		include_once "SponsEnums.php";
 
 		if(empty($_SESSION[SessionEnums::UserLoginID]))
 			header("Location: login.php");
