@@ -51,36 +51,36 @@
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 <li>
-                    <a href="homepage.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
+                    <a href="homepage.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
                 <li>
-                    <a href="companies.php"><i class="fa fa-building-o fa-fw"></i>Companies</a>
+                    <a href="companies.php"><i class="fa fa-building-o fa-fw"></i> Companies</a>
                 </li>
                 <li>
-                    <a href="companyexec.php"><i class="fa fa-building-o fa-fw"></i>Company Executives</a>
+                    <a href="companyexec.php"><i class="fa fa-building-o fa-fw"></i> Company Executives</a>
                 </li>
 		        <li>
-                    <a href="meeting.php"><i class="fa fa-calendar fa-fw"></i>Meeting Log</a>
+                    <a href="meeting.php"><i class="fa fa-calendar fa-fw"></i> Meeting Log</a>
                 </li>
                 <li>
-                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i><?php echo $_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep ? "Account Log" : "My Sponsorships"?></a>
+                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i> <?php echo $_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep ? "Account Log" : "My Sponsorships"?></a>
                 </li>
 
 				<?php
 					if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO)
 				echo '
 				<li id="reports">
-                    <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i>Reports</a>
+                    <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i> Reports</a>
                 </li>';
 
 				if($_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep)
                 echo '
 				<li>
-                    <a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>'.($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO? "Sector Heads" : "My details").'</a>
+                    <a href="sectorhead.php"><i class="fa fa-user fa-fw"></i> '.($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO? "Sector Heads" : "My details").'</a>
                 </li>';
 				?>
                 <li>
-                    <a href="sponsrep.php"><i class="fa fa-users fa-fw"></i>
+                    <a href="sponsrep.php"><i class="fa fa-users fa-fw"></i> 
 						<?php
 							switch($_SESSION[SessionEnums::UserAccessLevel]){
 								case UserTypes::CSO:
