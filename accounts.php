@@ -110,7 +110,7 @@
 		</div>
 
 		<div class="row col-md-6">
-			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Meeting</h4></a>
+			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Transaction</h4></a>
 		</div>
 		<br />
 
@@ -119,15 +119,16 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Meetings of ___ Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
+						Account Log Entries of <?php echo get_person_sector($SponsID); ?> Sector
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
+
 								$db = new SponsorshipDB();
-								$result = $db->select("SELECT ID, Date, Time, MeetingType, CMPName, CEName, Address, Outcome FROM meeting;");
+								$result = $db->select("SELECT ID, Date, Title, Amount FROM accountlog;");
 								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
 								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>

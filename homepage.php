@@ -74,6 +74,18 @@
 </head>
 
 <body>
+	<?php 
+		
+		/*Resume old session:*/
+		// session_start();
+
+		// include_once('DBconnect.php');
+		// include_once('library_functions.php');
+		// $SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
+
+
+	?>
+
 
 <div id="wrapper">
 
@@ -100,12 +112,17 @@
 								<i class="fa fa-building-o fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">Write Query</div>
+								<div class="huge">
+									<?php
+										$TotalCompaniesSponsored = $db->select("SELECT COUNT(Title) as 'Count' FROM AccountLog WHERE TransType='Deposit'");
+										echo $TotalCompaniesSponsored[0]['Count'];
+									?>
+								</div>
 								<div>Companies Signed</div>
 							</div>
 						</div>
 					</div>
-					<a href="#">
+					<a href="companies.php">
 						<div class="panel-footer">
 							<span class="pull-left">View Details</span>
 							<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -123,12 +140,17 @@
 								<i class="fa fa-inr fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">Write Query</div>
+								<div class="huge">
+									<?php 
+										$TotalIncome= $db->select("SELECT SUM(Amount) as 'Sum' FROM AccountLog WHERE TransType='Deposit'");
+										echo $TotalIncome[0]['Sum'];
+									?>
+								</div>
 								<div>Amount Earned</div>
 							</div>
 						</div>
 					</div>
-					<a href="#">
+					<a href="accounts.php">
 						<div class="panel-footer">
 							<span class="pull-left">View Details</span>
 							<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -146,12 +168,17 @@
 								<i class="fa fa-calendar fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">Write Query</div>
+								<div class="huge">
+									<?php 
+										$MeetingsCount= $db->select("SELECT Count(MeetingType) as 'Count' FROM `meeting` WHERE MeetingType='Meet'");
+										echo $MeetingsCount[0]['Count'];
+									?>
+								</div>
 								<div>Meetings Scheduled</div>
 							</div>
 						</div>
 					</div>
-					<a href="#">
+					<a href="meeting.php">
 						<div class="panel-footer">
 							<span class="pull-left">View Details</span>
 							<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -169,12 +196,17 @@
 								<i class="fa fa-phone fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">Write Query</div>
+								<div class="huge">
+									<?php 
+										$CompaniesCalledCount= $db->select("SELECT COUNT(CMPStatus) as 'Count' FROM `company` WHERE CMPStatus != 'Not called'");
+										echo $CompaniesCalledCount[0]['Count'];
+									?>
+								</div>
 								<div>Companies Called</div>
 							</div>
 						</div>
 					</div>
-					<a href="#">
+					<a href="companies.php">
 						<div class="panel-footer">
 							<span class="pull-left">View Details</span>
 							<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -213,7 +245,42 @@
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-						<div id="morris-area-chart"></div>
+						<div id="money-progress"></div>
+						<!--<?php 
+						/*	$MoneyProgress= $db->select("SELECT SUM(Amount) as 'Amount', MONTH(Date) as 'Month' FROM `accountlog` GROUP BY MONTH(Date)");
+							echo $MoneyProgress[0]['Count'];
+
+							for ($x = 0; $x <= $MoneyProgress.length; $x++) {
+								$array = (
+									$MoneyProgress[i][]
+
+								)    
+							} 
+							echo "<script>
+
+									new Morris.Line({
+									  // ID of the element in which to draw the chart.
+									  element: 'money-progress',
+									  // Chart data records -- each entry in this array corresponds to a point on
+									  // the chart. " + "
+									  data: [
+									    { year: '2008', value: 20 },
+									    { year: '2009', value: 10 },
+									    { year: '2010', value: 5 },
+									    { year: '2011', value: 5 },
+									    { year: '2012', value: 20 }
+									  ],
+									  // The name of the data record attribute that contains x-values.
+									  xkey: 'month',
+									  // A list of names of data record attributes that contain y-values.
+									  ykeys: ['amount'],
+									  // Labels for the ykeys -- will be displayed when you hover over the
+									  // chart.
+									  labels: ['Amount']
+									});
+
+								</script>" */
+						?> -->
 					</div>
 					<!-- /.panel-body -->
 				</div>
