@@ -113,7 +113,11 @@
 		</div>
 
 		<div class="row col-md-6">
-			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Transaction</h4></a>
+			<a href="query.php?submit=true&QueryType=Insert&TableName=AccountLog"><h4><i class="glyphicon glyphicon-plus"></i>Add Transaction</h4></a>
+		</div>
+			<div class="col-md-6">
+				<a href="query.php?submit=true&QueryType=Modify&TableName=AccountLog"><h4><i class="glyphicon glyphicon-pencil"></i>Edit Transaction</h4></a>
+			</div>
 		</div>
 		<br />
 
@@ -122,11 +126,7 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-<<<<<<< HEAD
-						Account Log Entries of <?php echo get_person_sector($SponsID); ?> Sector
-=======
-						Meetings of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
->>>>>>> refs/remotes/origin/GUI-and-PHP-changes
+						Meetings of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
