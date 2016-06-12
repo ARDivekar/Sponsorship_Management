@@ -290,7 +290,9 @@
 							}
 //							echo $query->getQuery();
 							$LatestMeetings = $db->select($query->getQuery());
-							echo make_simple_table($LatestMeetings, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+							if(count($LatestMeetings)>0)
+								echo make_simple_table($LatestMeetings, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+							else echo "<h1>No upcoming meetings</h1>";
 						
 						?>
 					</div>
