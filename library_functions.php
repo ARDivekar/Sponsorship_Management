@@ -78,7 +78,7 @@
 	}
 
 
-	function print_simple_table($result, $table_classes=NULL, $table_id=NULL){
+	function make_simple_table($result, $table_classes=NULL, $table_id=NULL){
 		$out = "<table ";
 		if ($table_classes){
 			$out .= "class =\"";
@@ -117,7 +117,6 @@
 		}
 
 		$out .="</table>";
-		echo $out;
 		return $out;
 	}
 
@@ -155,8 +154,6 @@
 		echo '<button type="submit" name="submit">Search</button>';
 		echo '</form>';
 	}
-
-
 
 
 

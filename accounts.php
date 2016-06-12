@@ -3,7 +3,10 @@
 
 <head>
 	<?php
-		include('UserNavBarImports.php');
+		include_once "UserNavBarImports.php";
+		include_once "SponsEnums.php";
+		include_once "table_output.php"
+
 	?>
 	<title>Account Log</title>
 
@@ -119,7 +122,11 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
+<<<<<<< HEAD
 						Account Log Entries of <?php echo get_person_sector($SponsID); ?> Sector
+=======
+						Meetings of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
+>>>>>>> refs/remotes/origin/GUI-and-PHP-changes
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
@@ -128,9 +135,14 @@
 							<?php
 
 								$db = new SponsorshipDB();
-								$result = $db->select("SELECT ID, Date, Title, Amount FROM accountlog;");
-								//$result = mysql_query("SELECT company.CMPName FROM company, companyexec;");
-								print_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+
+								$t = new TableOutput(
+									$_SESSION[SessionEnums::UserAccessLevel],
+									SQLTables::AccountLog
+								);
+
+								$result = $db->select($t->getOutputQuery());
+								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 
 						</div>
