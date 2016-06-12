@@ -122,7 +122,7 @@
 
 				case SQLTables::AccountLog :
 					$CSOSelectQuery->setSelectQuery(
-						$tableName = SQLTables::AccountLog,
+						$tableName = SQLQuery::getInnerJoin(SQLTables::AccountLog, "SponsID", SQLTables::, "SponsID"),
 						$tableFields = [
 							[SQLTables::CommitteeMember.".ID", "ID"], [SQLTables::CommitteeMember.".Name", "Name"],
 							[SQLTables::CommitteeMember.".Role", "Role"], [SQLTables::SponsRep.".Sector", "Sector"],
@@ -130,7 +130,7 @@
 							[SQLTables::CommitteeMember.".Year", "Year"], [SQLTables::CommitteeMember.".Branch", "Branch"],
 						]
 					);
-					$tableNamesList = [SQLTables::CommitteeMember, SQLTables::AccountLog]
+					$tableNamesList = [SQLTables::CommitteeMember, SQLTables::AccountLog];
 					break;
 
 				case SQLTables::Company :

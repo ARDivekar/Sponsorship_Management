@@ -2,7 +2,7 @@
     /*Resume old session:*/
 	include_once "SponsEnums.php";
     session_start();
-	
+
     $SponsAccessLevel = $_SESSION[SessionEnums::UserAccessLevel];
 
     if ($SponsAccessLevel == UserTypes::CSO)
