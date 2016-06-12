@@ -13,7 +13,7 @@
 		include_once "SecurityFunctions.php";
 		include_once "SponsEnums.php";
 		include_once "SponsDBFunctions.php";
-		include_once "UserNavBarImports.php"
+		include_once "UserNavBarImports.php";
 	?>
 	<h1>Sponsorship Department, VJTI</h1>
 	

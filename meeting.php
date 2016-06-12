@@ -110,14 +110,24 @@
 		</div>
 
 		<div class="row">
+			<div class="col-md-6">
 			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Meeting</h4></a>
-			<button class="btn btn-warning" data-toggle="collapse" data-target="#meetingOutcome">Add Outcome of Latest Meeting</button>
+			</div>
+			<div class="col-md-3 col-md-offset-3">
+				<button class="btn btn-warning" data-toggle="collapse" data-target="#meetingOutcome">Add Outcome of Latest Meeting</button>
+			</div>
 		</div>
 		<br />
 		<div id="meetingOutcome" class="collapse row">
-			<input type="text" class="form-control"></input>
-			<br />
-			<button type="submit" class="btn btn-success">Submit</button>
+			<div class="col-md-offset-8">
+				<div class="col-xs-12">
+					<form>
+						<textarea class="form-control"></textarea>
+						<br />
+						<button type="submit" class="btn btn-success">Submit</button>
+					</form>
+				</div>
+			</div>
 		</div>
 		<br />
 

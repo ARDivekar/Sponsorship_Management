@@ -1481,15 +1481,58 @@
 	}
 
 
+ ?>
+ <html lang="en">
 
+ <head>
+	<?php
+		include('UserNavBarImports.php');
+	?>
+	<title>Meetings</title>
 
-	$r = new QueryForm($_SESSION[SessionEnums::UserAccessLevel], extractValueFromGET(QueryFormSessionEnums::TableName), extractValueFromGET(QueryFormSessionEnums::QueryType));
-	//$userType, $tableName, $queryType
-	$r->parseQuery();
-	echo $r;
-	echo "<br><br>";
+	<!-- DataTables CSS -->
+	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
 
+	<!-- DataTables Responsive CSS -->
+	<link href="./User_GUI_CSS/bower_components/datatables-responsive/css/responsive.dataTables.scss" rel="stylesheet">
 
+	<!-- DataTables JavaScript -->
+	<script src="./User_GUI_CSS/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script src="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+
+	<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+	<script>
+		$(document).ready(function () {
+			$('#dataTables-example').DataTable({
+				responsive: true
+			});
+		});
+	</script>
+ </head>
+ <body>
+
+	<div id="wrapper">
+
+	<!-- Navigation -->
+	<?php
+		include("./UserNavBar.php");
+	?>
+	<div id="page-wrapper">
+		<div class="container">
+			<div class="col-md-6 col-md-offset-2">
+			 <?php 
+				$r = new QueryForm($_SESSION[SessionEnums::UserAccessLevel], extractValueFromGET(QueryFormSessionEnums::TableName), extractValueFromGET(QueryFormSessionEnums::QueryType));
+				//$userType, $tableName, $queryType
+				$r->parseQuery();
+				echo $r;
+				echo "<br><br>";
+			  ?>
+			  <button class="btn-large btn-primary">Submit</button>
+			 </div>
+		</div>
+	</div>
+  </html>
+  <?php
 
 
 	/*##------------------------------------------------TESTS------------------------------------------------##
