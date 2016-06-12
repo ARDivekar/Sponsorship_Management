@@ -122,15 +122,16 @@
 
 				case SQLTables::AccountLog :
 					$CSOSelectQuery->setSelectQuery(
-						$tableName = SQLQuery::getInnerJoin(SQLTables::AccountLog, "SponsID", SQLTables::, "SponsID"),
+						$tableName = SQLQuery::getInnerJoin(SQLTables::AccountLog, "SponsID", SQLViews::SponsOfficer, "SponsID"),
 						$tableFields = [
-							[SQLTables::CommitteeMember.".ID", "ID"], [SQLTables::CommitteeMember.".Name", "Name"],
-							[SQLTables::CommitteeMember.".Role", "Role"], [SQLTables::SponsRep.".Sector", "Sector"],
-							[SQLTables::CommitteeMember.".Mobile", "Mobile"], [SQLTables::CommitteeMember.".Email", "Email"],
-							[SQLTables::CommitteeMember.".Year", "Year"], [SQLTables::CommitteeMember.".Branch", "Branch"],
+							[SQLTables::AccountLog.".ID", "Entry ID"], [SQLQuery::format(SQLTables::AccountLog.".Amount"), "Amount (Rs.)"],
+							[SQLTables::AccountLog.".Title", "Company"], [SQLViews::SponsOfficer.".Sector", "Sector"],
+							[SQLTables::AccountLog.".Date", "Entry Date"],
+							[SQLViews::SponsOfficer.".SponsID", "SponsID"], [SQLViews::SponsOfficer.".Name", "Name"],
+							[SQLViews::SponsOfficer.".Role", "Role"]
 						]
 					);
-					$tableNamesList = [SQLTables::CommitteeMember, SQLTables::AccountLog];
+					$tableNamesList = [SQLTables::AccountLog];
 					break;
 
 				case SQLTables::Company :
@@ -146,7 +147,7 @@
 						$tableName = SQLTables::CompanyExec,
 						$tableFields = []
 					);
-					$tableNamesList = [SQLTables::Company, SQLTables::CompanyExec]
+					$tableNamesList = [SQLTables::Company, SQLTables::CompanyExec];
 					break;
 
 				case SQLTables::Meeting :
@@ -154,7 +155,7 @@
 						$tableName = SQLTables::Meeting,
 						$tableFields = []
 					);
-					$tableNamesList = [SQLTables::Company, SQLTables::CompanyExec, SQLTables::Meeting]
+					$tableNamesList = [SQLTables::Company, SQLTables::CompanyExec, SQLTables::Meeting];
 					break;
 
 				default:
