@@ -113,11 +113,10 @@
 			<!-- /.col-lg-12 -->
 		</div>
 
-		<div class="row col-md-6">
-			<a href="query.php?submit=true&QueryType=Insert&TableName=Company"><h4><i class="glyphicon glyphicon-plus"></i>Add Company</h4></a>
-		</div>
-			<div class="col-md-6">
-			<a href="query.php?submit=true&QueryType=Modify&TableName=Company"><h4><i class="glyphicon glyphicon-pencil"></i>Edit Company</h4></a>
+		<div class="row">
+			<?php
+				echo generate_table_button(SQLTables::Company);
+			?>
 		</div>
 		<br />
 

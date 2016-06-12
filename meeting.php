@@ -159,15 +159,9 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md-6">
-			<a href="query.php?submit=true&QueryType=Insert&TableName=Meeting"><h4><i class="glyphicon glyphicon-plus"></i> Add Meeting</h4></a>
-			</div>
-			<div class="col-md-3 col-md-offset-3">
-				<?php
-					if($latestMeeting)
-						echo '<button class="btn btn-warning" data-toggle="collapse" data-target="#meetingOutcome">Add Outcome of Latest Meeting</button>';
-				?>
-			</div>
+			<?php
+				echo generate_table_button(SQLTables::Meeting);
+			?>
 		</div>
 		<br />
 		<?php
