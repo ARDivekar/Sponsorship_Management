@@ -80,10 +80,18 @@
 		function __toString(){
 			$out = "";
 			if ($this->labelText){
-				if ($this->labelCSSClass){
-					$out .= '<label for="' . $this->name . '" class="' . $this->labelCSSClass . '">' . $this->labelText . ':</label> ';
-				}
-				else $out .= '<label for="' . $this->name . '">' . $this->labelText . ':</label> ';
+				$out .= '<label for="' . $this->name . '"';
+
+				if ($this->labelCSSClass)
+					 $out .=' class="' . $this->labelCSSClass . '"';
+
+				$out .= '>' . $this->labelText;
+
+				if($this->required)
+					$out .=  '*';
+
+				$out .= ' :</label> ';
+
 			}
 
 			if($this->inputType == InputTypes::textarea){
