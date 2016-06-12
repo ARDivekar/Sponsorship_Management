@@ -211,10 +211,11 @@
 		var $formCSSClass = NULL;
 		var $fields = NULL;    //an array of InputField, SelectField objects.
 		var $title = NULL;
+		var $subtitle = NULL;
 		var $fieldSeparator = NULL;
 
 
-		function HTMLForm($formName, $formAction, $formMethod, $fields, $formCSSClass=NULL, $title = NULL, $fieldSeparator="<br>"){
+		function HTMLForm($formName, $formAction, $formMethod, $fields, $formCSSClass=NULL, $title = NULL, $subtitle = NULL, $fieldSeparator="<br>"){
 			if (!FormMethod::isValidValue($formMethod)){
 				echo "Invalid formMethod passed to constructor of class HTMLForm.";
 
@@ -228,6 +229,7 @@
 			}
 			$this->formCSSClass = $formCSSClass;
 			$this->title = $title;
+			$this->subtitle = $subtitle;
 			$this->fieldSeparator = $fieldSeparator;
 		}
 
@@ -286,6 +288,8 @@
 			$out = "";
 			if($this->title)
 				$out .= "<h2 align=\"center\">$this->title:</h2>";
+			if($this->subtitle)
+				$out .= "<h4 align=\"center\">$this->subtitle</h4>";
 			$out .= "<form action= \"$this->formAction\"  method= \"$this->formMethod\" name=\"$this->formName\" ";
 			if($this->formCSSClass)
 				$out.=" class=\"$this->formCSSClass\"";

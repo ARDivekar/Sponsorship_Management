@@ -541,8 +541,8 @@
 							*/
 						],
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Insert a ".UserTypes::SponsRep,
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 
@@ -603,8 +603,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Modify details of a ".UserTypes::SponsRep,
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 
@@ -640,8 +640,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Completely Remove ".UserTypes::SponsRep,
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 			}
@@ -709,7 +709,9 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = QueryForm::commonFormClass, $title = "Enter a new transaction into the Festival Account", $fieldSeparator = "<br>"
+						), $formCSSClass = QueryForm::commonFormClass, 
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 
@@ -749,7 +751,9 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = QueryForm::commonFormClass, $title = "Enter the values of the modified transaction", $fieldSeparator = "<br>"
+						), $formCSSClass = QueryForm::commonFormClass, 
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 				case QueryTypes::Delete :
@@ -774,7 +778,9 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = QueryForm::commonFormClass, $title = "Delete an account transaction", $fieldSeparator = "<br>"
+						), $formCSSClass = QueryForm::commonFormClass, 
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 			}
@@ -833,8 +839,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Insert a new Company",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 
 					);
 					break;
@@ -884,8 +890,8 @@
 							)*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Update Company details",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 
 					);
 					break;
@@ -913,8 +919,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Remove details of a Company",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 			}
@@ -972,8 +978,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Insert a new Company Executive",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 
 				case QueryTypes::Modify :
@@ -1021,8 +1027,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Edit details of Company Executive",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 
@@ -1054,8 +1060,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Remove a Company Executive",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 
 			}
@@ -1123,8 +1129,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Enter details of a meeting",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 
@@ -1188,8 +1194,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Update details of a meeting",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 				case QueryTypes::Delete :
@@ -1221,8 +1227,8 @@
 							*/
 						),
 						$formCSSClass = QueryForm::commonFormClass,
-						$title = "Delete a meeting",
-						$fieldSeparator = "<br>"
+						$title = NULL,
+						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
 					break;
 			}
@@ -1472,11 +1478,58 @@
 			}
 		}
 
+		function setTitleAndSubtitle(){
+			if($this->isValidForm){
+				$title = "";
+				$subtitle = "";
+
+				switch($this->queryType){
+					case QueryTypes::Insert :
+						$title .= "Insert ";
+						$subtitle .= "Please fill in all required fields";
+						break;
+					case QueryTypes::Modify :
+						$title .= "Modify details of ";
+						$subtitle .= "Leave blank fields any you do not want to change";
+						break;
+					case QueryTypes::Delete :
+						$title .= "Remove ";
+						$subtitle .= "This action is irreversible, proceed with caution!";
+						break;
+				}
+
+				switch ($this->tableName){
+					case SQLTables::SectorHead:
+						$title .= "a Sector Head";
+						break;
+					case SQLTables::SponsRep:
+						$title .= "Sponsorship Representative";
+						break;
+					case SQLTables::Meeting:
+						$title .= "a Meeting";
+						break;
+					case SQLTables::AccountLog:
+						$title .= "a Transaction";
+						break;
+					case SQLTables::Company:
+						$title .= "a Company";
+						break;
+					case SQLTables::CompanyExec:
+						$title .= "a Company Executive";
+						break;
+				}
+
+				$this->HTMLQueryForm->title = $title;
+				$this->HTMLQueryForm->subtitle = $subtitle;
+			}
+		}
+
 
 		function generateForm(){
 			$out = "";
 			if ($this->isValidForm){
 				$this->extractFromGET();
+				$this->setTitleAndSubtitle();
 				$out.=$this->HTMLQueryForm;
 			}
 			else echo "The Query form is not valid";
