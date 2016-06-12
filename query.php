@@ -17,7 +17,7 @@
 	include_once "library_functions.php";
 	include_once "Authorization.php";
 
-	if (!isset($_GET['Submit']) && !isset($_GET['submit'])) {
+	if (!extractValueFromGET("Submit") && !extractValueFromGET("submit")) {
 		header("Location: home.php");
 	}
 
