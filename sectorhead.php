@@ -8,7 +8,7 @@
 		include_once "table_output.php"
 
 	?>
-	<title>Companies</title>
+	<title>Meetings</title>
 
 	<!-- DataTables CSS -->
 	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
@@ -101,52 +101,54 @@
 
 	<!-- Navigation -->
 	<?php
-		include_once("./UserNavBar.php");
-		include_once("library_functions.php");
+		include("./UserNavBar.php");
 	?>
 
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Companies</h1>
+				<h1 class="page-header">Sector Heads</h1>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
 
-		<div class="row col-md-6">
-			<a href="query.php?submit=true&QueryType=Insert&TableName=Company"><h4><i class="glyphicon glyphicon-plus"></i>Add Company</h4></a>
-		</div>
+		<div class="row">
 			<div class="col-md-6">
-			<a href="query.php?submit=true&QueryType=Modify&TableName=Company"><h4><i class="glyphicon glyphicon-pencil"></i>Edit Company</h4></a>
+				<a href="query.php?submit=true&QueryType=Insert&TableName=SectorHead"><h4><i class="glyphicon glyphicon-plus"></i>Add Sector Head</h4></a>
+			</div>
+			<div class="col-md-6">
+				<a href="query.php?submit=true&QueryType=Modify&TableName=SectorHead"><h4><i class="glyphicon glyphicon-pencil"></i>Edit Sector Head</h4></a>
+			</div>
 		</div>
 		<br />
 
 		<!-- /.row -->
 		<div class="row">
-			<div class="col-lg-12">
+			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Companies of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector
+						Sector Heads of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-
-						<div class="dataTable_wrapper">
-
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
+
 								$db = new SponsorshipDB();
 
 								$t = new TableOutput(
 									$_SESSION[SessionEnums::UserAccessLevel],
-									SQLTables::Company
+									SQLTables::SectorHead
 								);
 
 								$result = $db->select($t->getOutputQuery());
 								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
 							?>
 
+						</div>
+						<!-- /.table-responsive -->
+						
 					</div>
 					<!-- /.panel-body -->
 				</div>

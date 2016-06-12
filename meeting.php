@@ -114,7 +114,7 @@
 
 		<div class="row">
 			<div class="col-md-6">
-			<a href="#"><h4><i class="glyphicon glyphicon-plus"></i> Add Meeting</h4></a>
+			<a href="query.php?submit=true&QueryType=Insert&TableName=Meeting"><h4><i class="glyphicon glyphicon-plus"></i> Add Meeting</h4></a>
 			</div>
 			<div class="col-md-3 col-md-offset-3">
 				<button class="btn btn-warning" data-toggle="collapse" data-target="#meetingOutcome">Add Outcome of Latest Meeting</button>
@@ -139,12 +139,7 @@
 			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-<<<<<<< HEAD
-
-						Meetings of <?php echo $_SESSION[SessionEnums::UserSector]; ?> Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
-=======
 						Meetings of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector ( For CSO - All), Here we need to add an option of adding outcome for a particular meeting. It should be a column
->>>>>>> refs/remotes/origin/GUI-and-PHP-changes
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">

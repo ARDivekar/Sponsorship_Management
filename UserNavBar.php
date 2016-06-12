@@ -51,28 +51,28 @@
         <div class="sidebar-nav navbar-collapse">
             <ul class="nav" id="side-menu">
                 <li>
-                    <a href="homepage.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                    <a href="homepage.php"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                 </li>
                 <li>
-                    <a href="companies.php"><i class="fa fa-building-o fa-fw"></i> Companies</a>
+                    <a href="companies.php"><i class="fa fa-building-o fa-fw"></i>Companies</a>
+                </li>
+                <li>
+                    <a href="companyexec.php"><i class="fa fa-building-o fa-fw"></i>Company Executives</a>
                 </li>
 		        <li>
-                    <a href="meeting.php"><i class="fa fa-calendar fa-fw"></i> Meeting Log</a>
+                    <a href="meeting.php"><i class="fa fa-calendar fa-fw"></i>Meeting Log</a>
                 </li>
                 <li>
-                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i> Account Log</a>
+                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i>Account Log</a>
+                </li>
+                <li id="reports">
+                    <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i>Reports</a>
                 </li>
                 <li>
-                    <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i> Reports</a>
+                    <a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>Sector Heads</a>
                 </li>
                 <li>
-                    <a href="sector_head.php"><i class="fa fa-user fa-fw"></i> Sector Heads</a>
-                </li>
-                <li>
-                    <a href="spons_rep.php"><i class="fa fa-users fa-fw"></i> Sponsorship Representatives</a>
-                </li>
-                <li>
-                    <a href="sectors.php"><i class="fa fa-th-list fa-fw"></i> Sectors</a>
+                    <a href="sponsrep.php"><i class="fa fa-users fa-fw"></i>Sponsorship Representatives</a>
                 </li>
             </ul>
         </div>
