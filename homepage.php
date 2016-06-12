@@ -255,7 +255,7 @@
 			<div class="col-lg-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<i class="fa fa-calendar"></i>&nbsp;&nbsp;5 Closest Upcoming Meetings
+						<i class="fa fa-calendar"></i>&nbsp;&nbsp;5 Most Recent Upcoming Meetings
 					</div>
 					<div class="panel-body" style="overflow-x:scroll;">
 						<?php
