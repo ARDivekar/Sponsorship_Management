@@ -200,8 +200,9 @@
 
 								$meetingQuery = $t->getOutputQuery();
 								$meetingOutputResult = $db->select($meetingQuery);
-
-								echo make_simple_table($meetingOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								if(count($meetingOutputResult)>0)
+									echo make_simple_table($meetingOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No meetings</h1>";
 							?>
 
 						</div>

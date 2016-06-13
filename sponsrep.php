@@ -139,8 +139,10 @@
 									SQLTables::SponsRep
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$sponsRepOutputResult = $db->select($t->getOutputQuery());
+								if(count($sponsRepOutputResult)>0)
+									echo make_simple_table($sponsRepOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No Sponsorship Representatives</h1>";
 							?>
 
 						</div>

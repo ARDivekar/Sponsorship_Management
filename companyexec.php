@@ -142,8 +142,10 @@
 									SQLTables::CompanyExec
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$comanyExecOutputResult = $db->select($t->getOutputQuery());
+								if(count($comanyExecOutputResult)>0)
+									echo make_simple_table($comanyExecOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No Company Executives</h1>";
 							?>
 
 					</div>

@@ -139,8 +139,11 @@
 									SQLTables::AccountLog
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$accountOutputResult = $db->select($t->getOutputQuery());
+								if(count($accountOutputResult)>0)
+									echo make_simple_table($accountOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No transactions</h1>";
+
 							?>
 
 						</div>

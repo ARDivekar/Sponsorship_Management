@@ -142,8 +142,10 @@
 									SQLTables::SectorHead
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$sectorHeadOutputResult = $db->select($t->getOutputQuery());
+								if(count($sectorHeadOutputResult)>0)
+									echo make_simple_table($sectorHeadOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No Sector Heads</h1>";
 							?>
 
 						</div>
