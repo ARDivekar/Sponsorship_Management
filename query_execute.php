@@ -684,7 +684,31 @@
 
 	$e = new QueryExecute($_SESSION[SessionEnums::UserAccessLevel], $_SESSION[QueryFormSessionEnums::TableName], $_SESSION[QueryFormSessionEnums::QueryType]);
 	$e->setSystemGenerated();
-	$e->executeQuery();
+	if($e->executeQuery()){
+		echo "<h1>Successfully executed query: ".$_SESSION[QueryFormSessionEnums::QueryType]." ".$_SESSION[QueryFormSessionEnums::TableName]."</h1>";
+	}
+
+	switch($_SESSION[QueryFormSessionEnums::TableName]){
+		case SQLTables::SponsRep:
+			header("Location: sponsrep.php");
+			break;
+		case SQLTables::SectorHead:
+			header("Location: sectorhead.php");
+			break;
+		case SQLTables::Company:
+			header("Location: companies.php");
+			break;
+		case SQLTables::CompanyExec:
+			header("Location: companyexec.php");
+			break;
+		case SQLTables::AccountLog:
+			header("Location: accounts.php");
+			break;
+		case SQLTables::Meeting:
+			header("Location: meeting.php");
+			break;
+	}
+
 
 
 
