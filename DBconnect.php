@@ -218,6 +218,9 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			if(!self::$connection)
 				return false;
 
+			if(count($queryList)==0)
+				return false;
+
 			$this->startTransaction();
 			foreach($queryList as $query){
 				if($this->query($query) === FALSE){

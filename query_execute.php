@@ -181,24 +181,23 @@
 
 
 				$sqlStringsToExecute = [];
-				foreach($sqlQueriesToExecute as $queryObj){
-					array_push($sqlStringsToExecute, $queryObj->getQuery());
+				if(count($sqlQueriesToExecute)>0){
+					foreach ($sqlQueriesToExecute as $queryObj){
+						array_push($sqlStringsToExecute, $queryObj->getQuery());
+					}
 				}
+
+				echo "<hr>";
+				foreach($sqlStringsToExecute as $query)
+					echo "$query<br>";
 
 				if($db->performTransaction($sqlStringsToExecute)){
 //					echo "<hr>Successfully executed queries:";
-//					foreach($sqlQueriesToExecute as $query)
-//						echo "<br> $query";
 					return true;
 				}
 
-				echo "<hr>Could not execute queries:";
-				foreach($sqlQueriesToExecute as $query)
-					echo "<br> $query";
-
 
 			}
-
 			return false;
 		}
 
@@ -685,8 +684,9 @@
 	$e = new QueryExecute($_SESSION[SessionEnums::UserAccessLevel], $_SESSION[QueryFormSessionEnums::TableName], $_SESSION[QueryFormSessionEnums::QueryType]);
 	$e->setSystemGenerated();
 	if($e->executeQuery()){
-		echo "<h1>Successfully executed query: ".$_SESSION[QueryFormSessionEnums::QueryType]." ".$_SESSION[QueryFormSessionEnums::TableName]."</h1>";
+		$_SESSION[QueryExecSessionEnums::QueryResultText] = "<h3 style=\"color: #070f14\">Successfully executed query: ".$_SESSION[QueryFormSessionEnums::QueryType]." ".$_SESSION[QueryFormSessionEnums::TableName]."</h3>";
 	}
+	else $_SESSION[QueryExecSessionEnums::QueryResultText] = "<h3 style=\"color: #ed2f3f\">Could not execute query: ".$_SESSION[QueryFormSessionEnums::QueryType]." ".$_SESSION[QueryFormSessionEnums::TableName]."</h3>";
 
 	switch($_SESSION[QueryFormSessionEnums::TableName]){
 		case SQLTables::SponsRep:
