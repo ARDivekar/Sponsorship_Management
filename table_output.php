@@ -171,7 +171,10 @@
 							[SQLTables::SponsOfficer.".SponsID", "Meeter ID"], [SQLTables::SponsOfficer.".Name", "Meeter Name"],
 							[SQLTables::Meeting.".MeetingType", "Meeting Type"], [SQLTables::Meeting.".Date", "Date"],
 							[SQLTables::Meeting.".Time", "Time"], [SQLTables::Meeting.".Address", "Address"]
-						]
+						],
+						$whereClause=NULL,
+						$groupByClause=NULL,
+						$orderByClause="Date DESC, Time DESC"
 					);
 					break;
 
