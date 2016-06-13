@@ -105,7 +105,6 @@
 
 
 
-
 		function getWhereClauseRequiredInDB($tableName){
 			$queryType = $this->queryType;
 
@@ -134,7 +133,7 @@
 
 //			echo "<hr>".$q->getQuery()."<hr>";
 
-			if( count($db->select($q->getQuery())) > 0 )
+			if(count($db->select($q->getQuery())) > 0)
 				return true;
 
 			return false;
@@ -155,101 +154,6 @@
 			return true;
 		}
 
-
-
-		function executeQuery(){
-			if (Authorization::checkValidAuthorization($this->userType, $this->tableName, $this->queryType)){
-				//user is authorized to run this query
-
-				if(!$this->checkRequiredFields())
-					return false;
-
-				$db = new SponsorshipDB();
-				$sqlQueriesToExecute = [];
-
-				switch ($this->userType){
-					case UserTypes::CSO:
-						$sqlQueriesToExecute = $this->getCSOQuery();
-						break;
-					case UserTypes::SectorHead:
-						$sqlQueriesToExecute = $this->getSectorHeadQuery();
-						break;
-					case UserTypes::SponsRep:
-						$sqlQueriesToExecute = $this->getSponsRepQuery();
-						break;
-				}
-
-
-				$sqlStringsToExecute = [];
-				if(count($sqlQueriesToExecute)>0){
-					foreach ($sqlQueriesToExecute as $queryObj){
-						array_push($sqlStringsToExecute, $queryObj->getQuery());
-					}
-				}
-
-				echo "<hr>";
-				foreach($sqlStringsToExecute as $query)
-					echo "$query<br>";
-
-				if($db->performTransaction($sqlStringsToExecute)){
-//					echo "<hr>Successfully executed queries:";
-					return true;
-				}
-
-
-			}
-			return false;
-		}
-
-
-		function getCSOQuery(){
-			switch($this->tableName){
-				case SQLTables::Event :
-					return $this->getCSOEventSQLQuery();
-					break;
-				case SQLTables::SponsLogin :
-//					return $this->setCSOSponsLoginSQLQuery();
-					break;
-				case SQLTables::SponsRep :
-					return $this->getCSOSponsRepSQLQuery();
-					break;
-				case SQLTables::SectorHead :
-					return $this->getCSOSectorHeadSQLQuery();
-					break;
-				case SQLTables::AccountLog :
-					return $this->getCSOAccountLogSQLQuery();
-					break;
-				case SQLTables::Company :
-					return $this->getCSOCompanySQLQuery();
-					break;
-				case SQLTables::CompanyExec :
-					return $this->getCSOCompanyExecSQLQuery();
-					break;
-				case SQLTables::Meeting :
-					return $this->getCSOMeetingSQLQuery();
-					break;
-			}
-		}
-
-
-
-
-		function getCSOEventSQLQuery(){
-			/*For reference:
-				SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
-			*/
-
-			switch($this->queryType){
-				case QueryTypes::Insert :
-
-					break;
-				case QueryTypes::Modify :
-					break;
-				case QueryTypes::Delete :
-					break;
-			}
-			return NULL;
-		}
 
 
 		function makeInsert($tableName){
@@ -277,8 +181,6 @@
 
 			return $queryObjs;
 		}
-
-
 
 
 
@@ -320,14 +222,19 @@
 				$tableRequiredWhereClause = $this->getWhereClauseRequiredInDB($tableName);
 
 				// Check:
-				if(!$this->checkRequiredExistsInDB($tableName, $tableRequiredWhereClause))
+				if(!$this->checkRequiredExistsInDB($tableName, $tableRequiredWhereClause)){
 					return NULL;
+				}
 
 				// Make:
-				if($queryType == QueryTypes::Modify)
+				if($queryType == QueryTypes::Modify){
 					array_push($queryObjs, $this->makeUpdate($tableName,$tableRequiredWhereClause));
-				else if($queryType == QueryTypes::Delete)
+//					echo $this->makeUpdate($tableName,$tableRequiredWhereClause);
+				}
+				else if($queryType == QueryTypes::Delete){
 					array_push($queryObjs, $this->makeDelete($tableName,$tableRequiredWhereClause));
+//					echo $this->makeDelete($tableName,$tableRequiredWhereClause);
+				}
 				else return NULL;
 
 			}
@@ -340,6 +247,103 @@
 
 
 
+
+
+		function executeQuery(){
+			if (Authorization::checkValidAuthorization($this->userType, $this->tableName, $this->queryType)){
+				//user is authorized to run this query
+
+				if(!$this->checkRequiredFields())
+					return false;
+
+				$db = new SponsorshipDB();
+				$sqlQueriesToExecute = [];
+
+				switch ($this->userType){
+					case UserTypes::CSO:
+						$sqlQueriesToExecute = $this->getCSOQuery();
+						break;
+					case UserTypes::SectorHead:
+						$sqlQueriesToExecute = $this->getSectorHeadQuery();
+						break;
+					case UserTypes::SponsRep:
+						$sqlQueriesToExecute = $this->getSponsRepQuery();
+						break;
+				}
+
+
+				$sqlStringsToExecute = [];
+				if(count($sqlQueriesToExecute)>0){
+					foreach ($sqlQueriesToExecute as $queryObj){
+						array_push($sqlStringsToExecute, $queryObj->getQuery());
+					}
+				}
+//				else echo "No queries to execute";
+
+//				echo "<hr>";
+//				foreach($sqlStringsToExecute as $query)
+//					echo "$query<br>";
+
+				if($db->performTransaction($sqlStringsToExecute)){
+//					echo "<hr>Successfully executed queries:";
+					return true;
+				}
+
+
+			}
+			return false;
+		}
+
+
+
+
+
+		function getCSOQuery(){
+			switch($this->tableName){
+				case SQLTables::Event :
+					return $this->getCSOEventSQLQuery();
+					break;
+				case SQLTables::SponsLogin :
+//					return $this->setCSOSponsLoginSQLQuery();
+					break;
+				case SQLTables::SponsRep :
+					return $this->getCSOSponsRepSQLQuery();
+					break;
+				case SQLTables::SectorHead :
+					return $this->getCSOSectorHeadSQLQuery();
+					break;
+				case SQLTables::AccountLog :
+					return $this->getCSOAccountLogSQLQuery();
+					break;
+				case SQLTables::Company :
+					return $this->getCSOCompanySQLQuery();
+					break;
+				case SQLTables::CompanyExec :
+					return $this->getCSOCompanyExecSQLQuery();
+					break;
+				case SQLTables::Meeting :
+					return $this->getCSOMeetingSQLQuery();
+					break;
+			}
+		}
+
+
+
+		function getCSOEventSQLQuery(){
+			/*For reference:
+				SQLTables::Event => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//can only insert an Event, not an Organization
+			*/
+
+			switch($this->queryType){
+				case QueryTypes::Insert :
+					break;
+				case QueryTypes::Modify :
+					break;
+				case QueryTypes::Delete :
+					break;
+			}
+			return NULL;
+		}
 
 
 		function getCSOSponsRepSQLQuery(){
@@ -363,7 +367,7 @@
 					break;
 
 				case QueryTypes::Delete :
-					$this->checkExistsAndMakeMultipleQueryObjs(
+					return $this->checkExistsAndMakeMultipleQueryObjs(
 							$tablesList = [SQLTables::CommitteeMember, $this->tableName],
 							$queryType = $this->queryType
 					);
@@ -371,7 +375,6 @@
 			}
 			return NULL;
 		}
-
 
 
 		function getCSOSectorHeadSQLQuery(){
@@ -382,7 +385,9 @@
 
 			switch($this->queryType){
 				case QueryTypes::Insert :
+					return $this->makeMultipleInsertQueryObjs([SQLTables::CommitteeMember, SQLTables::SponsLogin, $this->tableName]);
 					break;
+
 				case QueryTypes::Modify :
 					if($this->checkIfFieldIsPresent(
 							[QueryFieldNames::SponsPassword, QueryFieldNames::SponsRePassword], FormMethod::POST)
@@ -392,7 +397,6 @@
 							$queryType = $this->queryType
 					);
 					break;
-
 
 				case QueryTypes::Delete :
 					return $this->checkExistsAndMakeMultipleQueryObjs(
@@ -487,6 +491,7 @@
 			return NULL;
 		}
 
+
 		function getCSOMeetingSQLQuery(){
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View]
@@ -513,6 +518,10 @@
 			}
 			return NULL;
 		}
+
+
+
+
 
 
 
@@ -546,11 +555,13 @@
 		}
 
 
+
 		function getSectorHeadEventSQLQuery(){
 			/*For reference:
 				SQLTables::Event => [],	//empty means no queries allowed
 			*/
 		}
+
 
 		function getSectorHeadSponsRepSQLQuery(){
 			/*For reference:
@@ -559,12 +570,14 @@
 			return $this->getCSOSponsRepSQLQuery();
 		}
 
+
 		function getSectorHeadSectorHeadSQLQuery(){
 			/*For reference:
 				SQLTables::SectorHead => [],
 			*/
 			return NULL;
 		}
+
 
 		function getSectorHeadAccountLogSQLQuery(){
 			/*For reference:
@@ -573,12 +586,14 @@
 			return $this->getCSOAccountLogSQLQuery();
 		}
 
+
 		function getSectorHeadCompanySQLQuery(){
 			/*For reference:
 				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
 			return $this->getCSOCompanySQLQuery();
 		}
+
 
 		function getSectorHeadCompanyExecSQLQuery(){
 			/*For reference:
@@ -587,12 +602,16 @@
 			return $this->getCSOCompanyExecSQLQuery();
 		}
 
+
 		function getSectorHeadMeetingSQLQuery(){
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 			*/
 			return $this->getCSOMeetingSQLQuery();
 		}
+
+
+
 
 
 
@@ -627,12 +646,14 @@
 		}
 
 
+
 		function getSponsRepEventSQLQuery(){
 			/*For reference:
 				SQLTables::Event => [QueryTypes::View],		//Can only view own details.
 			*/
 			return NULL;
 		}
+
 
 		function getSponsRepSponsRepSQLQuery(){
 			/*For reference:
@@ -641,12 +662,14 @@
 			return NULL;
 		}
 
+
 		function getSponsRepSectorHeadSQLQuery(){
 			/*For reference:
 				SQLTables::SectorHead => [],
 			*/
 			return NULL;
 		}
+
 
 		function getSponsRepAccountLogSQLQuery(){
 			/*For reference:
@@ -655,12 +678,14 @@
 			return NULL;
 		}
 
+
 		function getSponsRepCompanySQLQuery(){
 			/*For reference:
 				SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			*/
 			return $this->getCSOCompanySQLQuery();
 		}
+
 
 		function getSponsRepCompanyExecSQLQuery(){
 			/*For reference:
@@ -669,13 +694,13 @@
 			return $this->getCSOCompanyExecSQLQuery();
 		}
 
+
 		function getSponsRepMeetingSQLQuery(){
 			/*For reference:
 				SQLTables::Meeting => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::View] //Can only view for own sector, and only modify own.
 			*/
 			return $this->getCSOMeetingSQLQuery();
 		}
-
 
 
 	}
