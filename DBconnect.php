@@ -47,6 +47,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 
 		protected static $connection; // The database connection
 		private static $hostname = NULL;
+		private static $portnumber = NULL;
 		private static $username = NULL;
 		private static $password = NULL;
 		private static $dbname = NULL;
@@ -62,6 +63,10 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 				if(array_key_exists("hostname", $config))
 					self::$hostname = $config["hostname"];
 				else self::$hostname = NULL;
+
+				if(array_key_exists("portnumber", $config))
+					self::$portnumber = $config["portnumber"];
+				else self::$portnumber = NULL;
 
 				if(array_key_exists("username", $config))
 					self::$username = $config["username"];
@@ -85,7 +90,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 
 		private function resetConnection(){ //this code must be swapped when changing PHP database handlers
 			if(self::$validConnectionDetails){
-				self::$connection = new mysqli(self::$hostname, self::$username, self::$password, self::$dbname);
+				self::$connection = new mysqli(self::$hostname, self::$username, self::$password, self::$dbname, self::$portnumber);
 				return true;
 			} else self::$connection = NULL;
 			return false;
