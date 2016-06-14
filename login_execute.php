@@ -1,22 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>Material Login Form</title>
-
-
-	<link rel="stylesheet" href="./LoginForm/css/reset.css">
-
-	<link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900|RobotoDraft:400,100,300,500,700,900'>
-
-	<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'>
-
-	<link rel="stylesheet" href="./LoginForm/css/style.css">
-
-</head>
-
-<body>
-
 <?php
 	include_once "DBconnect.php";
 	$db = new SponsorshipDB();
@@ -26,84 +7,11 @@
 	include_once "SponsEnums.php";
 	include_once "SponsDBFunctions.php";
 	include_once "UserNavBarImports.php";
-?>
-
-
-<div class="container header-margin">
-	<div class="card"></div>
-	<div class="card">
-		<h1 class="title">Login</h1>
-
-		<form name="SponsLogin" action="login.php" method="<?php echo FormMethod::POST; ?>">
-			<div class="input-container">
-				<input type="text" id="Username" required="required" name="<?php echo SessionEnums::UserLoginID; ?>"/>
-				<label for="Username">Username</label>
-
-				<div class="bar"></div>
-			</div>
-			<div class="input-container">
-				<input type="password" id="Password" required="required" name="<?php echo QueryFieldNames::SponsPassword; ?>"/>
-				<label for="Password">Password</label>
-
-				<div class="bar"></div>
-			</div>
-			<div class="button-container">
-				<button name="<?php echo QueryFieldNames::Submit; ?>"><span>Go</span></button>
-			</div>
-			<div class="footer"><a href="#">Forgot your password?</a></div>
-		</form>
-	</div>
-	<div class="card alt">
-		<div class="toggle"></div>
-		<h1 class="title">Change Password
-			<div class="close"></div>
-		</h1>
-		<form>
-			<div class="input-container">
-				<input type="text" id="Username" required="required"/>
-				<label for="Username">Username</label>
-
-				<div class="bar"></div>
-			</div>
-			<div class="input-container">
-				<input type="password" id="Password" required="required"/>
-				<label for="Password">Password</label>
-
-				<div class="bar"></div>
-			</div>
-			<div class="input-container">
-				<input type="password" id="Repeat Password" required="required"/>
-				<label for="Repeat Password">Repeat Password</label>
-
-				<div class="bar"></div>
-			</div>
-			<div class="button-container">
-				<button><span>Next</span></button>
-			</div>
-		</form>
-	</div>
-</div>
-
-
-<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-
-<script src="./LoginForm/js/index.js"></script>
-
-
-<?php
-
-
-	//$_SESSION[SessionEnums::UserLoginID] = $_SESSION['loginID'];
-
 
 	//Getting data from HTML form:
-
 	//$_POST is a 'superglobal' variable, and how you get data from an HTML form
-
-
-
+	
 	if (isset($_POST[QueryFieldNames::Submit])){ //Check if the form has been submitted. The form is in the same HTML file.
-
 		$SponsPassword = $_POST[QueryFieldNames::SponsPassword];
 		$SponsID = $_POST[SessionEnums::UserLoginID];
 
@@ -140,7 +48,6 @@
 						/* Could not log in:
 						 * exit script and print <invalid login message>
 						 * */
-						exit('<h3 class="valid_message">Login not authorized.<br>Please check ID and Password</h3>');
 					}
 
 					else{
@@ -175,12 +82,13 @@
 		}
 
 	}
-
-	$SponsID = ""; //safety purposes
-	$SponsPassword = "";
-
-?>
-
-
-</body>
-</html>
+	?>
+	<script type="text/javascript">
+		function sleep(milliseconds) {
+		  var start = new Date().getTime();
+		  while((new Date().getTime() - start) < milliseconds){
+		  }
+		}
+		document.write('<h1 align="center" style="color: #cc0000;" class="valid_message">Login not authorized.<br>Please check ID and Password</h1>');
+		window.location="login.php";
+	</script>
