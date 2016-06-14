@@ -458,7 +458,7 @@ body {
   .card.alt .toggle{
     width:100px;
     height:100px;
-    line-height: 100px;
+    line-height: 95px;
     font-size: 50px;
     border-radius: 100%;
     margin-left: 20px;
@@ -477,15 +477,6 @@ body {
   .container{
     max-width: 450px;
   }
-
-  .card.alt .toggle{
-    width:100px;
-    height:100px;
-    line-height: 100px;
-    font-size: 50px;
-    border-radius: 100%;
-  }
-
 
  .card.alt .title .close {
     top:-5px;
@@ -507,14 +498,6 @@ body {
     max-width: 450px;
   }
 
-  .card.alt .toggle{
-    width:100px;
-    height:100px;
-    line-height: 100px;
-    font-size: 50px;
-    border-radius: 100%;
-  }
-
   .card.alt .title .close {
     top:-5px;
     right:50px;
@@ -529,15 +512,6 @@ body {
   .container{
     max-width: 450px;
   }
-
-  .card.alt .toggle{
-    width:100px;
-    height:100px;
-    line-height: 100px;
-    font-size: 50px;
-    border-radius: 100%;
-  }
-
 }
 
 
