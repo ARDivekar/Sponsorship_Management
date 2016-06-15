@@ -7,13 +7,13 @@
 		include_once "table_output.php";
 
 		if(!isset($_SESSION[SessionEnums::UserLoginID]))
-		session_start();
+			session_start();
 		if(!$_SESSION[SessionEnums::UserLoginID])
 			header("Location: login.php");
 
 		include('UserNavBarImports.php');
 	?>
-	<title>CSO profile</title>
+	<title>My Homepage</title>
 	<!-- Timeline CSS -->
 	<link href="./User_GUI_CSS/dist/css/timeline.css" rel="stylesheet">
 
@@ -82,8 +82,8 @@
 </head>
 
 <body>
-	<?php 
-		
+	<?php
+
 		/*Resume old session:*/
 		// session_start();
 
@@ -149,7 +149,7 @@
 							</div>
 							<div class="col-xs-9 text-right">
 								<div class="huge">
-									<?php 
+									<?php
 										$TotalIncome= $db->select("SELECT SUM(Amount) as 'Sum' FROM AccountLog WHERE TransType='Deposit'");
 										echo $TotalIncome[0]['Sum'];
 									?>
@@ -177,8 +177,8 @@
 							</div>
 							<div class="col-xs-9 text-right">
 								<div class="huge">
-									<?php 
-										$MeetingsCount= $db->select("SELECT Count(MeetingType) as 'Count' FROM `meeting` WHERE MeetingType='Meet'");
+									<?php
+										$MeetingsCount= $db->select("SELECT Count(MeetingType) as 'Count' FROM `Meeting` WHERE MeetingType='Meet'");
 										echo $MeetingsCount[0]['Count'];
 									?>
 								</div>
@@ -205,8 +205,8 @@
 							</div>
 							<div class="col-xs-9 text-right">
 								<div class="huge">
-									<?php 
-										$CompaniesCalledCount= $db->select("SELECT COUNT(CMPStatus) as 'Count' FROM `company` WHERE CMPStatus != 'Not called'");
+									<?php
+										$CompaniesCalledCount= $db->select("SELECT COUNT(CMPStatus) as 'Count' FROM `Company` WHERE CMPStatus != 'Not called'");
 										echo $CompaniesCalledCount[0]['Count'];
 									?>
 								</div>
@@ -235,15 +235,17 @@
 					<div class="panel-body" style="overflow-x:scroll;">
 						<div id="money-progress"></div>
 						<script>
-							
+
 							new Morris.Line({
-							  element: 'money-progress', 
-							  data: <?php 
-							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'amount', WEEK(Date) as 'week' FROM `accountlog` GROUP BY WEEK(Date)");
-							  echo json_encode($MoneyProgress);
+							  element: 'money-progress',
+							  data: <?php
+							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'Amount', WEEK(Date) as 'Week' FROM `AccountLog` GROUP BY WEEK(Date)");
+							  if(count($MoneyProgress)>0)
+							  	echo json_encode($MoneyProgress);
+							  else echo "<h1>Graph Unavailiable</h1>";
 							  ?>,
-							  xkey: ['week'],
-							  ykeys: ['amount'],
+							  xkey: ['Week'],
+							  ykeys: ['Amount'],
 							  labels: ['Amount']
 							});
 
