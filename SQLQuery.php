@@ -253,7 +253,13 @@
 					strpos($text, ";") === FALSE &&
 					strpos($text, " insert ") === FALSE &&
 					strpos($text, " update ") === FALSE &&
-					strpos($text, " delete ") === FALSE
+					strpos($text, " delete ") === FALSE &&
+					strpos($text, " drop table ") === FALSE &&
+					strpos($text, " truncate ") === FALSE &&
+					strpos($text, " show table ") === FALSE &&
+					strpos($text, " analyze table ") === FALSE &&
+					strpos($text, " optimize table ") === FALSE &&
+					strpos($text, " repair table ") === FALSE
 				)
 				return false;
 
