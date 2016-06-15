@@ -16,7 +16,7 @@
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
         
-        <a class="navbar-brand" href="home.php">Sponsorship Department</a>
+        <a class="navbar-brand" href="homepage.php">Sponsorship Department</a>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
