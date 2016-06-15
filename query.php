@@ -211,7 +211,7 @@
 
 				case QueryFieldNames::SponsAccountLogEntryID :
 					return new InputField(
-						$inputType = InputTypes::number, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $readonly = false,
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsAccountLogEntryID, $value = "", $readonly = false,
 						$inputCSSClass = PredefinedQueryInputFields::commonInputClass, $labelText = "Account Transaction ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
 					break;
@@ -315,7 +315,7 @@
 
 				case QueryFieldNames::SponsMeetingEntryID :
 					return new InputField(
-						$inputType = InputTypes::number, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
+						$inputType = InputTypes::text, $name = QueryFieldNames::SponsMeetingEntryID, $value ="",
 						$readonly = false, $inputCSSClass = PredefinedQueryInputFields::commonInputClass,
 						$labelText = "Meeting ID", $labelCSSClass = NULL, $inputDataListID = NULL, $inputDataList = NULL, $required = true
 					);
