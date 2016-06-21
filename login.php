@@ -13,7 +13,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Sponsorship Login form</title>
+	<title>Login</title>
 
 	<link rel="stylesheet" href="./LoginForm/css/reset.css">
 

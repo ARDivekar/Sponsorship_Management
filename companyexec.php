@@ -8,7 +8,7 @@
 		include_once "table_output.php"
 
 	?>
-	<title>Companies</title>
+	<title>Company Executives</title>
 
 	<!-- DataTables CSS -->
 	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
