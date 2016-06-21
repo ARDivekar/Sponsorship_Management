@@ -327,20 +327,20 @@
 						return NULL;
 
 					if($i == 1)
-						$out .= " ".$tablesAndFieldList[0][0]." INNER JOIN ".$tablesAndFieldList[1][0]." ON (".$tablesAndFieldList[0][0].".".$tablesAndFieldList[0][1]." = ".$tablesAndFieldList[0][0].".".$tablesAndFieldList[0][1].") ";
+						$out .= " ".$tablesAndFieldList[0][0]." INNER JOIN ".$tablesAndFieldList[1][0]." ON (".$tablesAndFieldList[0][0].".".$tablesAndFieldList[0][1]." = ".$tablesAndFieldList[1][0].".".$tablesAndFieldList[1][1].") ";
 					else
 						$out .= " INNER JOIN ".$tablesAndFieldList[$i][0]." ON (".$tablesAndFieldList[$i][0].".".$tablesAndFieldList[$i][1]." = ".$tablesAndFieldList[$i-1][0].".".$tablesAndFieldList[$i-1][1].") ";
 				}
 
+				$out = " (".$out.") ";
 				return $out;
 			}
 			return NULL;
 		}
 
 
+
 		
-
-
 		public static function getUnion($tableFields, $table1, $where1=NULL, $table2, $where2=NULL, $alias=NULL){
 			$q = new SQLQuery();
 			if($tableFields && $table1 && $table2){
@@ -457,8 +457,9 @@
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
-	SQLQuery::getInnerJoinMultipleDifferentFields([
-		["AccountLog", "SponsID", "CommitteeMember"]
+	echo SQLQuery::getInnerJoinMultipleDifferentFields([
+		SQLQuery::getInnerJoinMultipleSameField( [["AccountLog", "SponsID"], ["CommitteeMember", "ID"], ["Meeting", "SponsID"]]),
+		SQLQuery::getInnerJoinMultipleSameField( [["AccountLog", "Title"], ["Company", "CMPName"]])
 	]);
 
 
