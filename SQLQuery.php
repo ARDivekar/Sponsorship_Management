@@ -340,7 +340,7 @@
 
 
 
-		
+
 		public static function getUnion($tableFields, $table1, $where1=NULL, $table2, $where2=NULL, $alias=NULL){
 			$q = new SQLQuery();
 			if($tableFields && $table1 && $table2){
