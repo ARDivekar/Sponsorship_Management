@@ -111,7 +111,9 @@
 			$whereClauseArray = [];
 			foreach(SQLTables::$DBTableStructure[$tableName] as $dbTableField){
 				$possibleQueryFieldName = QueryFieldNames::mapDBToQueryForm($tableName)[$dbTableField];
-				if(in_array($possibleQueryFieldName, QueryFieldNames::$requiredFields[$tableName][$queryType])){
+				if(in_array($possibleQueryFieldName, QueryFieldNames::$requiredFields[$tableName][$queryType])
+					&& !in_array($possibleQueryFieldName, QueryFieldNames::$inapplicableFields[$_SESSION[SessionEnums::UserAccessLevel]])
+				){
 					$valFromPOST = extractValueFromPOST($possibleQueryFieldName);
 					if($valFromPOST)
 						array_push($whereClauseArray, [$dbTableField, $valFromPOST]);

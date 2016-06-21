@@ -493,6 +493,21 @@
 
 
 
+		static $inapplicableFields = [
+			UserTypes::CSO => [
+				QueryFieldNames::SponsSector
+			],
+
+			UserTypes::SectorHead => [
+			],
+
+			UserTypes::SponsRep => [
+			],
+		];
+
+
+
+
 
 		static function mapDBToQueryForm($tableName){
 
