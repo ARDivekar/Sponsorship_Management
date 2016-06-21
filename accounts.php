@@ -140,6 +140,8 @@
 									SQLTables::AccountLog
 								);
 
+//								echo $t->getOutputQuery();
+
 								$accountOutputResult = $db->select($t->getOutputQuery());
 								if(count($accountOutputResult)>0)
 									echo make_simple_table($accountOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");

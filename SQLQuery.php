@@ -457,10 +457,7 @@
 
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
 
-	echo SQLQuery::getInnerJoinMultipleDifferentFields([
-		SQLQuery::getInnerJoinMultipleSameField( [["AccountLog", "SponsID"], ["CommitteeMember", "ID"], ["Meeting", "SponsID"]]),
-		SQLQuery::getInnerJoinMultipleSameField( [["AccountLog", "Title"], ["Company", "CMPName"]])
-	]);
+
 
 
 ?>
