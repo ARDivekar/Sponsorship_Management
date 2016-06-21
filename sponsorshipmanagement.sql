@@ -812,10 +812,16 @@ INSERT INTO `SponsRep` (`SponsID`, `Sector`, `DateAssigned`) VALUES
 
 -- --------------------------------------------------------
 
+
 DROP VIEW IF EXISTS `SponsWorker`;
 
 CREATE VIEW SponsWorker AS
-(SELECT SponsID, Sector, DateAssigned, "Sponsorship Representative" AS Role FROM SponsRep ) UNION (SELECT SponsID, Sector, DateAssigned, "Sector Head" AS Role FROM SectorHead ) ;
+(SELECT SponsID, Sector, DateAssigned, "Sponsorship Representative" AS Role FROM SponsRep ) 
+UNION 
+(SELECT SponsID, Sector, DateAssigned, "Sector Head" AS Role FROM SectorHead ) 
+UNION 
+(SELECT ID AS SponsID, "All" as Sector, NULL AS DateAssigned, Role FROM CommitteeMember WHERE Role = "CSO" ) ;
+
 
 
 
