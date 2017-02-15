@@ -423,7 +423,7 @@
 					return $this->parseCSOEventQuery();
 					break;
 				case SQLTables::SponsLogin :
-//					return $this->parseCSOSponsLoginQuery();
+					// return $this->parseCSOSponsLoginQuery();
 					break;
 				case SQLTables::SponsRep :
 					return $this->parseCSOSponsRepQuery();
@@ -710,7 +710,7 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = QueryForm::commonFormClass, 
+						), $formCSSClass = QueryForm::commonFormClass,
 						$title = NULL,
 						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
@@ -752,7 +752,7 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = QueryForm::commonFormClass, 
+						), $formCSSClass = QueryForm::commonFormClass,
 						$title = NULL,
 						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
@@ -779,7 +779,7 @@
 								$inputType = InputTypes::submit, $name = QueryFieldNames::Submit, $value = QueryFieldNames::Submit, $readonly = false, $inputCSSClass = "query_forms"
 							)
 							*/
-						), $formCSSClass = QueryForm::commonFormClass, 
+						), $formCSSClass = QueryForm::commonFormClass,
 						$title = NULL,
 						$subtitle = NULL, $fieldSeparator = "<br>"
 					);
@@ -1583,24 +1583,24 @@
 	?>
 	<div id="page-wrapper" style="background-color:
 	<?php
-//		switch(extractValueFromGET(QueryFormSessionEnums::TableName)){
-//			case SQLTables::Company :
-//				echo "#337ab7";
-//				break;
-//
-//			case SQLTables::AccountLog :
-//				echo "#5cb85c";
-//				break;
-//
-//			case SQLTables::Meeting :
-//				echo "#f0ad4e";
-//				break;
-//
-//			case SQLTables::CompanyExec :
-//				echo "#d9534f";
-//				break;
-//
-//		}
+		// switch(extractValueFromGET(QueryFormSessionEnums::TableName)){
+		// 	case SQLTables::Company :
+		// 		echo "#337ab7";
+		// 		break;
+		//
+		// 	case SQLTables::AccountLog :
+		// 		echo "#5cb85c";
+		// 		break;
+		//
+		// 	case SQLTables::Meeting :
+		// 		echo "#f0ad4e";
+		// 		break;
+		//
+		// 	case SQLTables::CompanyExec :
+		// 		echo "#d9534f";
+		// 		break;
+		//
+		// }
 	?>;">
 		<div class="container" style="width:auto; padding-left: 0px; padding-right: 0px;">
 <!--			<div class="col-md-6 col-md-offset-2" style="background-color: white; margin-top: 5%; ">-->
@@ -2587,7 +2587,7 @@
 						<br>
 						<br>
 						<input class="query_forms btn btn-primary" type="submit" name="f"	>Delete SponsRep</input>
-						
+
 					</form>
 				</div>';
 
