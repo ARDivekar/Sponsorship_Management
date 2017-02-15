@@ -12,19 +12,19 @@
 </head>
 
 <body>
-	<?php 
+	<?php
 
-		
 		/*Resume old session:*/
 		session_start();
-		if(empty($_SESSION['loginID']))
+
+		include_once('library_functions.php');
+		include_once "SponsDBFunctions.php";
+		include_once "SponsEnums.php";
+
+		if(empty($_SESSION[SessionEnums::UserLoginID]))
 			header("Location: login.php");
 
-
-		require('DBconnect.php');
-		require('library_functions.php');
-
-		$SponsID=$_SESSION['loginID']; //get SponsID from previos session
+		$SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
 
 	?>
 	<header>
@@ -104,7 +104,7 @@
 
 	<div id="query" align="center">
 		<!-- SponsRep form -->
-		<form action="query.php" method ="post"> 
+		<form action="query.php" method ="GET">
 		<h2>Options:</h2>
 			<select name="query_type">
 				<option>Insert</option>

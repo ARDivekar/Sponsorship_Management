@@ -17,9 +17,12 @@
 		/*Resume old session:*/
 		session_start();
 
-		require('DBconnect.php');
-		require('library_functions.php');
-		$SponsID=$_SESSION['loginID']; //get SponsID from previos session
+		include_once('DBconnect.php');
+		include_once('library_functions.php');
+		include_once "SponsDBFunctions.php";
+		include_once "SponsEnums.php";
+		$SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
+
 
 	?>
 	<header>
@@ -31,7 +34,7 @@
 		<!-- You have to write a php code which displays the deals done in that sector-->
 		
 			<?php 
-			require('DBconnect.php'); //this is needed in every function that uses mySQL
+
 			//$Sector=get_person_sector($SponsID);
 			//$sector_details=get_sector_details($Sector);
 			echo "<table class=\"SponsRepnav\" style=\"width:100%\" >";
@@ -40,7 +43,7 @@
 			echo "<tr align=left>
 				<th>Name:</th>
 			<td>";
-			echo get_person_name($SponsID);
+			echo $_SESSION[SessionEnums::UserName];
 
 			
 			echo "</td></tr>
@@ -52,39 +55,35 @@
 			echo "<tr align=left>
 				<th>Number of companies in database:</th>
 			<td>";
-			$TotalCompanies=mysql_query("SELECT COUNT(*) as 'Count' FROM Company");
-			$row=mysql_fetch_assoc($TotalCompanies);
-			$row=$row['Count'];
-			echo $row;
+				$db = new SponsorshipDB();
+				$TotalCompaniesInCompanyTable = $db->select("SELECT COUNT(*) as 'Count' FROM Company");
+				echo $TotalCompaniesInCompanyTable[0]['Count'];
+
 
 			echo "</td></tr>
 			<tr align=left>
 				<th>Companies signed so far:</th>
 				<td>";
-			$test=mysql_query("SELECT COUNT(Title) as 'Count' FROM AccountLog WHERE TransType='Deposit'");
-			$row=mysql_fetch_assoc($test);
-			$row=$row['Count'];
-			echo $row;
+
+				$TotalCompaniesSponsored = $db->select("SELECT COUNT(Title) as 'Count' FROM AccountLog WHERE TransType='Deposit'");
+				echo $TotalCompaniesSponsored[0]['Count'];
+
 			echo "
 				</td>
 			</tr>
 			<tr align=left>
 				<th>Number of Sectors:</th>
 				<td >";
-			$NumberSectors= mysql_query("SELECT COUNT(DISTINCT Sector) as 'Count' FROM SectorHead");
-			$row=mysql_fetch_assoc($NumberSectors);
-			$row=$row['Count'];
-			echo $row;
+			$NumberSectors= $db->select("SELECT COUNT(DISTINCT Sector) as 'Count' FROM SectorHead");
+			echo $NumberSectors[0]['Count'];
 		
 			echo "</td>
 			</tr>
 			<tr align=left>
 				<th>Total earned:</th>
 				<td>";
-			$Income= mysql_query("SELECT SUM(Amount) as 'Sum' FROM AccountLog WHERE TransType='Deposit'"); 
-			$row=mysql_fetch_assoc($Income);
-			$row=$row['Sum'];
-			echo "Rs.".$row;
+			$TotalIncome= $db->select("SELECT SUM(Amount) as 'Sum' FROM AccountLog WHERE TransType='Deposit'");
+			echo "Rs.".$TotalIncome[0]['Sum'];
 
 			echo "</td>
 			</tr>
@@ -99,7 +98,7 @@
 	</section>	
 	
 	<div id="welcome" align="right">
-		<h2>Welcome, <?php echo get_person_name($SponsID); ?> <!-- The name of the  SponsRep will come here -->
+		<h2>Welcome, <?php echo $_SESSION[SessionEnums::UserName]; ?> <!-- The name of the  SponsRep will come here -->
 		<br>
 		<a href='logout.php'>Logout</a>
 	</div>
@@ -111,7 +110,7 @@
 	<div id="query" align="center">
 		
 		<!-- SectorHead form -->
-		<form action="query.php" method ="POST">
+		<form action="query.php" method ="GET">
 			<h2>Options:</h2>
 			<select name="query_type">
 				<option>Insert</option>
