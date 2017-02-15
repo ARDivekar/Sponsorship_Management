@@ -11,7 +11,7 @@
 			header("Location: homepage.php");
 
 	?>
-	<title>Meetings</title>
+	<title>Sector Heads</title>
 
 	<!-- DataTables CSS -->
 	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
@@ -111,6 +111,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<h1 class="page-header">Sector Heads</h1>
+				<?php echo_QueryResultText(); ?>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
@@ -142,8 +143,10 @@
 									SQLTables::SectorHead
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$sectorHeadOutputResult = $db->select($t->getOutputQuery());
+								if(count($sectorHeadOutputResult)>0)
+									echo make_simple_table($sectorHeadOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No Sector Heads</h1>";
 							?>
 
 						</div>

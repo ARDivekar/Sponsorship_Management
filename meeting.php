@@ -147,17 +147,18 @@
 
 	<!-- Navigation -->
 	<?php
-		include("./UserNavBar.php");
+		include_once "UserNavBar.php";
+		include_once "library_functions.php";
 	?>
 
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
 				<h1 class="page-header">Meeting</h1>
+				<?php echo_QueryResultText(); ?>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
-
 		<div class="row">
 			<?php
 				echo generate_table_button(SQLTables::Meeting);
@@ -182,6 +183,7 @@
 		<br />
 
 		<!-- /.row -->
+
 		<div class="row">
 			<div class="col-md-12">
 				<div class="panel panel-default">
@@ -200,8 +202,9 @@
 
 								$meetingQuery = $t->getOutputQuery();
 								$meetingOutputResult = $db->select($meetingQuery);
-
-								echo make_simple_table($meetingOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								if(count($meetingOutputResult)>0)
+									echo make_simple_table($meetingOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No meetings</h1>";
 							?>
 
 						</div>

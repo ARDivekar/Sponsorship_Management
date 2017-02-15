@@ -109,6 +109,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<h1 class="page-header">Companies</h1>
+				<?php echo_QueryResultText(); ?>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
@@ -142,8 +143,10 @@
 									SQLTables::Company
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$comanyOutputResult = $db->select($t->getOutputQuery());
+								if(count($comanyOutputResult)>0)
+									echo make_simple_table($comanyOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No Companies</h1>";
 							?>
 
 					</div>

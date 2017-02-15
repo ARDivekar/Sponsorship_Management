@@ -8,6 +8,7 @@
 		var $whereClause = NULL;
 		var $groupByClause = NULL;
 		var $orderByClause = NULL;
+		var $maxNumRows = NULL;
 
 		var $tableInsertFieldValues = NULL; //a 2-D array;
 		var $tableUpdateFieldValues = NULL; //a 2-D array;
@@ -18,7 +19,7 @@
 			$this->tableFields = $tableFields;
 		}
 
-		public function setSelectQuery($tableName=NULL, $tableFields=NULL, $whereClause=NULL, $groupByClause=NULL, $orderByClause=NULL){
+		public function setSelectQuery($tableName=NULL, $tableFields=NULL, $whereClause=NULL, $groupByClause=NULL, $orderByClause=NULL, $maxNumRows=NULL){
 			$this->queryType = QueryTypes::View;
 			if($tableName)
 				$this->tableName = $tableName;
@@ -30,6 +31,8 @@
 				$this->groupByClause = $groupByClause;
 			if($orderByClause)
 				$this->orderByClause = $orderByClause;
+			if($maxNumRows)
+				$this->maxNumRows = $maxNumRows;
 		}
 
 		public function setInsertQuery($tableName=NULL, $tableFields=NULL, $tableInsertFieldValues, $whereClause=NULL){
@@ -96,7 +99,7 @@
 		}
 
 
-		private function generateSelectQuery($tableFields=NULL, $tableName=NULL, $whereClause=NULL, $groupByClause=NULL, $orderByClause = NULL, $semicoloon=true){
+		private function generateSelectQuery($tableFields=NULL, $tableName=NULL, $whereClause=NULL, $groupByClause=NULL, $orderByClause = NULL, $maxNumRows=NULL, $semicoloon=true){
 			if(!$tableFields)
 				$tableFields = $this->tableFields;
 			if(!$tableName)
@@ -107,6 +110,8 @@
 				$groupByClause = $this->groupByClause;
 			if(!$orderByClause)
 				$orderByClause = $this->orderByClause;
+			if(!$maxNumRows)
+				$maxNumRows = $this->maxNumRows;
 
 
 			$out = "SELECT ";
@@ -147,6 +152,9 @@
 
 			if($orderByClause)
 				$out .= " ORDER BY ".$orderByClause;
+
+			if($maxNumRows)
+				$out .= " LIMIT ".$maxNumRows;
 
 			if($this->checkForSQLInjection($out)){
 				return NULL;
@@ -245,7 +253,13 @@
 					strpos($text, ";") === FALSE &&
 					strpos($text, " insert ") === FALSE &&
 					strpos($text, " update ") === FALSE &&
-					strpos($text, " delete ") === FALSE
+					strpos($text, " delete ") === FALSE &&
+					strpos($text, " drop table ") === FALSE &&
+					strpos($text, " truncate ") === FALSE &&
+					strpos($text, " show table ") === FALSE &&
+					strpos($text, " analyze table ") === FALSE &&
+					strpos($text, " optimize table ") === FALSE &&
+					strpos($text, " repair table ") === FALSE
 				)
 				return false;
 
@@ -301,13 +315,38 @@
 		}
 
 
+		public static function getInnerJoinMultipleSameField($tablesAndFieldList){ //Since same field, order is not really important.
+			if(count($tablesAndFieldList) > 1){
+				$out = "";
+
+				if(count($tablesAndFieldList[0])!=2)
+					return NULL;
+
+				for($i=1; $i < count($tablesAndFieldList); $i++){
+					if(count($tablesAndFieldList[$i])!=2)
+						return NULL;
+
+					if($i == 1)
+						$out .= " ".$tablesAndFieldList[0][0]." INNER JOIN ".$tablesAndFieldList[1][0]." ON (".$tablesAndFieldList[0][0].".".$tablesAndFieldList[0][1]." = ".$tablesAndFieldList[1][0].".".$tablesAndFieldList[1][1].") ";
+					else
+						$out .= " INNER JOIN ".$tablesAndFieldList[$i][0]." ON (".$tablesAndFieldList[$i][0].".".$tablesAndFieldList[$i][1]." = ".$tablesAndFieldList[$i-1][0].".".$tablesAndFieldList[$i-1][1].") ";
+				}
+
+				$out = " (".$out.") ";
+				return $out;
+			}
+			return NULL;
+		}
+
+
+
 
 		public static function getUnion($tableFields, $table1, $where1=NULL, $table2, $where2=NULL, $alias=NULL){
 			$q = new SQLQuery();
 			if($tableFields && $table1 && $table2){
-				$out = "(".$q->generateSelectQuery($tableFields, $table1, $where1, NULL, NULL, $semicolon=false).")";
+				$out = "(".$q->generateSelectQuery($tableFields, $table1, $where1, NULL, NULL, NULL, $semicolon=false).")";
 				$out .= " UNION ";
-				$out .= "(".$q->generateSelectQuery($tableFields, $table2, $where2, NULL, NULL, $semicolon=false).")";
+				$out .= "(".$q->generateSelectQuery($tableFields, $table2, $where2, NULL, NULL, NULL, $semicolon=false).")";
 				if($alias)
 					$out = "( ".$out." ) AS ".$alias." ";
 				return $out;
@@ -411,6 +450,14 @@
 	echo SQLQuery::getUnion("*","SponsRep", NULL, "SectorHead", NULL, "SponsOfficer");
 
 
+	$x = SQLQuery::getInnerJoinMultipleSameField( [["AccountLog", "SponsID"], ["CommitteeMember", "ID"], ["Meeting", "SponsID"]]);
+	if($x!=NULL)
+		echo $x;
+	else echo "LOLOL";
+
 	/*##---------------------------------------------END OF TESTS---------------------------------------------##*/
+
+
+
 
 ?>

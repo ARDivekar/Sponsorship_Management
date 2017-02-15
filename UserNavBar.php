@@ -16,7 +16,7 @@
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
         
-        <a class="navbar-brand" href="home.php">Sponsorship Department</a>
+        <a class="navbar-brand" href="homepage.php">Sponsorship Department</a>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -54,10 +54,10 @@
                     <a href="homepage.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
                 <li>
-                    <a href="companies.php"><i class="fa fa-building-o fa-fw"></i> Companies</a>
+                    <a href="companies.php"><i class="fa fa-building fa-fw"></i> Companies</a>
                 </li>
                 <li>
-                    <a href="companyexec.php"><i class="fa fa-building-o fa-fw"></i> Company Executives</a>
+                    <a href="companyexec.php"><i class="fa fa-suitcase fa-fw"></i> Company Executives</a>
                 </li>
 		        <li>
                     <a href="meeting.php"><i class="fa fa-calendar fa-fw"></i> Meeting Log</a>
@@ -75,27 +75,25 @@
 
 				if($_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep)
                 echo '
-				<li>
-                    <a href="sectorhead.php"><i class="fa fa-user fa-fw"></i> '.($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO? "Sector Heads" : "My details").'</a>
+				<li>'.($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO? '<a href="sectorhead.php"><i class="fa fa-user fa-fw"></i> Sector Heads</a>' : '<a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>My Details</a>').'
                 </li>';
 				?>
                 <li>
-                    <a href="sponsrep.php"><i class="fa fa-users fa-fw"></i>
+
 						<?php
 							switch($_SESSION[SessionEnums::UserAccessLevel]){
 								case UserTypes::CSO:
-									echo "Sponsorship Representatives";
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-users fa-fw\"></i> Sponsorship Representatives</a>";
 									break;
 								case UserTypes::SectorHead:
-									echo "Sponsorship Representatives";
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-users fa-fw\"></i> Sponsorship Representatives</a>";
 									break;
 								case UserTypes::SponsRep:
-									echo "My details";
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-user fa-fw\"></i> My Details</a>";
 									break;
 							}
 						?>
 
-					</a>
                 </li>
 
 

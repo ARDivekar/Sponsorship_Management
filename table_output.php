@@ -128,7 +128,7 @@
 						$tableName = SQLQuery::getInnerJoin(SQLTables::AccountLog, "SponsID", SQLTables::SponsOfficer, "SponsID"),
 						$tableFields = [
 							[SQLTables::AccountLog.".ID", "Entry ID"], [SQLQuery::format(SQLTables::AccountLog.".Amount"), "Amount (Rs.)"],
-							[SQLTables::AccountLog.".Title", "Company"], [SQLTables::SponsOfficer.".Sector", "Sector"],
+							[SQLTables::AccountLog.".Title", "Company"], 
 							[SQLTables::AccountLog.".Date", "Entry Date"],
 							[SQLTables::SponsOfficer.".SponsID", "SponsID"], [SQLTables::SponsOfficer.".Name", "Name"],
 							[SQLTables::SponsOfficer.".Role", "Role"]
@@ -166,12 +166,15 @@
 						$tableName = SQLQuery::getInnerJoin(SQLTables::Meeting, "SponsID", SQLTables::SponsOfficer, "SponsID"),
 						$tableFields = [
 							[SQLTables::Meeting.".ID", "Meeting ID"], [SQLTables::Meeting.".Outcome", "Outcome"],
-							[SQLTables::Meeting.".CMPName", "Company Name"], [SQLTables::SponsOfficer.".Sector", "Company Sector"],
+							[SQLTables::Meeting.".CMPName", "Company Name"],
 							[SQLTables::Meeting.".CEName", "Executive Name"],
 							[SQLTables::SponsOfficer.".SponsID", "Meeter ID"], [SQLTables::SponsOfficer.".Name", "Meeter Name"],
 							[SQLTables::Meeting.".MeetingType", "Meeting Type"], [SQLTables::Meeting.".Date", "Date"],
 							[SQLTables::Meeting.".Time", "Time"], [SQLTables::Meeting.".Address", "Address"]
-						]
+						],
+						$whereClause=NULL,
+						$groupByClause=NULL,
+						$orderByClause="Date DESC, Time DESC"
 					);
 					break;
 
@@ -200,7 +203,7 @@
 				["Organization", 	$_SESSION[SessionEnums::UserOrganization]],
 				["EventName", 		$_SESSION[SessionEnums::UserFestival]],
 				["Sector",	 		$_SESSION[SessionEnums::UserSector]],
-				$this->tableName == SQLTables::SectorHead ? NULL : ["SponsID", $_SESSION[SessionEnums::UserLoginID]]
+				$this->tableName == SQLTables::SectorHead ? ["SponsID", $_SESSION[SessionEnums::UserLoginID]] : NULL
 			]);
 			return $SectorHeadSelectQuery;
 		}

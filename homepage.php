@@ -7,13 +7,13 @@
 		include_once "table_output.php";
 
 		if(!isset($_SESSION[SessionEnums::UserLoginID]))
-		session_start();
+			session_start();
 		if(!$_SESSION[SessionEnums::UserLoginID])
 			header("Location: login.php");
 
 		include('UserNavBarImports.php');
 	?>
-	<title>CSO profile</title>
+	<title>My Homepage</title>
 	<!-- Timeline CSS -->
 	<link href="./User_GUI_CSS/dist/css/timeline.css" rel="stylesheet">
 
@@ -82,8 +82,8 @@
 </head>
 
 <body>
-	<?php 
-		
+	<?php
+
 		/*Resume old session:*/
 		// session_start();
 
@@ -149,7 +149,7 @@
 							</div>
 							<div class="col-xs-9 text-right">
 								<div class="huge">
-									<?php 
+									<?php
 										$TotalIncome= $db->select("SELECT SUM(Amount) as 'Sum' FROM AccountLog WHERE TransType='Deposit'");
 										echo $TotalIncome[0]['Sum'];
 									?>
@@ -177,8 +177,8 @@
 							</div>
 							<div class="col-xs-9 text-right">
 								<div class="huge">
-									<?php 
-										$MeetingsCount= $db->select("SELECT Count(MeetingType) as 'Count' FROM `meeting` WHERE MeetingType='Meet'");
+									<?php
+										$MeetingsCount= $db->select("SELECT Count(MeetingType) as 'Count' FROM `Meeting` WHERE MeetingType='Meet'");
 										echo $MeetingsCount[0]['Count'];
 									?>
 								</div>
@@ -205,8 +205,8 @@
 							</div>
 							<div class="col-xs-9 text-right">
 								<div class="huge">
-									<?php 
-										$CompaniesCalledCount= $db->select("SELECT COUNT(CMPStatus) as 'Count' FROM `company` WHERE CMPStatus != 'Not called'");
+									<?php
+										$CompaniesCalledCount= $db->select("SELECT COUNT(CMPStatus) as 'Count' FROM `Company` WHERE CMPStatus != 'Not called'");
 										echo $CompaniesCalledCount[0]['Count'];
 									?>
 								</div>
@@ -235,15 +235,17 @@
 					<div class="panel-body" style="overflow-x:scroll;">
 						<div id="money-progress"></div>
 						<script>
-							
+
 							new Morris.Line({
-							  element: 'money-progress', 
-							  data: <?php 
-							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'amount', WEEK(Date) as 'week' FROM `accountlog` GROUP BY WEEK(Date)");
-							  echo json_encode($MoneyProgress);
+							  element: 'money-progress',
+							  data: <?php
+							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'Amount', WEEK(Date) as 'Week' FROM `AccountLog` GROUP BY WEEK(Date)");
+							  if(count($MoneyProgress)>0)
+							  	echo json_encode($MoneyProgress);
+							  else echo "<h1>Graph Unavailiable</h1>";
 							  ?>,
-							  xkey: ['week'],
-							  ykeys: ['amount'],
+							  xkey: ['Week'],
+							  ykeys: ['Amount'],
 							  labels: ['Amount']
 							});
 
@@ -255,35 +257,44 @@
 			<div class="col-lg-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<i class="fa fa-calendar"></i>&nbsp;&nbsp;5 Most Recent Meetings Scheduled
+						<i class="fa fa-calendar"></i>&nbsp;&nbsp;5 Most Recent Upcoming Meetings
 					</div>
 					<div class="panel-body" style="overflow-x:scroll;">
 						<?php
-							if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO){
-								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company', c.Name as 'Name' FROM `meeting` m 
-								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) INNER JOIN `committeemember` c ON (c.ID=s.SponsID) 
-								UNION 
-								SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', 
-								CMPName as 'Company', c.Name as 'Name' FROM `meeting` m INNER JOIN `sectorhead` s ON (m.SponsID=s.SponsID) INNER JOIN 
-								`committeemember` c ON (c.ID=s.SponsID)  ORDER BY Date DESC, TIME DESC LIMIT 5";
-								$LatestMeetings = $db->select($query);
-							}
-							else if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::SectorHead){
-								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company', c.Name as 'Name' FROM `meeting` m 
-								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) INNER JOIN `committeemember` c ON (c.ID=s.SponsID) 
-								WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' UNION 
-								SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', 
-								CMPName as 'Company', c.Name as 'Name' FROM `meeting` m INNER JOIN `sectorhead` s ON (m.SponsID=s.SponsID) INNER JOIN 
-								`committeemember` c ON (c.ID=s.SponsID) WHERE s.Sector='" +  $_SESSION[SessionEnums::UserSector] + "'  ORDER BY Date DESC, TIME DESC LIMIT 5";
-								$LatestMeetings = $db->select($query);
-							}
-							else{
-								$query = "SELECT m.Date as 'Date', m.Time as 'Time', m.MeetingType as 'Type', CMPName as 'Company' FROM `meeting` m 
-								INNER JOIN `sponsrep` s ON (m.SponsID=s.SponsID) WHERE s.Sector='" + $_SESSION[SessionEnums::UserSector] + "' ORDER BY Date DESC, TIME DESC LIMIT 5";
-								$LatestMeetings = $db->select($query);
-							} 
 
-							echo make_simple_table($LatestMeetings, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+							$query = new SQLQuery();
+							$query->setSelectQuery(
+								$tableName = SQLQuery::getInnerJoin(SQLTables::SponsOfficer, "SponsID", SQLTables::Meeting, "SponsID"),
+								$tableFields = [
+									[SQLTables::Meeting.".Date", "Date"], [SQLTables::Meeting.".Time", "Time"],
+									[SQLTables::Meeting.".CMPName", "Company"], [SQLTables::SponsOfficer.".Name", "Name"]
+								],
+								$whereClause = NULL,
+								$groupByClause = NULL,
+								$orderByClause = "Date ASC, Time ASC",
+								$maxNumRows = 5
+							);
+
+							switch($_SESSION[SessionEnums::UserAccessLevel]){
+								case UserTypes::CSO :
+									$query->whereClause = "Date>=CURDATE()";
+									break;
+								case UserTypes::SectorHead :
+									$query->whereClause = SQLQuery::getWhereEquality(
+											[[SQLTables::SponsOfficer . ".Sector", $_SESSION[SessionEnums::UserSector]]]
+									). " AND Date>=CURDATE()";;
+									break;
+								case UserTypes::SponsRep :
+									$query->whereClause = SQLQuery::getWhereEquality(
+											[[SQLTables::SponsOfficer . ".Sector", $_SESSION[SessionEnums::UserSector]]]
+									). " AND Date>=CURDATE()";
+									break;
+							}
+//							echo $query->getQuery();
+							$LatestMeetings = $db->select($query->getQuery());
+							if(count($LatestMeetings)>0)
+								echo make_simple_table($LatestMeetings, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+							else echo "<h1>No upcoming meetings</h1>";
 						
 						?>
 					</div>

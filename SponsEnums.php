@@ -130,6 +130,10 @@
 		const TableName = "TableName";
 	}
 
+	abstract class QueryExecSessionEnums extends BasicEnum{
+		const QueryResultText = "QueryResultText";
+	}
+
 	abstract class TableOutputSessionEnums extends BasicEnum{
 		const TableName = "TableName";
 		const TableSelectQuery = "TableSelectQuery";
@@ -484,6 +488,21 @@
 
 			]
 
+		];
+
+
+
+
+		static $inapplicableFields = [
+			UserTypes::CSO => [
+				QueryFieldNames::SponsSector
+			],
+
+			UserTypes::SectorHead => [
+			],
+
+			UserTypes::SponsRep => [
+			],
 		];
 
 

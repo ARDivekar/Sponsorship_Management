@@ -8,7 +8,7 @@
 		include_once "table_output.php"
 
 	?>
-	<title>Meetings</title>
+	<title>Sponsorship Representatives</title>
 
 	<!-- DataTables CSS -->
 	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
@@ -108,6 +108,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<h1 class="page-header">Sponsorship Representative</h1>
+				<?php echo_QueryResultText(); ?>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
@@ -139,8 +140,10 @@
 									SQLTables::SponsRep
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$sponsRepOutputResult = $db->select($t->getOutputQuery());
+								if(count($sponsRepOutputResult)>0)
+									echo make_simple_table($sponsRepOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No Sponsorship Representatives</h1>";
 							?>
 
 						</div>

@@ -8,7 +8,7 @@
 		include_once "table_output.php"
 
 	?>
-	<title>Companies</title>
+	<title>Company Executives</title>
 
 	<!-- DataTables CSS -->
 	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
@@ -109,6 +109,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<h1 class="page-header">Company Executives</h1>
+				<?php echo_QueryResultText(); ?>
 			</div>
 			<!-- /.col-lg-12 -->
 		</div>
@@ -125,7 +126,7 @@
 			<div class="col-lg-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Companies of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector
+						Companies Executives of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
@@ -142,8 +143,10 @@
 									SQLTables::CompanyExec
 								);
 
-								$result = $db->select($t->getOutputQuery());
-								echo make_simple_table($result, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								$comanyExecOutputResult = $db->select($t->getOutputQuery());
+								if(count($comanyExecOutputResult)>0)
+									echo make_simple_table($comanyExecOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No Company Executives</h1>";
 							?>
 
 					</div>

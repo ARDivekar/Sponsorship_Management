@@ -219,5 +219,12 @@
 	}
 
 
+	function echo_QueryResultText(){
+		if(isset($_SESSION[QueryExecSessionEnums::QueryResultText])){
+			echo $_SESSION[QueryExecSessionEnums::QueryResultText];
+		}
+		$_SESSION[QueryExecSessionEnums::QueryResultText] = NULL;
+	}
+
 
 ?>
