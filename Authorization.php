@@ -17,8 +17,8 @@
 		static $SectorHeadAuth = [
 			SQLTables::Event => [],	//empty means no queries allowed
 			SQLTables::SponsLogin => [QueryTypes::Modify, QueryTypes::View],	//Can only view and modify own password
-			SQLTables::SponsRep => [QueryTypes::Delete],	//Can remove SponsReps from their sector.
-			SQLTables::SectorHead => [],
+			SQLTables::SponsRep => [QueryTypes::Delete, QueryTypes::View],	//Can remove SponsReps from their sector.
+			SQLTables::SectorHead => [QueryTypes::View],
 			SQLTables::AccountLog => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//Can only insert, modify, delete, and view for own sector
 			SQLTables::Company => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector
 			SQLTables::CompanyExec => [QueryTypes::Insert, QueryTypes::Modify, QueryTypes::Delete, QueryTypes::View],	//only own sector

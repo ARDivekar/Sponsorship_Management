@@ -8,7 +8,7 @@
 		include_once "table_output.php"
 
 	?>
-	<title>Companies</title>
+	<title>Sponsorship Representatives</title>
 
 	<!-- DataTables CSS -->
 	<link href="./User_GUI_CSS/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
@@ -101,14 +101,13 @@
 
 	<!-- Navigation -->
 	<?php
-		include_once("./UserNavBar.php");
-		include_once("library_functions.php");
+		include("./UserNavBar.php");
 	?>
 
 	<div id="page-wrapper">
 		<div class="row">
 			<div class="col-lg-12">
-				<h1 class="page-header">Companies</h1>
+				<h1 class="page-header">Sponsorship Representative</h1>
 				<?php echo_QueryResultText(); ?>
 			</div>
 			<!-- /.col-lg-12 -->
@@ -116,39 +115,40 @@
 
 		<div class="row">
 			<?php
-				echo generate_table_button(SQLTables::Company);
+				echo generate_table_button(SQLTables::SponsRep);
 			?>
 		</div>
 		<br />
 
 		<!-- /.row -->
 		<div class="row">
-			<div class="col-lg-12">
+			<div class="col-md-12">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						Companies of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector
+						Sponsorship Representatives of <strong><?php echo $_SESSION[SessionEnums::UserSector]; ?></strong> Sector
 					</div>
 					<!-- /.panel-heading -->
 					<div class="panel-body">
-
-						<div class="dataTable_wrapper">
-
 						<div class="dataTable_wrapper" style="overflow-x: scroll;">
 
 							<?php
+
 								$db = new SponsorshipDB();
 
 								$t = new TableOutput(
 									$_SESSION[SessionEnums::UserAccessLevel],
-									SQLTables::Company
+									SQLTables::SponsRep
 								);
 
-								$comanyOutputResult = $db->select($t->getOutputQuery());
-								if(count($comanyOutputResult)>0)
-									echo make_simple_table($comanyOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
-								else echo "<h1>No Companies</h1>";
+								$sponsRepOutputResult = $db->select($t->getOutputQuery());
+								if(count($sponsRepOutputResult)>0)
+									echo make_simple_table($sponsRepOutputResult, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+								else echo "<h1>No Sponsorship Representatives</h1>";
 							?>
 
+						</div>
+						<!-- /.table-responsive -->
+						
 					</div>
 					<!-- /.panel-body -->
 				</div>

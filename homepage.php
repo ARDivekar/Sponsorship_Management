@@ -4,15 +4,16 @@
 <head>
 	<?php
 		include_once "SponsEnums.php";
+		include_once "table_output.php";
 
 		if(!isset($_SESSION[SessionEnums::UserLoginID]))
-		session_start();
+			session_start();
 		if(!$_SESSION[SessionEnums::UserLoginID])
 			header("Location: login.php");
 
 		include('UserNavBarImports.php');
 	?>
-	<title>CSO profile</title>
+	<title>My Homepage</title>
 	<!-- Timeline CSS -->
 	<link href="./User_GUI_CSS/dist/css/timeline.css" rel="stylesheet">
 
@@ -81,6 +82,18 @@
 </head>
 
 <body>
+	<?php
+
+		/*Resume old session:*/
+		// session_start();
+
+		// include_once('DBconnect.php');
+		// include_once('library_functions.php');
+		// $SponsID=$_SESSION[SessionEnums::UserLoginID]; //get SponsID from previous session
+
+
+	?>
+
 
 <div id="wrapper">
 
@@ -107,12 +120,17 @@
 								<i class="fa fa-building-o fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">Write Query</div>
+								<div class="huge">
+									<?php
+										$TotalCompaniesSponsored = $db->select("SELECT COUNT(Title) as 'Count' FROM AccountLog WHERE TransType='Deposit'");
+										echo $TotalCompaniesSponsored[0]['Count'];
+									?>
+								</div>
 								<div>Companies Signed</div>
 							</div>
 						</div>
 					</div>
-					<a href="#">
+					<a href="companies.php">
 						<div class="panel-footer">
 							<span class="pull-left">View Details</span>
 							<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -130,12 +148,17 @@
 								<i class="fa fa-inr fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">Write Query</div>
+								<div class="huge">
+									<?php
+										$TotalIncome= $db->select("SELECT SUM(Amount) as 'Sum' FROM AccountLog WHERE TransType='Deposit'");
+										echo $TotalIncome[0]['Sum'];
+									?>
+								</div>
 								<div>Amount Earned</div>
 							</div>
 						</div>
 					</div>
-					<a href="#">
+					<a href="accounts.php">
 						<div class="panel-footer">
 							<span class="pull-left">View Details</span>
 							<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -153,12 +176,17 @@
 								<i class="fa fa-calendar fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">Write Query</div>
+								<div class="huge">
+									<?php
+										$MeetingsCount= $db->select("SELECT Count(MeetingType) as 'Count' FROM `Meeting` WHERE MeetingType='Meet'");
+										echo $MeetingsCount[0]['Count'];
+									?>
+								</div>
 								<div>Meetings Scheduled</div>
 							</div>
 						</div>
 					</div>
-					<a href="#">
+					<a href="meeting.php">
 						<div class="panel-footer">
 							<span class="pull-left">View Details</span>
 							<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -176,12 +204,17 @@
 								<i class="fa fa-phone fa-5x"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge">Write Query</div>
+								<div class="huge">
+									<?php
+										$CompaniesCalledCount= $db->select("SELECT COUNT(CMPStatus) as 'Count' FROM `Company` WHERE CMPStatus != 'Not called'");
+										echo $CompaniesCalledCount[0]['Count'];
+									?>
+								</div>
 								<div>Companies Called</div>
 							</div>
 						</div>
 					</div>
-					<a href="#">
+					<a href="companies.php">
 						<div class="panel-footer">
 							<span class="pull-left">View Details</span>
 							<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -192,153 +225,87 @@
 				</div>
 			</div>
 		</div>
-		<!-- /.row -->
+
 		<div class="row">
-			<div class="col-lg-8">
+			<div class="col-lg-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<i class="fa fa-bar-chart-o fa-fw"></i> Graph Showing Progress of Money
-						<div class="pull-right">
-							<div class="btn-group">
-								<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-									Actions
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu pull-right" role="menu">
-									<li><a href="#">Action</a>
-									</li>
-									<li><a href="#">Another action</a>
-									</li>
-									<li><a href="#">Something else here</a>
-									</li>
-									<li class="divider"></li>
-									<li><a href="#">Separated link</a>
-									</li>
-								</ul>
-							</div>
-						</div>
+						<i class="fa fa-bar-chart-o fa-fw"></i>&nbsp;&nbsp;Money Progress
 					</div>
-					<!-- /.panel-heading -->
-					<div class="panel-body">
-						<div id="morris-area-chart"></div>
-					</div>
-					<!-- /.panel-body -->
-				</div>
-				<!-- /.panel -->
-				<!-- <div class="panel panel-default">
-					<div class="panel-heading">
-						<i class="fa fa-bar-chart-o fa-fw"></i> Bar Chart Example
-						<div class="pull-right">
-							<div class="btn-group">
-								<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-									Actions
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu pull-right" role="menu">
-									<li><a href="#">Action</a>
-									</li>
-									<li><a href="#">Another action</a>
-									</li>
-									<li><a href="#">Something else here</a>
-									</li>
-									<li class="divider"></li>
-									<li><a href="#">Separated link</a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div> -->
-					<!-- /.panel-heading -->
-					<!-- <div class="panel-body">
-						<div class="row">
-							<div class="col-lg-4">
-								<div class="table-responsive">
-									<table class="table table-bordered table-hover table-striped">
-										<thead>
-										<tr>
-											<th>#</th>
-											<th>Date</th>
-											<th>Time</th>
-											<th>Amount</th>
-										</tr>
-										</thead>
-										<tbody>
-										<tr>
-											<td>3326</td>
-											<td>10/21/2013</td>
-											<td>3:29 PM</td>
-											<td>$321.33</td>
-										</tr>
-										<tr>
-											<td>3325</td>
-											<td>10/21/2013</td>
-											<td>3:20 PM</td>
-											<td>$234.34</td>
-										</tr>
-										<tr>
-											<td>3324</td>
-											<td>10/21/2013</td>
-											<td>3:03 PM</td>
-											<td>$724.17</td>
-										</tr>
-										<tr>
-											<td>3323</td>
-											<td>10/21/2013</td>
-											<td>3:00 PM</td>
-											<td>$23.71</td>
-										</tr>
-										<tr>
-											<td>3322</td>
-											<td>10/21/2013</td>
-											<td>2:49 PM</td>
-											<td>$8345.23</td>
-										</tr>
-										<tr>
-											<td>3321</td>
-											<td>10/21/2013</td>
-											<td>2:23 PM</td>
-											<td>$245.12</td>
-										</tr>
-										<tr>
-											<td>3320</td>
-											<td>10/21/2013</td>
-											<td>2:15 PM</td>
-											<td>$5663.54</td>
-										</tr>
-										<tr>
-											<td>3319</td>
-											<td>10/21/2013</td>
-											<td>2:13 PM</td>
-											<td>$943.45</td>
-										</tr>
-										</tbody>
-									</table>
-								</div>
-					 -->			<!-- /.table-responsive -->
-							</div>
-							<!-- /.col-lg-4 (nested) -->
-					<!-- 		<div class="col-lg-8">
-								<div id="morris-bar-chart"></div>
-							</div>
-					 -->		<!-- /.col-lg-8 (nested) -->
-						</div>
-						<!-- /.row -->
-					</div>
-					<!-- /.panel-body -->
-				</div>
-				<!-- /.panel -->
+					<div class="panel-body" style="overflow-x:scroll;">
+						<div id="money-progress"></div>
+						<script>
 
+							new Morris.Line({
+							  element: 'money-progress',
+							  data: <?php
+							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'Amount', WEEK(Date) as 'Week' FROM `AccountLog` GROUP BY WEEK(Date)");
+							  if(count($MoneyProgress)>0)
+							  	echo json_encode($MoneyProgress);
+							  else echo "<h1>Graph Unavailiable</h1>";
+							  ?>,
+							  xkey: ['Week'],
+							  ykeys: ['Amount'],
+							  labels: ['Amount']
+							});
+
+						</script> 
+					</div>
+				</div>
 			</div>
-			<!-- /.col-lg-8 -->
+
+			<div class="col-lg-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<i class="fa fa-calendar"></i>&nbsp;&nbsp;5 Most Recent Upcoming Meetings
+					</div>
+					<div class="panel-body" style="overflow-x:scroll;">
+						<?php
+
+							$query = new SQLQuery();
+							$query->setSelectQuery(
+								$tableName = SQLQuery::getInnerJoin(SQLTables::SponsOfficer, "SponsID", SQLTables::Meeting, "SponsID"),
+								$tableFields = [
+									[SQLTables::Meeting.".Date", "Date"], [SQLTables::Meeting.".Time", "Time"],
+									[SQLTables::Meeting.".CMPName", "Company"], [SQLTables::SponsOfficer.".Name", "Name"]
+								],
+								$whereClause = NULL,
+								$groupByClause = NULL,
+								$orderByClause = "Date ASC, Time ASC",
+								$maxNumRows = 5
+							);
+
+							switch($_SESSION[SessionEnums::UserAccessLevel]){
+								case UserTypes::CSO :
+									$query->whereClause = "Date>=CURDATE()";
+									break;
+								case UserTypes::SectorHead :
+									$query->whereClause = SQLQuery::getWhereEquality(
+											[[SQLTables::SponsOfficer . ".Sector", $_SESSION[SessionEnums::UserSector]]]
+									). " AND Date>=CURDATE()";;
+									break;
+								case UserTypes::SponsRep :
+									$query->whereClause = SQLQuery::getWhereEquality(
+											[[SQLTables::SponsOfficer . ".Sector", $_SESSION[SessionEnums::UserSector]]]
+									). " AND Date>=CURDATE()";
+									break;
+							}
+//							echo $query->getQuery();
+							$LatestMeetings = $db->select($query->getQuery());
+							if(count($LatestMeetings)>0)
+								echo make_simple_table($LatestMeetings, ["table", "table-striped", "table-bordered", "table-hover"], "dataTables-example");
+							else echo "<h1>No upcoming meetings</h1>";
+						
+						?>
+					</div>
+				</div>
+			</div>
+			</div>
 
 		</div>
-		<!-- /.row -->
+
 	</div>
-	<!-- /#page-wrapper -->
-
 </div>
-<!-- /#wrapper -->
-
 
 </body>
 

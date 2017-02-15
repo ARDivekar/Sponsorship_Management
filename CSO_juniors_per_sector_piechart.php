@@ -127,7 +127,7 @@ GROUP BY SO.Sector");
 
             <div class="nav-collapse collapse in" id="reportico-bootstrap-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="CSO_reports.php">Go Back</a></li>
+                    <li><a href="CSOreports.php">Go Back</a></li>
                 </ul>
                 <ul class="nav navbar-nav pull-right navbar-right">
                 </ul>

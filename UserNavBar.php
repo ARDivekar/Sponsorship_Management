@@ -16,7 +16,7 @@
 <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
         
-        <a class="navbar-brand" href="home.php">Sponsorship Department</a>
+        <a class="navbar-brand" href="homepage.php">Sponsorship Department</a>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -54,26 +54,49 @@
                     <a href="homepage.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                 </li>
                 <li>
-                    <a href="companies.php"><i class="fa fa-building-o fa-fw"></i> Companies</a>
+                    <a href="companies.php"><i class="fa fa-building fa-fw"></i> Companies</a>
+                </li>
+                <li>
+                    <a href="companyexec.php"><i class="fa fa-suitcase fa-fw"></i> Company Executives</a>
                 </li>
 		        <li>
                     <a href="meeting.php"><i class="fa fa-calendar fa-fw"></i> Meeting Log</a>
                 </li>
                 <li>
-                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i> Account Log</a>
+                    <a href="accounts.php"><i class="fa fa-inr fa-fw"></i> <?php echo $_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep ? "Account Log" : "My Sponsorships"?></a>
                 </li>
+
+				<?php
+					if($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO)
+				echo '
+				<li id="reports">
+                    <a href="CSOreports.php"><i class="fa fa-line-chart fa-fw"></i> Reports</a>
+                </li>';
+
+				if($_SESSION[SessionEnums::UserAccessLevel] != UserTypes::SponsRep)
+                echo '
+				<li>'.($_SESSION[SessionEnums::UserAccessLevel] == UserTypes::CSO? '<a href="sectorhead.php"><i class="fa fa-user fa-fw"></i> Sector Heads</a>' : '<a href="sectorhead.php"><i class="fa fa-user fa-fw"></i>My Details</a>').'
+                </li>';
+				?>
                 <li>
-                    <a href="CSO_reports.php"><i class="fa fa-line-chart fa-fw"></i> Reports</a>
+
+						<?php
+							switch($_SESSION[SessionEnums::UserAccessLevel]){
+								case UserTypes::CSO:
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-users fa-fw\"></i> Sponsorship Representatives</a>";
+									break;
+								case UserTypes::SectorHead:
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-users fa-fw\"></i> Sponsorship Representatives</a>";
+									break;
+								case UserTypes::SponsRep:
+									echo "<a href=\"sponsrep.php\"><i class=\"fa fa-user fa-fw\"></i> My Details</a>";
+									break;
+							}
+						?>
+
                 </li>
-                <li>
-                    <a href="sector_head.php"><i class="fa fa-user fa-fw"></i> Sector Heads</a>
-                </li>
-                <li>
-                    <a href="spons_rep.php"><i class="fa fa-users fa-fw"></i> Sponsorship Representatives</a>
-                </li>
-                <li>
-                    <a href="sectors.php"><i class="fa fa-th-list fa-fw"></i> Sectors</a>
-                </li>
+
+
             </ul>
         </div>
         <!-- /.sidebar-collapse -->
