@@ -11,11 +11,11 @@
 
       echo "<hr> Details: <br>";
       $details = $db->getDetails();
-      echo "hostname<br>";
-      echo "portnumber<br>";
-      echo "username<br>";
-      echo "password<br>";
-      echo "dbname<br>";
+      echo "hostname: ".$details["hostname"]."<br>";
+      echo "portnumber: ".$details["portnumber"]."<br>";
+      echo "username: ".$details["username"]."<br>";
+      echo "password: ".$details["password"]."<br>";
+      echo "dbname: ".$details["dbname"]."<br>";
 
       echo "<hr> Tables in database: <br>";
       $tables = $db->listTables();
