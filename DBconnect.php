@@ -209,10 +209,11 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			$tablesSelect = self::select("SHOW TABLES;");
 			if(!$tablesSelect)
 				return NULL;
-				foreach($structure as $column){
-					array_push($tables, $column["COLUMN_NAME"]);
-				}
-				return $tables;
+			
+			foreach($tablesSelect as $column){
+				array_push($tables, $column["COLUMN_NAME"]);
+			}
+			return $tables;
 		}
 
 		public function getTableColumns($tableName){
