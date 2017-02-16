@@ -8,7 +8,11 @@
 
   if($db->isConnected()){
     echo "CONNECTED TO MySQL DB";
-    echo_1d_array(parse_url(getenv("CLEARDB_DATABASE_URL")));
+    $clearDB_url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+    echo "<hr> HOST: ".$clearDB_url["host"];
+    echo "<hr> USER: ".$clearDB_url["user"];
+    echo "<hr> PASS: ".$clearDB_url["pass"];
+    echo "<hr> PATH: ".substr($clearDB_url["path"], 1);
   }
   else echo "COULD NOT CONNECT TO MySQL DB";
 
