@@ -57,6 +57,17 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			$this->set($config);
 		}
 
+		protected function getDetails(){
+			return [
+				"host" => SponsorshipDB::hostname,
+				"portnumber" => SponsorshipDB::portnumber,
+				"username" => SponsorshipDB::username,
+				"dbname" => SponsorshipDB::dbname,
+				"password" => SponsorshipDB::password
+			];
+		}
+
+
 		function set($config = NULL){
 			if($config){
 				if(array_key_exists("hostname", $config))
