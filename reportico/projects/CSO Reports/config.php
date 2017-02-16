@@ -55,10 +55,10 @@ define('SW_DB_DATABASE', SW_FRAMEWORK_DB_DATABASE);
 else
 {
 define('SW_DB_DRIVER', SW_DB_TYPE);
-define('SW_DB_USER', 'root');
-define('SW_DB_PASSWORD', '');
-define('SW_DB_HOST', 'localhost');
-define('SW_DB_DATABASE', 'sponsorshipmanagement');
+define('SW_DB_USER', 'bf00b7378291bd');
+define('SW_DB_PASSWORD', 'db562677');
+define('SW_DB_HOST', 'us-cdbr-iron-east-04.cleardb.net');
+define('SW_DB_DATABASE', 'heroku_0d439c1ae895a1c');
 }
 define('SW_DB_CONNECT_FROM_CONFIG', true);
 define('SW_DB_DATEFORMAT', 'Y-m-d');
@@ -93,14 +93,14 @@ define('FPDF_FONTPATH', 'fpdf/font/');
 // Include an image in your PDF output
 // This defalt places icon top right of a portrait image and sizes it to 100 pixels wide
 //define('PDF_HEADER_IMAGE', 'images/myimage.png');
-//define('PDF_HEADER_XPOS', '470'); 
+//define('PDF_HEADER_XPOS', '470');
 //define('PDF_HEADER_YPOS', '20');
 //define('PDF_HEADER_WIDTH', '100');
 
 // Graph Defaults
 // Default Charting Engine is JpGraph. A slightly modified version 3.0.7 of jpGraph is supplied
-// within Reportico. 
-// 
+// within Reportico.
+//
 // Reportico also supports pChart but the pChart package is not currently provided
 // as part of the Reportico bundle. To use pChart you will need to unpack the pChart
 // application into the reportico folder named pChart. pChart 2.1.3
@@ -200,7 +200,7 @@ define('SW_DEFAULT_YGridDisplay', "none");
 define('SW_DEFAULT_YGridColor', SW_DEFAULT_LineColor);
 define('SW_DEFAULT_TitleFont', SW_DEFAULT_Font);
 define('SW_DEFAULT_TitleFontStyle', SW_DEFAULT_FontStyle);
-define('SW_DEFAULT_TitleFontSize', 12); 
+define('SW_DEFAULT_TitleFontSize', 12);
 define('SW_DEFAULT_TitleColor', SW_DEFAULT_LineColor);
 define('SW_DEFAULT_XTitleFont', SW_DEFAULT_Font);
 define('SW_DEFAULT_XTitleFontStyle', SW_DEFAULT_FontStyle);
