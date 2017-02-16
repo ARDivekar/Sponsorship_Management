@@ -209,9 +209,9 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			$tablesSelect = self::select("SHOW TABLES;");
 			if(!$tablesSelect)
 				return NULL;
-			
-			foreach($tablesSelect as $column){
-				array_push($tables, $column["COLUMN_NAME"]);
+
+			foreach($tablesSelect as $row){
+				array_push($tables, $row["Tables_in_".self::$dbname]);
 			}
 			return $tables;
 		}
@@ -224,8 +224,8 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			if(!$structure)
 				return NULL;
 
-			foreach($structure as $column){
-				array_push($tableCols, $column["COLUMN_NAME"]);
+			foreach($structure as $row){
+				array_push($tableCols, $row["COLUMN_NAME"]);
 			}
 
 			return $tableCols;
