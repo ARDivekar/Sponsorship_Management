@@ -194,6 +194,15 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			return "'" . self::$connection->real_escape_string($value) . "'";
 		}
 
+		public function getDetails(){
+			return [
+				"hostname" => self::hostname,
+				"portnumber" => self::portnumber,
+				"username" => self::username,
+				"password" => self::password,
+				"dbname" => self::dbname
+			];
+		}
 
 		public function listTables(){
 			$tables = [];

@@ -7,9 +7,18 @@
 
   if($db->isConnected()){
     echo "CONNECTED TO MySQL DB";
-    if($_GET["pass"] === "mighty_oak"){
+    if(isset($_GET["pass"]) && $_GET["pass"] === "mighty_oak"){
+
+      echo "<hr> Details: <br>";
+      $details = $db->getDetails();
+      echo "hostname<br>";
+      echo "portnumber<br>";
+      echo "username<br>";
+      echo "password<br>";
+      echo "dbname<br>";
+
+      echo "<hr> Tables in database: <br>";
       $tables = $db->listTables();
-      echo "<hr>Tables in database: <br>";
       foreach($tables as $table)
         echo $table."<br>";
       echo "<hr>";
