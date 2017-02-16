@@ -3,13 +3,10 @@
   ini_set('display_errors', 1);
 
   include_once("DBconnect.php");
-  include_once("library_functions.php")
   $db = new SponsorshipDB();
 
   if($db->isConnected())
-    echo "CONNECTED TO MySQL DB";
+  	echo "CONNECTED TO MySQL DB";
   else echo "COULD NOT CONNECT TO MySQL DB";
-
-
 
 ?>
