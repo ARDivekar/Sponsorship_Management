@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*Connection stuff
 the statement:
 	require('DBconnect');
@@ -25,18 +25,18 @@ if (!$conn) {
 }
 //else echo "Connected successfully, $person_name.<br>";
 
-mysql_select_db($db_name); 
-  
+mysql_select_db($db_name);
 
-/*from: 
-http://www.w3schools.com/php/func_mysqli_select_db.asp   
-___AND___   
+
+/*from:
+http://www.w3schools.com/php/func_mysqli_select_db.asp
+___AND___
 http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-different-php-pages
 */
 
 
 
-	class SponsorshipDB {
+	class SponsorshipDB{
 		//source: https://www.binpress.com/tutorial/using-php-with-mysql-the-right-way/17
 
     /**
@@ -90,9 +90,16 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 
 		private function resetConnection(){ //this code must be swapped when changing PHP database handlers
 			if(self::$validConnectionDetails){
-				self::$connection = new mysqli(self::$hostname, self::$username, self::$password, self::$dbname, self::$portnumber);
+				if(self::$portnumber == NULL || self::$portnumber == null || self::$portnumber == ""){
+					self::$connection = new mysqli(self::$hostname, self::$username, self::$password, self::$dbname);
+					// echo "<br>NO PORT NUMBER PROVIDED!!<br>";
+				}
+				else
+					self::$connection = new mysqli(self::$hostname, self::$username, self::$password, self::$dbname, self::$portnumber);
 				return true;
-			} else self::$connection = NULL;
+			}
+			// if no valid details:
+			self::$connection = NULL;
 			return false;
 		}
 
@@ -116,9 +123,19 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			}
 			echo "New connection made to database";
 			return true;
-
 		}
 
+		public function isConnected($printIfError=false){	// Source: http://stackoverflow.com/a/19188412/4900327
+			if(!self::$connection)
+				return false;
+			if(!self::$connection->connect_errno){ // Check if connection is alive
+				if(self::$connection->ping())	// Check if server is alive
+					return true;
+			}
+			if($printIfError)
+				echo "<br>Error in connection: ".self::$connection->error;
+			return false;
+		}
 
 		/**
 		 * Query the database
@@ -126,6 +143,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 		 * @param $query The query string
 		 * @return mixed The result of the mysqli::query() function
 		 */
+
 		public function query($query) { //this code must be swapped when changing PHP database handlers
 			// Query the database
 			if(!$query){
@@ -237,14 +255,25 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			return true;
 		}
 
+		public function getDBName(){
+		   return self::$dbname;
+	   }
 	}
 
+
 	$db = new SponsorshipDB([
-		"hostname" => "localhost",
-		"username" => "root",
-		"password" => "",
-		"dbname" =>"sponsorshipmanagement"
-		 ]);
+			"hostname" => $clearDB_url["host"] ,
+			"username" => $clearDB_url["user"] ,
+			"password" => $clearDB_url["pass"] ,
+			"dbname" => substr($clearDB_url["path"], 1)
+		]);
+
+	// $db = new SponsorshipDB([
+	// 	"hostname" => "localhost",
+	// 	"username" => "root",
+	// 	"password" => "",
+	// 	"dbname" =>"sponsorshipmanagement"
+	// 	 ]);
 
 
 
