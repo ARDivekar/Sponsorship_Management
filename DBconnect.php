@@ -196,11 +196,11 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 
 		public function getDetails(){
 			return [
-				"hostname" => self::hostname,
-				"portnumber" => self::portnumber,
-				"username" => self::username,
-				"password" => self::password,
-				"dbname" => self::dbname
+				"hostname" => self::$hostname,
+				"portnumber" => self::$portnumber,
+				"username" => self::$username,
+				"password" => self::$password,
+				"dbname" => self::$dbname
 			];
 		}
 
