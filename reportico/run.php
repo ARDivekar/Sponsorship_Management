@@ -1,6 +1,9 @@
 <?php
-    include_once "../library_functions.php";
+  include_once "../library_functions.php";
 	include_once "../SponsEnums.php";
+
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
 
 	if(!isset($_SESSION[SessionEnums::UserLoginID]))
 		session_start();
@@ -55,7 +58,7 @@
     // Allow a good time for long reports to run. Set to 0 to allow unlimited time
 	ini_set("max_execution_time","90");
 
-    // Include Reportico - for embedding reportico in a script running from outside the Reportico directory, 
+    // Include Reportico - for embedding reportico in a script running from outside the Reportico directory,
     // just include the full path to the file reportico.php
 	//require_once('<FULL_PATH_TO_REPORTICO>/reportico.php');
 	require_once('reportico.php');
@@ -84,7 +87,7 @@
     */
 
     // Start user in specific project
-    //$q->initial_project = "<project>";          
+    //$q->initial_project = "<project>";
 
     // If starting user in specific project then project passweord is required if one exists
     // and you dont want user to have to type it in
@@ -93,7 +96,7 @@
     // Specify a report to start user in specify the xml report file in the specified project folder
     //$q->initial_report = "reportfile.xml";
 
-    // Specify whether user is started in administration page, project menu, report criteria entry, 
+    // Specify whether user is started in administration page, project menu, report criteria entry,
     // report output or report design mode, use respectively ( "ADMIN", "MENU", "PREPARE", "EXECUTE", "MAINTAIN")
     // default is "ADMIN"
     //$q->initial_execute_mode = "<MODE>";
@@ -142,10 +145,10 @@
 
 
     // Provide an existing connection to Reportico, at the moment to use this there still needs to be project
-    // in existence, but the connection specified here will override the 
+    // in existence, but the connection specified here will override the
     // this allows you build create temporary tables and perform other actions prior to reporting
     // $q->external_connection = false;
-    // try 
+    // try
     // {
             // $q->external_connection = new PDO("mysql:host=localhost; dbname=dbname", "username", "password" );
     // }
@@ -159,7 +162,7 @@
     //$q->projects_folder = "projects";
     //$q->admin_projects_folder = "projects";
     //$q->compiled_templates_folder = "templates_c";
-    
+
     // For setting report criteria parameters.. use the criteria name as the key and the criteria value
     // $q->initial_execution_parameters = array();
     // $q->initial_execution_parameters["lookupcriteria"] = "value1,value2";
@@ -169,7 +172,7 @@
     // $q->initial_execution_parameters["daterangecriteria2"] = "FIRSTOFMONTH-LASTOFMONTH";
 
     // The session namespace to use. Only relevant when showing more than one report in a single page. Specify a name
-    // to store all session variables for this instance and then when running another report instance later in the script 
+    // to store all session variables for this instance and then when running another report instance later in the script
     // use another name
     //$q->session_namespace = "namespace";
 
@@ -217,7 +220,7 @@
     // but they can be ignored and reportico's own modal invoked by setting this to true
     //$q->force_reportico_mini_maintains = false;
 
-    // Engine to use for charts .. 
+    // Engine to use for charts ..
     // HTML reports can use javascript charting, PDF reports must use PCHART
     //$q->charting_engine = "PCHART";
     //$q->charting_engine_html = "NVD3";
@@ -264,11 +267,11 @@
 
     // To auto generate a static menu from all the xml report files in the project use
     //$q->static_menu = array ( array ( "report" => ".*\.xml", "title" => "<AUTO>" ) );
-    
+
     // To hide the static report menu
     //$q->static_menu = array ();
 
-    // Required PDF Engine set -- to tcpdf ( default ) or fpdf 
+    // Required PDF Engine set -- to tcpdf ( default ) or fpdf
     //$q->pdf_engine = "tcpdf";
 
     // Dropdown Menu definition
@@ -279,7 +282,7 @@
     // You must specifiy a project folder for each project entry and the reportfile definitions must point to a valid xml report file
     // within the specified project
     //$q->dropdown_menu = array(
-    //                array ( 
+    //                array (
     //                    "project" => "projectname",
     //                    "title" => "dropdown menu 1 title",
     //                    "items" => array (
@@ -287,7 +290,7 @@
     //                        array ( "reportfile" => "anotherreport" ),
     //                        )
     //                    ),
-    //                array ( 
+    //                array (
     //                    "project" => "projectname",
     //                    "title" => "dropdown menu 2 title",
     //                    "items" => array (
