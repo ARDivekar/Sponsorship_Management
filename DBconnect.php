@@ -57,17 +57,6 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			$this->set($config);
 		}
 
-		protected function getDetails(){
-			return [
-				"host" => SponsorshipDB::hostname,
-				"portnumber" => SponsorshipDB::portnumber,
-				"username" => SponsorshipDB::username,
-				"dbname" => SponsorshipDB::dbname,
-				"password" => SponsorshipDB::password
-			];
-		}
-
-
 		function set($config = NULL){
 			if($config){
 				if(array_key_exists("hostname", $config))
@@ -205,6 +194,18 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			return "'" . self::$connection->real_escape_string($value) . "'";
 		}
 
+
+		public function listTables(){
+			$tables = [];
+			$tablesSelect = self::select("SHOW TABLES;");
+			if(!$tablesSelect)
+				return NULL;
+				foreach($structure as $column){
+					array_push($tables, $column["COLUMN_NAME"]);
+				}
+				return $tables;
+		}
+
 		public function getTableColumns($tableName){
 			$tableCols = [];
 
@@ -218,9 +219,8 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 			}
 
 			return $tableCols;
-
-
 		}
+
 
 		public function startTransaction(){
 			if(!self::$connection)
