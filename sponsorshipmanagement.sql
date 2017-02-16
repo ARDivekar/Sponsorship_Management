@@ -719,24 +719,6 @@ INSERT INTO `SponsLogin` (`SponsID`, `Password`, `AccessLevel`) VALUES
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `SponsOfficer`
---
-CREATE TABLE IF NOT EXISTS `SponsOfficer` (
-`Organization` varchar(50)
-,`EventName` varchar(80)
-,`SponsID` int(11) unsigned
-,`Name` varchar(80)
-,`Role` varchar(40)
-,`Sector` varchar(15)
-,`DateAssigned` date
-,`Mobile` varchar(15)
-,`Email` varchar(50)
-,`Year` int(1)
-,`Branch` varchar(25)
-);
--- --------------------------------------------------------
-
---
 -- Table structure for table `SponsRep`
 --
 
@@ -816,10 +798,10 @@ INSERT INTO `SponsRep` (`SponsID`, `Sector`, `DateAssigned`) VALUES
 DROP VIEW IF EXISTS `SponsWorker`;
 
 CREATE VIEW SponsWorker AS
-(SELECT SponsID, Sector, DateAssigned, "Sponsorship Representative" AS Role FROM SponsRep ) 
-UNION 
-(SELECT SponsID, Sector, DateAssigned, "Sector Head" AS Role FROM SectorHead ) 
-UNION 
+(SELECT SponsID, Sector, DateAssigned, "Sponsorship Representative" AS Role FROM SponsRep )
+UNION
+(SELECT SponsID, Sector, DateAssigned, "Sector Head" AS Role FROM SectorHead )
+UNION
 (SELECT ID AS SponsID, "All" as Sector, NULL AS DateAssigned, Role FROM CommitteeMember WHERE Role = "CSO" ) ;
 
 
@@ -829,10 +811,10 @@ DROP VIEW IF EXISTS `SponsOfficer`;
 
 CREATE VIEW SponsOfficer AS
 SELECT Organization, EventName, SponsID, Name, CM.Role as Role, Sector, DateAssigned, Mobile, Email, Year, Branch
-FROM 
-  SponsWorker 
-  INNER JOIN 
-  CommitteeMember AS CM 
+FROM
+  SponsWorker
+  INNER JOIN
+  CommitteeMember AS CM
   ON CM.ID = SponsWorker.SponsID
 
   Where CM.Department = "Sponsorship" ;
