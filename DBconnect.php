@@ -261,6 +261,7 @@ http://stackoverflow.com/questions/2261624/using-same-mysql-connection-in-differ
 	}
 
 
+	$clearDB_url = parse_url(getenv("CLEARDB_DATABASE_URL"));
 	$db = new SponsorshipDB([
 			"hostname" => $clearDB_url["host"] ,
 			"username" => $clearDB_url["user"] ,
