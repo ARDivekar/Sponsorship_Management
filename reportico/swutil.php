@@ -7,7 +7,7 @@
  modify it under the terms of the GNU General Public License
  as published by the Free Software Foundation; either version 2
  of the License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -54,7 +54,7 @@ function set_up_reportico_session()
 	$session_name = session_id();
 
 	// Check for Posted Session Name and use that if specified
-    if (isset($_REQUEST['reportico_session_name'])) 
+    if (isset($_REQUEST['reportico_session_name']))
     {
     		$session_name = $_REQUEST['reportico_session_name'];
             if ( preg_match("/_/", $session_name ) )
@@ -92,7 +92,7 @@ function set_up_reportico_session()
         }
         if ( $g_session_namespace )
             $g_session_namespace_key = "reportico_".$g_session_namespace;
-		if (isset($_REQUEST['clear_session']) && isset($_SESSION)) 
+		if (isset($_REQUEST['clear_session']) && isset($_SESSION))
         {
             initialize_reportico_namespace(reportico_namespace());
         }
@@ -116,7 +116,7 @@ function set_up_reportico_session()
 		//session_regenerate_id(false);
 		$session_name = session_id();
 
-		if (isset($_REQUEST['clear_session'])) 
+		if (isset($_REQUEST['clear_session']))
 		{
             initialize_reportico_namespace(reportico_namespace());
 		}
@@ -196,7 +196,7 @@ function get_datepicker_language($in_format)
 		case "zh_hk": $retval = "zh-HK"; break;
 		case "zh_tw": $retval = "zh-TW"; break;
 		case "zh_cn": $retval = "zh-CN"; break;
-		default: 
+		default:
 			$retval = substr($in_format, 0, 2);
 	}
 	return $retval;
@@ -215,8 +215,8 @@ function get_datepicker_format($in_format)
 		case "m-d-Y": $retval = "mm-dd-yy"; break;
 		case "Y/m/d": $retval = "yy/mm/dd"; break;
 		case "Y-m-d": $retval = "yy-mm-dd"; break;
-	
-		default: 
+
+		default:
 			$retval = "dd/mm/yy";
 	}
 	return $retval;
@@ -365,7 +365,7 @@ function parse_date($in_keyword, $in_time = false, $in_mask = "%d/%m/%Y" )
 
 	return($ret);
 
-	
+
 }
 
 // -----------------------------------------------------------------------------
@@ -434,18 +434,18 @@ function get_query_column_value( $name, &$arr )
 	foreach($arr as $val)
 	{
 		if ( $val->query_name == $name )
-		{	
+		{
 			return $val->column_value;
 		}
 	}
-	
+
 	//foreach($arr as $val)
 	//{
 		//return $val->column_value;
 	//}
 	//return $name;
 }
-	
+
 function get_query_column( $name, &$arr )
 {
 	foreach($arr as $k => $val)
@@ -465,10 +465,10 @@ function get_group_column( $name, &$arr )
 	}
 	return false;
 }
-	
+
 function &get_db_image_string(
-	$in_driver, 
-	$in_dbname, 
+	$in_driver,
+	$in_dbname,
 	$in_hostname,
 	$in_sql,
 	$in_conn = false
@@ -486,12 +486,12 @@ function &get_db_image_string(
 		$ado_connection->SetFetchMode(ADODB_FETCH_ASSOC);
 		$ado_connection->PConnect($hostname,'','',$dbname);
 
-		$rs = $ado_connection->Execute($in_sql) 
+		$rs = $ado_connection->Execute($in_sql)
 			or die("Query failed : " . $ado_connection->ErrorMsg());
 	}
 	else
 	{
-		$rs = $in_conn->Execute($in_sql) 
+		$rs = $in_conn->Execute($in_sql)
 			or die("Query failed : " . $in_conn->ErrorMsg());
 	}
 
@@ -541,7 +541,7 @@ function session_item($in_item, $in_default = false)
 
 	if ( !$ret )
 		$ret = false;
-	
+
 	if ( $in_default && !$ret )
 		$ret = $in_default;
 
@@ -561,7 +561,7 @@ function session_request_item($in_item, $in_default = false, $in_default_conditi
 
 	if ( !$ret )
 		$ret = false;
-	
+
 	if ( $in_default && $in_default_condition && !$ret )
 		$ret = $in_default;
 
@@ -618,7 +618,7 @@ function handle_debug($dbgstr, $in_level)
 	//}
 
 }
-  
+
 // User Error Handler
 function handle_error($errstr, $type = E_USER_ERROR)
 {
@@ -630,8 +630,8 @@ function handle_error($errstr, $type = E_USER_ERROR)
 
 	trigger_error($errstr, $type);
 }
-  
-  
+
+
 // exception handler function
 function ExceptionHandler($exception)
 {
@@ -677,7 +677,7 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
 
 	}
 
-	// Avoid adding duplicate errors 
+	// Avoid adding duplicate errors
 	if ( !$g_system_errors )
 		$g_system_errors = array();
 	foreach ( $g_system_errors as $k => $val )
@@ -706,7 +706,7 @@ function ErrorHandler($errno, $errstr, $errfile, $errline)
     $g_error_status = 1;
 
 }
-  
+
 // error handler function
 function has_default($in_code)
 {
@@ -762,7 +762,7 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
         $selfdir = dirname(__FILE__);
         $new_file_path = $selfdir. "/" . $file_path;
 
-        if (file_exists($new_file_path) || is_dir($new_file_path) ) 
+        if (file_exists($new_file_path) || is_dir($new_file_path) )
 	    {
                	$new_file_path = $selfdir . "/" . $file_path;
 				return true;
@@ -770,7 +770,7 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
     }
 
     // else look in incude path
-	if(!isset($_path_array)) 
+	if(!isset($_path_array))
 	{
 		$_ini_include_path = get_include_path();
 
@@ -779,12 +779,12 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
 		else
 			$selfdir = dirname(__FILE__);
 
-		if(strstr($_ini_include_path,';')) 
+		if(strstr($_ini_include_path,';'))
 		{
 			$_ini_include_path = $selfdir.";".$_ini_include_path;
 			$_path_array = explode(';',$_ini_include_path);
-		} 
-		else 
+		}
+		else
 		{
 			$_ini_include_path = $selfdir.":".$_ini_include_path;
 			$_path_array = explode(':',$_ini_include_path);
@@ -793,7 +793,7 @@ function find_file_to_include($file_path, &$new_file_path, &$rel_to_include = ""
 	// Turn off Error handling for the following to avoid open_basedir errors
 	$old_error_handler = set_error_handler("ErrorHandler", 0);
     foreach ($_path_array as $_include_path) {
-        if (file_exists($_include_path . "/" . $file_path)) 
+        if (file_exists($_include_path . "/" . $file_path))
 	    {
                	$new_file_path = $_include_path . "/" . $file_path;
     			$old_error_handler = set_error_handler("ErrorHandler");
@@ -955,7 +955,7 @@ function localise_template_strings(&$in_smarty, $in_template = "")
 
 
 // Fetched translation for a template string
-function template_xlate($in_string) 
+function template_xlate($in_string)
 {
     if (!$in_string ) return $in_string;
     $out_string = "T_".$in_string;
@@ -978,7 +978,7 @@ function sw_path_executable($in_path)
 	global $g_report_desc;
 
 	$perms = fileperms($in_path);
-	
+
 	if ( !is_dir ( $in_path ) )
 		return false;
 
@@ -991,9 +991,9 @@ function sw_path_executable($in_path)
 	return  true;
 }
 
-// Search currentl directory and include for best absolute poistion 
+// Search currentl directory and include for best absolute poistion
 // of a file path
-function find_best_url_in_include_path( $path ) 
+function find_best_url_in_include_path( $path )
 {
 	$newpath = $path;
 	$reltoinclude;
@@ -1007,7 +1007,7 @@ function find_best_url_in_include_path( $path )
 	return $newpath;
 }
 
-function find_best_location_in_include_path( $path ) 
+function find_best_location_in_include_path( $path )
 {
 	$newpath = $path;
 	$reltoinclude;
@@ -1029,7 +1029,7 @@ function find_best_location_in_include_path( $path )
 	return $newpath;
 }
 
-// Builds the base URL elements to HTML links produced in HTML 
+// Builds the base URL elements to HTML links produced in HTML
 // created from :-
 //    1 - the http://.....
 //    2 - extra GET parameters
@@ -1040,19 +1040,19 @@ function build_forward_url_get_params($path, $forward_url_get_params, $remainder
 	if ( $forward_url_get_params || $remainder )
 		$urlpath .= "?";
 
-		
+
 	if ( $forward_url_get_params )
 		$urlpath .= $forward_url_get_params;
 		if ( $remainder )
 			$urlpath .= "&";
-	if ( $remainder ) 
+	if ( $remainder )
 		$urlpath .= $remainder;
 
 	return $urlpath;
 }
 
-// For backward compatibility ensures that date formats anything expressed in 
-// formats sutiable for the date function ( e.g. Y-m-d ) are converted to 
+// For backward compatibility ensures that date formats anything expressed in
+// formats sutiable for the date function ( e.g. Y-m-d ) are converted to
 // locale formats ( e.g. %Y-%m-%d )
 function get_locale_date_format( $in_format ) {
 
@@ -1082,10 +1082,10 @@ function get_reportico_url_path()
             $above = "";
         $url_path = $above."/".session_request_item('reporticourl', dirname($newpath));
 
-        // If reportico source files are installed in root directory or in some other 
+        // If reportico source files are installed in root directory or in some other
         // scenarios such as an invalid linkbaseurl parameter the dirname of the
-        // the reportico files returns just a slash (backslash on windows) so 
-        // return a true path 
+        // the reportico files returns just a slash (backslash on windows) so
+        // return a true path
         if ( $url_path == "/" || $url_path == "\\" )
             $url_path = "/";
         else
@@ -1143,7 +1143,7 @@ function available_languages()
 function db_charset_to_php_charset ($in)
 {
     $out = $in;
-    switch ( $in )  
+    switch ( $in )
     {
         case "None" : $out = false; break;
         case "UTF8" : $out = "UTF-8"; break;
@@ -1159,8 +1159,8 @@ function db_charset_to_php_charset ($in)
         case "LATIN9" : $out = "ISO-8859-15"; break;
         case "LATIN9" : $out = "ISO-8859-16"; break;
         case "LATIN9" : $out = "ISO-8859-16"; break;
-        case "ISO-8859-1" : 
-        case "ISO-8859-2" : 
+        case "ISO-8859-1" :
+        case "ISO-8859-2" :
         case "ISO-8859-3" :
         case "ISO-8859-4" :
         case "ISO-8859-5" :
@@ -1177,7 +1177,7 @@ function db_charset_to_php_charset ($in)
         case "ISO-8859-15" :
         case "ISO-8859-16" : $out = $in; break;
         case "GB18030" :
-        case "GB2312" : 
+        case "GB2312" :
         case "GBK" :
         case "BIG5" : $out = strtolower($in); break;
         case "WIN1250" : $out = "Windows-1250"; break;
@@ -1201,12 +1201,12 @@ function db_charset_to_php_charset ($in)
 function output_charset_to_php_charset ($in)
 {
     $out = $in;
-    switch ( $in )  
+    switch ( $in )
     {
         case "None" : $out = false; break;
         case "UTF8" : $out = "UTF-8"; break;
-        case "ISO-8859-1" : 
-        case "ISO-8859-2" : 
+        case "ISO-8859-1" :
+        case "ISO-8859-2" :
         case "ISO-8859-3" :
         case "ISO-8859-4" :
         case "ISO-8859-5" :
@@ -1223,7 +1223,7 @@ function output_charset_to_php_charset ($in)
         case "ISO-8859-15" :
         case "ISO-8859-16" : $out = $in; break;
         case "GB18030" :
-        case "GB2312" : 
+        case "GB2312" :
         case "GBK" :
         case "Big5" :
         case "BIG5" : $out = strtolower($in); break;
@@ -1251,7 +1251,7 @@ function get_output_encoding_html ()
     $txt = '';
     $tmp1 = '<meta http-equiv="Content-Type" content="text/html; charset=';
     $tmp2 = '" />';
-    switch ( SW_OUTPUT_ENCODING )  
+    switch ( SW_OUTPUT_ENCODING )
     {
         case "None" : $txt = ''; break;
         case "UTF8" : $txt = $tmp1 . "utf-8". $tmp2; '<meta charset="utf-8">'; break;
@@ -1284,7 +1284,7 @@ function get_relative_path( $path, $compareTo ) {
         if ( substr( $path, -1 ) == '/' ) {
             $path = substr( $path, 0, -1 );
         }
-	
+
         if ( substr( $path, 0, 1 ) == '/' ) {
             $path = substr( $path, 1 );
         }
@@ -1392,7 +1392,7 @@ function &load_existing_report ( $reportfile, $projects_folder = "projects" )
     return $q;
 }
 
-/* 
+/*
     PHP pre 5.3 function for converting a date string from one format
     to another
 */
@@ -1445,12 +1445,12 @@ function reformatDate($informat, $outformat, $date) {
 }
 
 // Converts a database column name into a label
-// by converting any _ to spaces and upper casing the 
+// by converting any _ to spaces and upper casing the
 // initial letter of each word
 function column_name_to_label($columnname)
 {
 	$retstring = str_replace("_", " ", $columnname);
-	$retstring = ucwords(mb_strtolower($retstring,output_charset_to_php_charset(SW_OUTPUT_ENCODING)));
+	$retstring = ucwords(strtolower($retstring,output_charset_to_php_charset(SW_OUTPUT_ENCODING)));
 	return $retstring;
 }
 
