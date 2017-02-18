@@ -1450,7 +1450,7 @@ function reformatDate($informat, $outformat, $date) {
 function column_name_to_label($columnname)
 {
 	$retstring = str_replace("_", " ", $columnname);
-	$retstring = ucwords(mb_strtolower($retstring,output_charset_to_php_charset(SW_OUTPUT_ENCODING)));
+	$retstring = ucwords(strtolower($retstring));
 	return $retstring;
 }
 
