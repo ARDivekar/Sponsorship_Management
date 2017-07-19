@@ -244,7 +244,7 @@
 							  	echo json_encode($MoneyProgress);
 							  else echo "<h1>Graph Unavailiable</h1>";
 							  ?>,
-							  xkey: ['Week'],
+							  xkey: ['week'],
 							  ykeys: ['Amount'],
 							  labels: ['Amount']
 							});
