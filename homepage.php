@@ -238,7 +238,7 @@
 
 							new Morris.Line({
 							  element: 'money-progress',
-							  data: <?php echo "{}||";
+							  data: <?php
 							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'Amount', WEEK(Date) as 'Week' FROM `AccountLog` GROUP BY WEEK(Date)");
 							  if(count($MoneyProgress)>0)
 							  	echo json_encode($MoneyProgress);
