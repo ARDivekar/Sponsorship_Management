@@ -37,13 +37,13 @@
 
 		<form name="SponsLogin" action="login_execute.php" method="POST">
 			<div class="input-container">
-				<input type="text" id="Username" required="required" name="<?php echo SessionEnums::UserLoginID; ?>"/>
+				<input type="text" id="Username" required="required" name="<?php echo SessionEnums::UserLoginID; ?>" value="131080051"/>
 				<label for="Username">Username</label>
 
 				<div class="bar"></div>
 			</div>
 			<div class="input-container">
-				<input type="password" id="Password" required="required" name="<?php echo QueryFieldNames::SponsPassword; ?>"/>
+				<input type="password" id="Password" required="required" name="<?php echo QueryFieldNames::SponsPassword; ?>" value="abhishekdivekar"/>
 				<label for="Password">Password</label>
 
 				<div class="bar"></div>
