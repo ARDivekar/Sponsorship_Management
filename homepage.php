@@ -238,12 +238,12 @@
 
 							new Morris.Line({
 							  element: 'money-progress',
-							  data: (<?php
+							  data: <?php echo "{}||";
 							  $MoneyProgress= $db->select("SELECT SUM(Amount) as 'Amount', WEEK(Date) as 'Week' FROM `AccountLog` GROUP BY WEEK(Date)");
 							  if(count($MoneyProgress)>0)
 							  	echo json_encode($MoneyProgress);
 							  else echo "<h1>Graph Unavailiable</h1>";
-							  ?>),
+							  ?>,
 							  xkey: ['Week'],
 							  ykeys: ['Amount'],
 							  labels: ['Amount']
